@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | SellerTrackr</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        .admin-auth-page { background: var(--brand-900); }
+        .admin-auth-page .auth-heading { color: #fff; }
+        .admin-auth-page .auth-sub { color: rgba(255,255,255,0.55); }
+        .admin-auth-page .auth-logo span { color: #fff; }
+        .admin-auth-page .auth-card { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+        .admin-auth-page .form-label { color: rgba(255,255,255,0.75); }
+        .admin-auth-page .form-input { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); color: #fff; }
+        .admin-auth-page .form-input::placeholder { color: rgba(255,255,255,0.3); }
+        .admin-auth-page .form-input:focus { border-color: var(--brand-400); box-shadow: 0 0 0 3px rgba(129,140,248,0.2); }
+        .admin-auth-page .auth-footer { color: rgba(255,255,255,0.5); }
+        .admin-auth-page .auth-footer a { color: var(--brand-300); }
+        .shield-icon { width: 52px; height: 52px; background: rgba(255,255,255,0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-5); color: var(--brand-300); }
+    </style>
+</head>
+<body>
+<div class="auth-page admin-auth-page">
+    <div class="auth-box">
+        <div class="shield-icon">
+            <i data-lucide="shield-check" style="width:26px;height:26px"></i>
+        </div>
+        <h1 class="auth-heading">Admin Access</h1>
+        <p class="auth-sub">Secure admin portal — authorized personnel only</p>
+
+        <div class="auth-card" style="margin-top:var(--space-5)">
+            <form id="admin-login-form" style="display:flex;flex-direction:column;gap:var(--space-4)">
+                <div class="form-group">
+                    <label class="form-label" for="admin-email">Admin Email</label>
+                    <input id="admin-email" type="email" required placeholder="admin@sellertrackr.com" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="admin-password">Password</label>
+                    <input id="admin-password" type="password" required placeholder="••••••••" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-full" style="margin-top:var(--space-1)">
+                    <i data-lucide="shield-check" style="width:17px;height:17px"></i>
+                    Access Admin Panel
+                </button>
+            </form>
+        </div>
+
+        <p class="auth-footer" style="margin-top:var(--space-5)">
+            <a href="index.html">← Back to home</a>
+        </p>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script type="module">
+    import { supabase } from './assets/js/config.js';
+    import { showToast } from './assets/js/ui.js';
+    if (window.lucide) window.lucide.createIcons();
+
+    document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: document.getElementById('admin-email').value,
+                password: document.getElementById('admin-password').value
+            });
+            if (error) throw error;
+
+            const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', data.user.id).single();
+            if (profile?.is_admin) {
+                showToast('Admin access granted!', 'success');
+                setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
+            } else {
+                throw new Error('Admin access denied!');
+            }
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email | SellerTrackr</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        .otp-row { display: flex; justify-content: center; gap: 10px; }
+        .timer-text { font-size: 2rem; font-weight: 800; font-family: var(--font-mono); color: var(--brand-700); letter-spacing: 0.1em; }
+        .timer-label { font-size: 0.78rem; color: var(--text-tertiary); margin-bottom: 4px; }
+        @media (max-width: 400px) { .otp-input { width: 2.5rem; height: 3rem; font-size: 1.1rem; } .otp-row { gap: 6px; } }
+    </style>
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-box">
+        <div style="text-align:center;margin-bottom:var(--space-5)">
+            <div style="width:56px;height:56px;background:var(--brand-100);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4)">
+                <i data-lucide="mail" style="width:26px;height:26px;color:var(--brand-700)"></i>
+            </div>
+            <h1 class="auth-heading">Check your email</h1>
+            <p class="auth-sub" style="margin-bottom:0">
+                We sent a verification code to<br>
+                <strong id="email-display" style="color:var(--text-primary)">your email</strong>
+            </p>
+        </div>
+
+        <div class="auth-card">
+            <form id="otp-form" style="display:flex;flex-direction:column;gap:var(--space-5)">
+                <div class="otp-row">
+                    <input type="text" maxlength="1" class="otp-input" autofocus>
+                    <input type="text" maxlength="1" class="otp-input">
+                    <input type="text" maxlength="1" class="otp-input">
+                    <input type="text" maxlength="1" class="otp-input">
+                    <input type="text" maxlength="1" class="otp-input">
+                    <input type="text" maxlength="1" class="otp-input">
+                </div>
+
+                <div style="text-align:center;padding:var(--space-2) 0">
+                    <p class="timer-label">Code expires in</p>
+                    <p id="timer" class="timer-text">10:00</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-full">
+                    Verify Code
+                    <i data-lucide="arrow-right" style="width:17px;height:17px"></i>
+                </button>
+            </form>
+
+            <div style="margin-top:var(--space-5);padding-top:var(--space-5);border-top:1px solid var(--border);text-align:center">
+                <p style="font-size:0.83rem;color:var(--text-secondary);margin-bottom:8px">Didn't receive the code?</p>
+                <button id="resend-btn" disabled style="font-size:0.83rem;font-weight:700;color:var(--brand-700);background:none;border:none;cursor:pointer;opacity:0.5">
+                    Resend in <span id="resend-timer">60</span>s
+                </button>
+            </div>
+        </div>
+
+        <p style="text-align:center;margin-top:var(--space-4)">
+            <a href="signup.html" style="display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;color:var(--text-secondary)">
+                <i data-lucide="arrow-left" style="width:15px;height:15px"></i>
+                Back to Signup
+            </a>
+        </p>
+    </div>
+</div>
+
+<script type="module">
+    import { showToast } from './assets/js/ui.js';
+    if (window.lucide) window.lucide.createIcons();
+
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((input, i) => {
+        input.addEventListener('input', e => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(-1);
+            if (e.target.value && i < inputs.length - 1) inputs[i+1].focus();
+        });
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Backspace' && !e.target.value && i > 0) inputs[i-1].focus();
+        });
+        input.addEventListener('paste', e => {
+            const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+            paste.split('').forEach((ch, idx) => { if (inputs[idx]) inputs[idx].value = ch; });
+            if (inputs[paste.length - 1]) inputs[paste.length - 1].focus();
+            e.preventDefault();
+        });
+    });
+
+    // Countdown timers
+    let timeLeft = 600;
+    const timerEl = document.getElementById('timer');
+    setInterval(() => {
+        if (timeLeft > 0) timeLeft--;
+        const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+        timerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    }, 1000);
+
+    let resendTime = 60;
+    const resendBtn = document.getElementById('resend-btn');
+    const resendEl  = document.getElementById('resend-timer');
+    const resendIv  = setInterval(() => {
+        resendTime--;
+        resendEl.textContent = resendTime;
+        if (resendTime <= 0) {
+            clearInterval(resendIv);
+            resendBtn.style.opacity = '1';
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'Resend Code';
+        }
+    }, 1000);
+
+    resendBtn.addEventListener('click', () => {
+        if (!resendBtn.disabled) showToast('Verification code resent!', 'success');
+    });
+
+    document.getElementById('otp-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const code = Array.from(inputs).map(i => i.value).join('');
+        if (code.length === 6) {
+            showToast('Email verified successfully!', 'success');
+            setTimeout(() => window.location.href = 'user-dashboard.html', 1500);
+        } else {
+            showToast('Please enter all 6 digits', 'warning');
+        }
+    });
+</script>
+</body>
+</html>

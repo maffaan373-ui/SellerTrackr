@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | SellerTrackr</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="dash-layout">
+<aside class="sidebar admin-sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <img src="https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg" alt="Logo">
+        <span>Admin Panel</span>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-link active">
+            <i data-lucide="layout-dashboard"></i><span>Overview</span>
+        </a>
+        <a href="#users" class="nav-link">
+            <i data-lucide="users"></i><span>Users</span>
+        </a>
+        <a href="#payments" class="nav-link">
+            <i data-lucide="credit-card"></i><span>Payments</span>
+        </a>
+        <a href="#analytics" class="nav-link">
+            <i data-lucide="bar-chart-3"></i><span>Analytics</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <button id="logout-btn" class="nav-link" style="width:100%;background:rgba(239,68,68,0.1);color:#f87171;border:none;cursor:pointer">
+            <i data-lucide="log-out"></i><span>Logout</span>
+        </button>
+    </div>
+</aside>
+
+<main class="main-content">
+    <header class="topbar">
+        <button class="icon-btn hamburger" id="sidebar-toggle">
+            <i data-lucide="menu"></i>
+        </button>
+        <div class="topbar-left">
+            <div>
+                <div class="topbar-title">Admin Dashboard</div>
+                <div class="topbar-sub">System overview &amp; analytics</div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <span class="badge badge-brand">Admin</span>
+        </div>
+    </header>
+
+    <div class="page-content">
+        <!-- Stats -->
+        <div class="stats-grid" style="margin-bottom:var(--space-5)">
+            <div class="stat-card">
+                <div class="stat-card__icon success"><i data-lucide="trending-up" style="width:18px;height:18px"></i></div>
+                <div class="stat-card__label">Total Revenue</div>
+                <div class="stat-card__value" id="total-revenue">₨0</div>
+                <span class="stat-card__delta up"><i data-lucide="arrow-up" style="width:12px;height:12px"></i>This month</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon brand"><i data-lucide="crown" style="width:18px;height:18px"></i></div>
+                <div class="stat-card__label">Paid Users</div>
+                <div class="stat-card__value" id="paid-users">0</div>
+                <span class="stat-card__delta neutral">Active subscriptions</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon warning"><i data-lucide="user" style="width:18px;height:18px"></i></div>
+                <div class="stat-card__label">Free Users</div>
+                <div class="stat-card__value" id="free-users">0</div>
+                <span class="stat-card__delta neutral">Trial accounts</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon info"><i data-lucide="users" style="width:18px;height:18px"></i></div>
+                <div class="stat-card__label">Total Users</div>
+                <div class="stat-card__value" id="total-users">0</div>
+                <span class="stat-card__delta neutral">All registered</span>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5);margin-bottom:var(--space-5)">
+            <div class="dash-card">
+                <div class="dash-card-header"><span class="dash-card-title">Revenue Over Time</span></div>
+                <div class="dash-card-body"><div style="height:220px"><canvas id="revenueChart"></canvas></div></div>
+            </div>
+            <div class="dash-card">
+                <div class="dash-card-header"><span class="dash-card-title">User Growth</span></div>
+                <div class="dash-card-body"><div style="height:220px"><canvas id="usersChart"></canvas></div></div>
+            </div>
+        </div>
+
+        <!-- Payments Table -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <span class="dash-card-title">Recent Payments</span>
+                <button class="btn btn-secondary btn-sm">View All</button>
+            </div>
+            <div class="table-wrap" style="border:none;border-radius:0 0 var(--r-xl) var(--r-xl)">
+                <table>
+                    <thead>
+                        <tr><th>User</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="payments-body">
+                        <tr><td colspan="5" style="text-align:center;color:var(--text-tertiary);padding:2rem">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script type="module">
+    import { supabase } from './assets/js/config.js';
+    import { showToast } from './assets/js/ui.js';
+    if (window.lucide) window.lucide.createIcons();
+
+    async function checkAdminAuth() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) { window.location.href = 'admin-login.html'; return false; }
+        const { data: p } = await supabase.from('profiles').select('is_admin').eq('id', session.user.id).single();
+        if (!p?.is_admin) { showToast('Admin access required!', 'error'); setTimeout(() => window.location.href = 'index.html', 1000); return false; }
+        return true;
+    }
+
+    async function loadDashboardData() {
+        try {
+            const { data: payments } = await supabase.from('payments').select('*, profiles(full_name, email)').order('created_at', { ascending: false }).limit(10);
+            const totalRevenue = payments?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
+            const paidUsers = new Set(payments?.filter(p => p.status === 'completed').map(p => p.user_id)).size;
+            const { count: totalUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+
+            document.getElementById('total-revenue').textContent = `₨${totalRevenue.toLocaleString()}`;
+            document.getElementById('paid-users').textContent   = paidUsers;
+            document.getElementById('free-users').textContent   = (totalUsers || 0) - paidUsers;
+            document.getElementById('total-users').textContent  = totalUsers || 0;
+
+            if (payments?.length) {
+                document.getElementById('payments-body').innerHTML = payments.map(p => `
+                    <tr>
+                        <td><strong>${p.profiles?.full_name || 'Unknown'}</strong><br><span style="font-size:0.78rem;color:var(--text-tertiary)">${p.profiles?.email || ''}</span></td>
+                        <td style="font-weight:700;color:var(--brand-700)">₨${p.amount}</td>
+                        <td>${p.method || 'Easypaisa'}</td>
+                        <td style="color:var(--text-tertiary);font-size:0.82rem">${new Date(p.created_at).toLocaleDateString()}</td>
+                        <td><span class="badge badge-${p.status}">${p.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+            initCharts();
+        } catch (err) {
+            showToast('Error loading data', 'error');
+        }
+    }
+
+    function initCharts() {
+        const chartDefaults = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, border: { display: false } }, y: { display: false } } };
+
+        new Chart(document.getElementById('revenueChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['Week 1','Week 2','Week 3','Week 4'],
+                datasets: [{ data: [3600,7200,12600,18000], borderColor: '#4338ca', backgroundColor: 'rgba(67,56,202,0.08)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#4338ca' }]
+            },
+            options: chartDefaults
+        });
+        new Chart(document.getElementById('usersChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Week 1','Week 2','Week 3','Week 4'],
+                datasets: [{ data: [45,78,92,110], backgroundColor: '#4338ca', borderRadius: 6 }]
+            },
+            options: { ...chartDefaults, scales: { x: { grid: { display: false }, border: { display: false } }, y: { display: false } } }
+        });
+    }
+
+    (async () => {
+        const ok = await checkAdminAuth();
+        if (ok) await loadDashboardData();
+    })();
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.href = 'admin-login.html';
+    });
+</script>
+<script>
+    if (window.lucide) window.lucide.createIcons();
+    const toggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    toggle?.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('active'); });
+    overlay?.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
+</script>
+</body>
+</html>
