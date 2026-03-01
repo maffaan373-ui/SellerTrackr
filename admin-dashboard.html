@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | SellerTrackr</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside id="sidebar" class="sidebar">
+            <div class="flex items-center gap-3 mb-12 px-2">
+                <img src="https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg" 
+                     alt="Logo" class="w-11 h-11 rounded-xl">
+                <span class="font-display text-xl font-bold text-white">Admin Panel</span>
+            </div>
+
+            <nav class="flex-1 space-y-2">
+                <a href="#" class="sidebar-link active">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#users" class="sidebar-link">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    <span>Users</span>
+                </a>
+                <a href="#payments" class="sidebar-link">
+                    <i data-lucide="credit-card" class="w-5 h-5"></i>
+                    <span>Payments</span>
+                </a>
+                <a href="#analytics" class="sidebar-link">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+
+            <div class="pt-6 border-t border-white/10">
+                <button id="logout-btn" class="sidebar-link w-full text-rose-400 hover:bg-rose-400/10">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div>
+                    <h1 class="text-2xl font-display font-bold text-white">Admin Dashboard</h1>
+                    <p class="text-white/60">System Overview</p>
+                </div>
+                <button id="sidebar-toggle" class="lg:hidden">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </header>
+
+            <!-- Payment Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <div class="stats-card">
+                    <span class="text-sm font-bold text-white/60 uppercase">Total Revenue</span>
+                    <h2 id="total-revenue" class="text-4xl font-display font-bold mb-2">₨0</h2>
+                    <p class="text-accent text-sm font-semibold">This month</p>
+                </div>
+
+                <div class="stats-card">
+                    <span class="text-sm font-bold text-white/60 uppercase">Paid Users</span>
+                    <h2 id="paid-users" class="text-4xl font-display font-bold mb-2">0</h2>
+                    <p class="text-white/60 text-sm">Active subscriptions</p>
+                </div>
+
+                <div class="stats-card">
+                    <span class="text-sm font-bold text-white/60 uppercase">Free Users</span>
+                    <h2 id="free-users" class="text-4xl font-display font-bold mb-2">0</h2>
+                    <p class="text-white/60 text-sm">Trial accounts</p>
+                </div>
+
+                <div class="stats-card">
+                    <span class="text-sm font-bold text-white/60 uppercase">Total Users</span>
+                    <h2 id="total-users" class="text-4xl font-display font-bold mb-2">0</h2>
+                    <p class="text-white/60 text-sm">All registered</p>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                <div class="glass-card">
+                    <h3 class="font-display font-bold text-xl text-white mb-6">Revenue Over Time</h3>
+                    <div class="h-64">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3 class="font-display font-bold text-xl text-white mb-6">User Growth</h3>
+                    <div class="h-64">
+                        <canvas id="usersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Payments -->
+            <div class="glass-card">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-display font-bold text-2xl text-white">Recent Payments</h3>
+                    <button class="text-accent text-sm font-semibold hover:underline">View All</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payments-body">
+                            <tr>
+                                <td colspan="5" class="text-center text-white/60 py-8">Loading payments...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import { supabase } from './assets/js/config.js';
+        import { showToast } from './assets/js/ui.js';
+        
+        if (window.lucide) window.lucide.createIcons();
+        
+        // Check admin auth
+        async function checkAdminAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('is_admin')
+                .eq('id', session.user.id)
+                .single();
+            
+            if (!profile || !profile.is_admin) {
+                showToast('Admin access required!', 'error');
+                setTimeout(() => window.location.href = 'index.html', 1000);
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Get payments data
+                const { data: payments } = await supabase
+                    .from('payments')
+                    .select('*, profiles(full_name, email)')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                
+                // Calculate stats
+                const totalRevenue = payments?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
+                const paidUsers = new Set(payments?.filter(p => p.status === 'completed').map(p => p.user_id)).size;
+                
+                // Get total users
+                const { count: totalUsers } = await supabase
+                    .from('profiles')
+                    .select('*', { count: 'exact', head: true });
+                
+                // Update UI
+                document.getElementById('total-revenue').textContent = `₨${totalRevenue.toLocaleString()}`;
+                document.getElementById('paid-users').textContent = paidUsers;
+                document.getElementById('free-users').textContent = (totalUsers || 0) - paidUsers;
+                document.getElementById('total-users').textContent = totalUsers || 0;
+                
+                // Render payments table
+                if (payments && payments.length > 0) {
+                    const tbody = document.getElementById('payments-body');
+                    tbody.innerHTML = payments.map(p => `
+                        <tr>
+                            <td class="font-medium">${p.profiles?.full_name || 'Unknown'}</td>
+                            <td class="text-accent">₨${p.amount}</td>
+                            <td>${p.method || 'Easypaisa'}</td>
+                            <td class="text-white/60 text-sm">${new Date(p.created_at).toLocaleDateString()}</td>
+                            <td><span class="badge badge-${p.status}">${p.status}</span></td>
+                        </tr>
+                    `).join('');
+                }
+                
+                // Initialize charts
+                initCharts(payments);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('Error loading dashboard data', 'error');
+            }
+        }
+
+        function initCharts(payments) {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Revenue (₨)',
+                        data: [3600, 7200, 12600, 18000],
+                        borderColor: '#00F5A0',
+                        backgroundColor: 'rgba(0, 245, 160, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Users Chart
+            const usersCtx = document.getElementById('usersChart').getContext('2d');
+            new Chart(usersCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'New Users',
+                        data: [45, 78, 92, 110],
+                        backgroundColor: '#7C3AED'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // Initialize
+        (async () => {
+            const isAdmin = await checkAdminAuth();
+            if (isAdmin) {
+                await loadDashboardData();
+            }
+        })();
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'admin-login.html';
+        });
+
+        // Sidebar toggle
+        document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+    </script>
+</body>
+</html>

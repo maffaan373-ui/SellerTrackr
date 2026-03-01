@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email | SellerTrackr</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+    <!-- Animated Background -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl float-animation"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl float-animation" style="animation-delay: -3s;"></div>
+    </div>
+
+    <div class="max-w-lg w-full text-center relative z-10">
+        <div class="glass-card p-12 reveal">
+            <!-- Icon -->
+            <div class="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
+                <i data-lucide="mail" class="w-10 h-10 text-accent"></i>
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-3xl font-display font-bold text-white mb-3">Check your email</h1>
+            <p class="text-white/60 mb-8 text-lg">
+                We've sent a 6-digit verification code to<br>
+                <span class="text-white font-semibold">user@example.com</span>
+            </p>
+            
+            <!-- OTP Form -->
+            <form id="otp-form" class="space-y-8">
+                <div class="flex justify-center gap-3">
+                    <input type="text" maxlength="1" class="otp-input" data-index="1" autofocus>
+                    <input type="text" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" maxlength="1" class="otp-input" data-index="5">
+                    <input type="text" maxlength="1" class="otp-input" data-index="6">
+                </div>
+                
+                <!-- Timer -->
+                <div class="py-4">
+                    <p class="text-sm text-white/50 mb-2">Code expires in</p>
+                    <p id="timer" class="text-3xl font-display font-bold gradient-text">10:00</p>
+                </div>
+
+                <button type="submit" class="w-full btn-primary py-4 text-lg">
+                    Verify Code
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </form>
+
+            <!-- Resend -->
+            <div class="mt-8 pt-8 border-t border-white/10">
+                <p class="text-sm text-white/60 mb-3">Didn't receive the code?</p>
+                <button id="resend-btn" 
+                        class="text-accent font-bold text-sm hover:underline disabled:opacity-50 disabled:no-underline" 
+                        disabled>
+                    Resend in <span id="resend-timer">60</span>s
+                </button>
+            </div>
+        </div>
+
+        <!-- Back Link -->
+        <a href="signup.html" 
+           class="inline-flex items-center gap-2 mt-8 text-white/60 hover:text-white font-medium transition-colors reveal">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            Back to Signup
+        </a>
+    </div>
+
+    <script type="module">
+        import { initUI } from './assets/js/ui.js';
+        initUI();
+
+        // OTP Input Logic
+        const inputs = document.querySelectorAll('.otp-input');
+        
+        inputs.forEach((input, idx) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && idx < inputs.length - 1) {
+                    inputs[idx + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+                    inputs[idx - 1].focus();
+                }
+            });
+
+            // Only allow numbers
+            input.addEventListener('keypress', (e) => {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Verification Timer (10 minutes)
+        let timeLeft = 600;
+        const timerEl = document.getElementById('timer');
+        
+        const updateTimer = () => {
+            if (timeLeft <= 0) return;
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        };
+        
+        setInterval(updateTimer, 1000);
+
+        // Resend Timer (60 seconds)
+        let resendTime = 60;
+        const resendBtn = document.getElementById('resend-btn');
+        const resendTimerEl = document.getElementById('resend-timer');
+        
+        const updateResendTimer = () => {
+            if (resendTime <= 0) {
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend Code';
+                return;
+            }
+            resendTime--;
+            resendTimerEl.textContent = resendTime;
+        };
+        
+        const resendInterval = setInterval(updateResendTimer, 1000);
+        
+        resendBtn.addEventListener('click', () => {
+            if (!resendBtn.disabled) {
+                resendTime = 60;
+                resendBtn.disabled = true;
+                clearInterval(resendInterval);
+                setInterval(updateResendTimer, 1000);
+                
+                // Show success message
+                import('./assets/js/ui.js').then(({ showToast }) => {
+                    showToast('Verification code resent!', 'success');
+                });
+            }
+        });
+
+        // Form submission
+        document.getElementById('otp-form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = Array.from(inputs).map(input => input.value).join('');
+            
+            if (code.length === 6) {
+                import('./assets/js/ui.js').then(({ showToast }) => {
+                    showToast('Email verified successfully!', 'success');
+                });
+                setTimeout(() => {
+                    window.location.href = 'user-dashboard.html';
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>

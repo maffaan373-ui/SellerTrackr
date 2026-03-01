@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Subscription | SellerTrackr</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full">
+        <div class="glass-card p-8 sm:p-12">
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <div class="w-20 h-20 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="zap" class="w-10 h-10 text-accent"></i>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-display font-bold text-white mb-4">Upgrade to Premium</h1>
+                <p class="text-white/60 text-lg">Unlock all features and grow your business</p>
+            </div>
+
+            <!-- Pricing Card -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <p class="text-white/60 mb-2">Monthly Subscription</p>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-display font-bold text-white">₨900</span>
+                            <span class="text-white/60">/month</span>
+                        </div>
+                    </div>
+                    <div class="w-16 h-16 bg-accent/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="crown" class="w-8 h-8 text-accent"></i>
+                    </div>
+                </div>
+                
+                <div class="space-y-3 mb-6">
+                    <div class="flex items-center gap-3 text-white/80">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-accent flex-shrink-0"></i>
+                        <span>Unlimited Sales Tracking</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-white/80">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-accent flex-shrink-0"></i>
+                        <span>Advanced AI Analytics</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-white/80">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-accent flex-shrink-0"></i>
+                        <span>Unlimited Storefronts</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-white/80">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-accent flex-shrink-0"></i>
+                        <span>Priority Support 24/7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="mb-8">
+                <h3 class="text-xl font-display font-bold text-white mb-6">Payment Method</h3>
+                
+                <div class="space-y-4">
+                    <label class="flex items-center gap-4 p-4 bg-white/5 border-2 border-accent/50 rounded-xl cursor-pointer">
+                        <input type="radio" name="payment" value="easypaisa" checked class="w-5 h-5 accent-accent">
+                        <div class="flex items-center gap-3 flex-1">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                                <span class="text-2xl">📱</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-bold">Easypaisa</p>
+                                <p class="text-white/60 text-sm">Pay with mobile wallet</p>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl cursor-pointer opacity-50">
+                        <input type="radio" name="payment" value="jazzcash" disabled class="w-5 h-5">
+                        <div class="flex items-center gap-3 flex-1">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                                <span class="text-2xl">💳</span>
+                            </div>
+                            <div>
+                                <p class="text-white font-bold">JazzCash</p>
+                                <p class="text-white/60 text-sm">Coming soon</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Easypaisa Form -->
+            <form id="payment-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-white/90 mb-2">
+                        Easypaisa Account Number
+                    </label>
+                    <input type="tel" 
+                           id="easypaisa-number"
+                           required 
+                           placeholder="03XX-XXXXXXX" 
+                           maxlength="11"
+                           pattern="[0-9]{11}"
+                           class="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white text-lg">
+                    <p class="text-white/50 text-sm mt-2">11 digit mobile number</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-white/90 mb-2">
+                        Account Holder Name
+                    </label>
+                    <input type="text" 
+                           id="account-name"
+                           required 
+                           placeholder="Your Name" 
+                           class="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white">
+                </div>
+
+                <div class="bg-accent/10 border border-accent/30 rounded-xl p-4">
+                    <div class="flex gap-3">
+                        <i data-lucide="info" class="w-5 h-5 text-accent flex-shrink-0 mt-0.5"></i>
+                        <div class="text-sm text-white/80">
+                            <p class="font-bold text-accent mb-1">Payment Instructions:</p>
+                            <ol class="list-decimal list-inside space-y-1 text-white/70">
+                                <li>Click "Pay Now" button</li>
+                                <li>Easypaisa payment request send hogi</li>
+                                <li>Apne Easypaisa app me check karein</li>
+                                <li>Payment approve kar dein</li>
+                                <li>Premium activate ho jayega automatically!</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="pay-btn" class="w-full btn-primary py-4 text-lg">
+                    <i data-lucide="lock" class="w-5 h-5"></i>
+                    Pay ₨900 Now
+                </button>
+            </form>
+
+            <p class="text-center text-white/50 text-sm mt-6">
+                Secure payment • Cancel anytime • Full refund within 7 days
+            </p>
+        </div>
+
+        <p class="text-center text-white/60 mt-6">
+            <a href="user-dashboard.html" class="hover:text-accent transition-colors">← Back to Dashboard</a>
+        </p>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import { supabase } from './assets/js/config.js';
+        import { showToast } from './assets/js/ui.js';
+        
+        if (window.lucide) window.lucide.createIcons();
+        
+        // Check if user is logged in
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                showToast('Please login first!', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1000);
+                return null;
+            }
+            return session.user;
+        }
+
+        // Handle payment
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const user = await checkAuth();
+            if (!user) return;
+            
+            const payBtn = document.getElementById('pay-btn');
+            payBtn.disabled = true;
+            payBtn.innerHTML = 'Processing...';
+            
+            try {
+                const easypaisaNumber = document.getElementById('easypaisa-number').value;
+                const accountName = document.getElementById('account-name').value;
+                
+                // Validate mobile number
+                if (!/^03[0-9]{9}$/.test(easypaisaNumber)) {
+                    throw new Error('Valid Easypaisa number enter karein (03XXXXXXXXX)');
+                }
+                
+                showToast('Payment request send ho raha hai...', 'info');
+                
+                // Create payment record
+                const { data: payment, error } = await supabase
+                    .from('payments')
+                    .insert({
+                        user_id: user.id,
+                        amount: 900,
+                        method: 'easypaisa',
+                        phone_number: easypaisaNumber,
+                        account_name: accountName,
+                        status: 'pending'
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                // In real implementation, Easypaisa API ko call karen
+                // For now, simulate payment
+                showToast('Payment request sent to ' + easypaisaNumber, 'success');
+                
+                // Wait 2 seconds then simulate approval
+                setTimeout(async () => {
+                    // Update payment status
+                    await supabase
+                        .from('payments')
+                        .update({ status: 'completed' })
+                        .eq('id', payment.id);
+                    
+                    // Update user to premium
+                    await supabase
+                        .from('profiles')
+                        .update({ 
+                            is_premium: true,
+                            premium_until: new Date(Date.now() + 30*24*60*60*1000).toISOString()
+                        })
+                        .eq('id', user.id);
+                    
+                    showToast('Payment successful! Premium activated! 🎉', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'user-dashboard.html';
+                    }, 2000);
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Payment error:', error);
+                showToast(error.message, 'error');
+                payBtn.disabled = false;
+                payBtn.innerHTML = 'Pay ₨900 Now <i data-lucide="lock" class="w-5 h-5"></i>';
+                if (window.lucide) window.lucide.createIcons();
+            }
+        });
+
+        // Format phone number
+        document.getElementById('easypaisa-number').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            e.target.value = value;
+        });
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>
