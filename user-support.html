@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — SellerTrackr</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/shared-dash.css">
+<style>
+.support-wrap{max-width:640px}
+.page-h{font-family:var(--fd);font-size:1.55rem;font-weight:700;color:var(--ink);letter-spacing:-.03em;margin-bottom:.18rem}
+.page-h em{font-style:italic;font-weight:300;color:var(--brand)}
+.page-sub{font-size:.82rem;color:var(--ink-3);margin-bottom:1.5rem}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1.25rem}
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.25rem;transition:box-shadow .18s}
+.contact-card:hover{box-shadow:var(--sh-md)}
+.cc-icon{width:34px;height:34px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;background:var(--brand-bg);margin-bottom:.6rem}
+.cc-icon i{width:16px;height:16px;color:var(--brand)}
+.cc-title{font-size:.86rem;font-weight:700;color:var(--ink);margin-bottom:.22rem}
+.cc-sub{font-size:.78rem;color:var(--ink-3);line-height:1.5;margin-bottom:.45rem}
+.cc-link{font-size:.78rem;font-weight:700;color:var(--brand)}
+.cc-link:hover{text-decoration:underline}
+.faq-section{margin-bottom:1.25rem}
+.faq-label{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.72rem}
+.faq-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:.92rem 1.2rem;cursor:pointer;font-size:.83rem;font-weight:600;color:var(--ink);user-select:none;gap:.5rem}
+.faq-q:hover{background:var(--base)}
+.faq-q i{width:16px;height:16px;color:var(--ink-4);flex-shrink:0;transition:transform .2s}
+.faq-item.open .faq-q i{transform:rotate(180deg)}
+.faq-a{font-size:.81rem;color:var(--ink-3);line-height:1.65;padding:0 1.2rem 1rem;display:none}
+.faq-item.open .faq-a{display:block}
+.ticket-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.25rem}
+.tkt-title{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.95rem}
+.tfield{margin-bottom:.72rem}
+.tfield label{display:block;font-size:.72rem;font-weight:700;color:var(--ink-2);margin-bottom:.26rem}
+.tfield input,.tfield textarea,.tfield select{width:100%;padding:.56rem .78rem;background:var(--base);border:1.5px solid var(--border-2);border-radius:var(--r-md);font-size:.83rem;font-family:var(--fb);color:var(--ink);outline:none;transition:border-color .14s}
+.tfield input:focus,.tfield textarea:focus,.tfield select:focus{border-color:var(--brand-l);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.tfield textarea{resize:vertical;min-height:90px}
+.send-btn{padding:.7rem 1.5rem;background:var(--brand);color:#fff;border:none;border-radius:var(--r-lg);font-size:.86rem;font-weight:700;font-family:var(--fb);cursor:pointer;transition:all .16s;box-shadow:var(--sh-brand)}
+.send-btn:hover{background:var(--brand-d)}
+@media(max-width:580px){.contact-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar-overlay" id="sb-overlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand"><img src="https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg" alt=""><span>SellerTrackr</span></div>
+  <div class="sb-scroll">
+    <div class="sb-section">Main</div>
+    <a class="nav-link" href="user-dashboard.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+    <a class="nav-link" href="user-analytics.html"><i data-lucide="bar-chart-3"></i><span>Analytics</span></a>
+    <a class="nav-link" href="user-reports.html"><i data-lucide="file-text"></i><span>Reports</span></a>
+    <div class="sb-section">Account</div>
+    <a class="nav-link" href="user-pricing.html"><i data-lucide="zap"></i><span>Pricing</span></a>
+    <a class="nav-link" href="user-settings.html"><i data-lucide="settings"></i><span>Settings</span></a>
+    <a class="nav-link active" href="user-support.html"><i data-lucide="life-buoy"></i><span>Support</span></a>
+  </div>
+  <div class="sb-footer">
+    <div class="user-row" id="logout-row">
+      <img src="https://i.pravatar.cc/60?u=user" alt="" id="user-avatar">
+      <span class="user-name" id="sidebar-user-name">Loading…</span>
+      <i data-lucide="log-out"></i>
+    </div>
+  </div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="hamburger" id="hamburger"><i data-lucide="menu"></i></button>
+    <div><div class="topbar-title">Support</div><div class="topbar-sub">We're here to help</div></div>
+    <div class="topbar-right"></div>
+  </header>
+  <div class="page">
+    <div class="support-wrap">
+      <div class="page-h">Help &amp; <em>Support</em></div>
+      <div class="page-sub">Got a question? Average response time: 24 hours.</div>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="cc-icon"><i data-lucide="mail"></i></div>
+          <div class="cc-title">Email Support</div>
+          <div class="cc-sub">Send us an email. We respond within 24 hours on working days.</div>
+          <a href="mailto:support@sellertrackr.com" class="cc-link">support@sellertrackr.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon"><i data-lucide="zap"></i></div>
+          <div class="cc-title">Priority Support</div>
+          <div class="cc-sub">Premium users get 24/7 priority responses within 2 hours.</div>
+          <a href="user-pricing.html" class="cc-link">Upgrade to Premium →</a>
+        </div>
+      </div>
+
+      <div class="faq-section">
+        <div class="faq-label">Frequently Asked Questions</div>
+        <div class="faq-card">
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How do I add a sale to my account? <i data-lucide="chevron-down"></i></div>
+            <div class="faq-a">Go to the <strong>Reports</strong> page and click the <strong>"Add Sale"</strong> button. Fill in the product name, amount, storefront, and channel, then click Save.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What happens when I hit the 50 sale limit? <i data-lucide="chevron-down"></i></div>
+            <div class="faq-a">You'll be notified when approaching the limit. Existing data is still viewable, but new sales won't save until you upgrade to Premium or the next billing month starts.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How do I upgrade to Premium? <i data-lucide="chevron-down"></i></div>
+            <div class="faq-a">Go to the <strong>Pricing</strong> page and click "Upgrade to Premium". You'll be taken to the payment page — we accept Easypaisa, JazzCash, and bank transfer.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Can I cancel my Premium subscription? <i data-lucide="chevron-down"></i></div>
+            <div class="faq-a">Yes. Email support@sellertrackr.com and we'll cancel immediately. You keep Premium access until end of your current billing period.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How do I change my password? <i data-lucide="chevron-down"></i></div>
+            <div class="faq-a">Go to <strong>Settings</strong>, scroll to the "Change Password" section, enter your new password, confirm it, and click Update Password.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ticket-card">
+        <div class="tkt-title">Send a Support Message</div>
+        <div class="tfield"><label>Subject</label><input id="t-subject" type="text" placeholder="e.g. Issue with my payment"></div>
+        <div class="tfield">
+          <label>Category</label>
+          <select id="t-category">
+            <option value="billing">Billing / Payment</option>
+            <option value="technical">Technical Issue</option>
+            <option value="account">Account</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="tfield"><label>Message</label><textarea id="t-message" placeholder="Describe your issue in detail..."></textarea></div>
+        <button class="send-btn" onclick="sendTicket()">Send Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="tc" id="tc-wrap"></div>
+<script src="assets/js/dash-shared.js"></script>
+<script>
+window.addEventListener('load', async () => {
+  if (window.lucide) window.lucide.createIcons();
+  initSidebar();
+  document.getElementById('logout-row').addEventListener('click', doLogout);
+  const user = await requireAuth(false);
+  if (!user) return;
+  document.getElementById('sidebar-user-name').textContent = userProfile.full_name || currentUser.email?.split('@')[0] || 'User';
+  if (window.lucide) window.lucide.createIcons();
+});
+
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+function sendTicket() {
+  const subject = document.getElementById('t-subject').value.trim();
+  const msg     = document.getElementById('t-message').value.trim();
+  if (!subject || !msg) { toast('Subject and message required', 'w'); return; }
+  document.getElementById('t-subject').value = '';
+  document.getElementById('t-message').value = '';
+  toast("Message sent! We'll respond within 24 hours.", 's');
+}
+</script>
+</body>
+</html>

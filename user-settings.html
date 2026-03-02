@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — SellerTrackr</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/shared-dash.css">
+<style>
+.settings-wrap{max-width:560px}
+.page-h{font-family:var(--fd);font-size:1.55rem;font-weight:700;color:var(--ink);letter-spacing:-.03em;margin-bottom:.18rem}
+.page-h em{font-style:italic;font-weight:300;color:var(--brand)}
+.page-sub{font-size:.82rem;color:var(--ink-3);margin-bottom:1.5rem}
+.settings-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);margin-bottom:1rem;overflow:hidden}
+.settings-section-header{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.55rem}
+.settings-section-header i{width:16px;height:16px;color:var(--brand)}
+.settings-section-title{font-size:.86rem;font-weight:700;color:var(--ink)}
+.settings-body{padding:1.1rem 1.25rem;display:flex;flex-direction:column;gap:.75rem}
+.sfield label{display:block;font-size:.72rem;font-weight:700;color:var(--ink-2);margin-bottom:.28rem}
+.sfield input,.sfield select{width:100%;padding:.56rem .78rem;background:var(--base);border:1.5px solid var(--border-2);border-radius:var(--r-md);font-size:.83rem;font-family:var(--fb);color:var(--ink);outline:none;transition:border-color .14s,box-shadow .14s}
+.sfield input:focus,.sfield select:focus{border-color:var(--brand-l);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.sfield input:disabled{background:var(--muted);color:var(--ink-4);cursor:not-allowed}
+.sfield .hint{font-size:.68rem;color:var(--ink-4);margin-top:.2rem}
+.srow{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.save-btn{padding:.7rem;background:var(--brand);color:#fff;border:none;border-radius:var(--r-lg);font-size:.86rem;font-weight:700;font-family:var(--fb);cursor:pointer;transition:all .16s;box-shadow:var(--sh-brand)}
+.save-btn:hover{background:var(--brand-d);transform:translateY(-1px)}
+.danger-btn{padding:.62rem;background:none;border:1.5px solid var(--red);color:var(--red);border-radius:var(--r-lg);font-size:.84rem;font-weight:600;font-family:var(--fb);cursor:pointer;transition:all .15s}
+.danger-btn:hover{background:var(--red-bg)}
+.plan-info-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem;background:var(--base);border-radius:var(--r-lg);flex-wrap:wrap;gap:.5rem}
+.plan-info-left{display:flex;align-items:center;gap:.65rem}
+.plan-info-icon{width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;background:var(--brand-bg)}
+.plan-info-icon i{width:17px;height:17px;color:var(--brand)}
+.plan-info-name{font-size:.84rem;font-weight:700;color:var(--ink)}
+.plan-info-sub{font-size:.72rem;color:var(--ink-4);margin-top:.06rem}
+.upgrade-small-btn{padding:.38rem .82rem;background:var(--brand);color:#fff;border:none;border-radius:var(--r-full);font-size:.75rem;font-weight:700;font-family:var(--fb);cursor:pointer;transition:background .15s}
+.upgrade-small-btn:hover{background:var(--brand-d)}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar-overlay" id="sb-overlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand"><img src="https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg" alt=""><span>SellerTrackr</span></div>
+  <div class="sb-scroll">
+    <div class="sb-section">Main</div>
+    <a class="nav-link" href="user-dashboard.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+    <a class="nav-link" href="user-analytics.html"><i data-lucide="bar-chart-3"></i><span>Analytics</span></a>
+    <a class="nav-link" href="user-reports.html"><i data-lucide="file-text"></i><span>Reports</span></a>
+    <div class="sb-section">Account</div>
+    <a class="nav-link" href="user-pricing.html"><i data-lucide="zap"></i><span>Pricing</span></a>
+    <a class="nav-link active" href="user-settings.html"><i data-lucide="settings"></i><span>Settings</span></a>
+    <a class="nav-link" href="user-support.html"><i data-lucide="life-buoy"></i><span>Support</span></a>
+  </div>
+  <div class="sb-footer">
+    <div class="user-row" id="logout-row"><img src="https://i.pravatar.cc/60?u=user" alt="" id="user-avatar"><span class="user-name" id="sidebar-user-name">Loading…</span><i data-lucide="log-out"></i></div>
+  </div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="hamburger" id="hamburger"><i data-lucide="menu"></i></button>
+    <div><div class="topbar-title">Settings</div><div class="topbar-sub">Manage your account</div></div>
+    <div class="topbar-right"></div>
+  </header>
+  <div class="page">
+    <div class="settings-wrap">
+      <div class="page-h">Account <em>Settings</em></div>
+      <div class="page-sub">Update your profile, preferences, and manage your account.</div>
+
+      <!-- Plan -->
+      <div class="settings-section">
+        <div class="settings-section-header"><i data-lucide="zap"></i><div class="settings-section-title">Current Plan</div></div>
+        <div class="settings-body">
+          <div class="plan-info-row">
+            <div class="plan-info-left">
+              <div class="plan-info-icon" id="plan-icon-s"><i data-lucide="zap"></i></div>
+              <div><div class="plan-info-name" id="plan-name-s">Free Plan</div><div class="plan-info-sub" id="plan-sub-s">50 sales / month</div></div>
+            </div>
+            <button class="upgrade-small-btn" id="plan-action-btn" onclick="window.location.href='user-pricing.html'">Upgrade</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile -->
+      <div class="settings-section">
+        <div class="settings-section-header"><i data-lucide="user"></i><div class="settings-section-title">Profile Information</div></div>
+        <div class="settings-body">
+          <div class="srow">
+            <div class="sfield"><label>Full Name</label><input id="s-name" type="text" placeholder="Your full name"></div>
+            <div class="sfield"><label>Username</label><input id="s-username" type="text" placeholder="username"></div>
+          </div>
+          <div class="sfield"><label>Email Address</label><input id="s-email" type="email" disabled><div class="hint">Email cannot be changed</div></div>
+          <button class="save-btn" onclick="saveProfile()">Save Profile</button>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="settings-section">
+        <div class="settings-section-header"><i data-lucide="lock"></i><div class="settings-section-title">Change Password</div></div>
+        <div class="settings-body">
+          <div class="sfield"><label>New Password</label><input id="s-newpw" type="password" placeholder="New password (min. 8 chars)"></div>
+          <div class="sfield"><label>Confirm Password</label><input id="s-confirmpw" type="password" placeholder="Confirm new password"></div>
+          <button class="save-btn" style="background:var(--ink-2)" onclick="changePassword()">Update Password</button>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="settings-section">
+        <div class="settings-section-header"><i data-lucide="alert-triangle" style="color:var(--red)"></i><div class="settings-section-title" style="color:var(--red)">Danger Zone</div></div>
+        <div class="settings-body">
+          <p style="font-size:.82rem;color:var(--ink-3)">Sign out of your account or permanently delete all your data.</p>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="danger-btn" onclick="doLogout()"><i data-lucide="log-out" style="width:14px;height:14px;display:inline;margin-right:4px"></i>Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="tc" id="tc-wrap"></div>
+<script src="assets/js/dash-shared.js"></script>
+<script>
+window.addEventListener('load',async()=>{
+  if(window.lucide)window.lucide.createIcons();
+  initSidebar();
+  document.getElementById('logout-row').addEventListener('click',doLogout);
+  const user=await requireAuth(false);if(!user)return;
+  document.getElementById('sidebar-user-name').textContent=userProfile.full_name||currentUser.email?.split('@')[0]||'User';
+  document.getElementById('s-name').value=userProfile.full_name||'';
+  document.getElementById('s-username').value=userProfile.username||'';
+  document.getElementById('s-email').value=currentUser.email||'';
+  const isPremium=userProfile.is_premium||false;
+  document.getElementById('plan-name-s').textContent=isPremium?'Premium Plan':'Free Plan';
+  document.getElementById('plan-sub-s').textContent=isPremium?'All features unlocked':'50 sales / month';
+  if(isPremium){const btn=document.getElementById('plan-action-btn');btn.textContent='Active ✓';btn.style.background='var(--green)';btn.style.cursor='default';btn.removeAttribute('onclick');}
+  if(window.lucide)window.lucide.createIcons();
+});
+async function saveProfile(){
+  const name=document.getElementById('s-name').value.trim();
+  const username=document.getElementById('s-username').value.trim();
+  if(!name){toast('Name required','w');return;}
+  const{error}=await sb.from('profiles').update({full_name:name,username:username||null,updated_at:new Date().toISOString()}).eq('id',currentUser.id);
+  if(error){toast('Save failed: '+error.message,'e');return;}
+  document.getElementById('sidebar-user-name').textContent=name;
+  toast('Profile saved!','s');
+}
+async function changePassword(){
+  const pw=document.getElementById('s-newpw').value;
+  const cpw=document.getElementById('s-confirmpw').value;
+  if(pw.length<8){toast('Password must be 8+ characters','w');return;}
+  if(pw!==cpw){toast('Passwords do not match','w');return;}
+  const{error}=await sb.auth.updateUser({password:pw});
+  if(error){toast('Error: '+error.message,'e');return;}
+  document.getElementById('s-newpw').value='';document.getElementById('s-confirmpw').value='';
+  toast('Password updated!','s');
+}
+</script>
+</body>
+</html>
