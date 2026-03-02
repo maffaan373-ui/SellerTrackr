@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — SellerTrackr</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --brand:#4338CA; --brand-d:#3730A3; --brand-l:#6366F1; --brand-bg:#EEF2FF; --brand-mid:#818CF8;
+  --ink:#0F172A; --ink-2:#334155; --ink-3:#64748B; --ink-4:#94A3B8; --ink-5:#CBD5E1;
+  --surface:#FFFFFF; --base:#F8F9FC; --muted:#F1F4F9;
+  --border:rgba(15,23,42,.07); --border-2:rgba(15,23,42,.12);
+  --green:#10B981; --green-bg:#ECFDF5; --amber:#F59E0B; --amber-bg:#FFFBEB;
+  --red:#EF4444; --red-bg:#FEF2F2; --blue:#3B82F6; --blue-bg:#EFF6FF;
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:18px; --r-2xl:24px; --r-full:9999px;
+  --sh-sm:0 1px 3px rgba(15,23,42,.06); --sh-md:0 4px 14px rgba(15,23,42,.08);
+  --sh-lg:0 10px 32px rgba(15,23,42,.1); --sh-brand:0 4px 18px rgba(67,56,202,.28);
+  --sidebar-w:240px; --topbar-h:60px;
+  --fd:'Fraunces',Georgia,serif; --fb:'Plus Jakarta Sans',system-ui,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);background:var(--base);color:var(--ink);height:100vh;overflow:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  height:100vh;overflow:hidden;
+  transition:transform .28s var(--ease);z-index:200;
+}
+.sb-brand{
+  display:flex;align-items:center;gap:10px;
+  padding:0 1.25rem;height:var(--topbar-h);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.sb-brand img{width:28px;height:28px;border-radius:7px}
+.sb-brand span{font-weight:800;font-size:.95rem;color:var(--ink);letter-spacing:-.02em}
+
+.sb-scroll{flex:1;overflow-y:auto;padding:1rem 0}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:3px}
+
+.sb-section{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);padding:.2rem 1.25rem .5rem;margin-top:.5rem}
+.sb-section:first-child{margin-top:0}
+
+.nav-link{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.6rem 1.25rem;margin:0 .5rem;
+  border-radius:var(--r-md);font-size:.84rem;font-weight:500;color:var(--ink-3);
+  transition:all .16s var(--ease);cursor:pointer;
+}
+.nav-link i{width:17px;height:17px;flex-shrink:0}
+.nav-link .badge{margin-left:auto;background:var(--brand-bg);color:var(--brand);font-size:.65rem;font-weight:800;padding:1px 7px;border-radius:var(--r-full)}
+.nav-link:hover{background:var(--muted);color:var(--ink)}
+.nav-link.active{background:var(--brand-bg);color:var(--brand);font-weight:700}
+.nav-link.active i{color:var(--brand)}
+
+.sb-footer{
+  padding:.75rem 1rem;border-top:1px solid var(--border);flex-shrink:0;
+}
+.plan-badge{
+  display:flex;align-items:center;gap:.55rem;
+  padding:.65rem .75rem;background:var(--muted);border-radius:var(--r-lg);margin-bottom:.6rem;
+}
+.plan-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plan-icon.free{background:var(--brand-bg)}
+.plan-icon.premium{background:linear-gradient(135deg,#F59E0B,#EF4444)}
+.plan-icon i{width:14px;height:14px;color:var(--brand)}
+.plan-icon.premium i{color:#fff}
+.plan-name{font-size:.75rem;font-weight:700;color:var(--ink)}
+.plan-sub{font-size:.66rem;color:var(--ink-4)}
+
+.user-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .25rem;cursor:pointer;border-radius:var(--r-md);transition:background .15s}
+.user-row:hover{background:var(--muted)}
+.user-row img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.user-name{font-size:.8rem;font-weight:700;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-row i{width:15px;height:15px;color:var(--ink-4);flex-shrink:0}
+
+/* overlay for mobile */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:190;backdrop-filter:blur(2px)}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* TOPBAR */
+.topbar{
+  height:var(--topbar-h);flex-shrink:0;
+  display:flex;align-items:center;gap:.75rem;
+  padding:0 1.5rem;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.hamburger{display:none;width:34px;height:34px;border-radius:var(--r-md);align-items:center;justify-content:center;color:var(--ink-3);transition:background .15s}
+.hamburger:hover{background:var(--muted)}
+.hamburger i{width:18px;height:18px}
+
+.topbar-search{
+  flex:1;max-width:320px;
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--base);border:1.5px solid var(--border-2);
+  border-radius:var(--r-lg);padding:.44rem .75rem;
+}
+.topbar-search i{width:15px;height:15px;color:var(--ink-4);flex-shrink:0}
+.topbar-search input{background:none;border:none;outline:none;font-size:.82rem;color:var(--ink);font-family:var(--fb);width:100%}
+.topbar-search input::placeholder{color:var(--ink-4)}
+
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:.5rem}
+.icon-btn{
+  width:34px;height:34px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink-3);transition:all .15s;position:relative;
+}
+.icon-btn:hover{background:var(--muted);color:var(--ink)}
+.icon-btn i{width:18px;height:18px}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface)}
+
+.btn-upgrade{
+  display:flex;align-items:center;gap:5px;
+  padding:.42rem .9rem;background:var(--brand);color:#fff;
+  border-radius:var(--r-full);font-size:.78rem;font-weight:700;font-family:var(--fb);
+  transition:all .16s;box-shadow:var(--sh-brand);white-space:nowrap;
+}
+.btn-upgrade:hover{background:var(--brand-d);transform:translateY(-1px)}
+.btn-upgrade i{width:13px;height:13px}
+.btn-upgrade.premium-badge{background:linear-gradient(135deg,#F59E0B,#EF4444)}
+
+/* PAGE CONTENT */
+.page{flex:1;overflow-y:auto;padding:1.5rem}
+.page::-webkit-scrollbar{width:5px}
+.page::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px}
+
+/* ═══════════════════════════════════════════
+   FREE PLAN BANNER
+═══════════════════════════════════════════ */
+.plan-banner{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.75rem 1rem;
+  background:linear-gradient(135deg,var(--brand-bg),#f0f4ff);
+  border:1px solid rgba(67,56,202,.15);
+  border-radius:var(--r-xl);margin-bottom:1.25rem;
+}
+.plan-banner i{width:18px;height:18px;color:var(--brand);flex-shrink:0}
+.plan-banner-text{flex:1;font-size:.82rem;color:var(--ink-2)}
+.plan-banner-text strong{color:var(--brand)}
+.plan-banner-cta{
+  padding:.38rem .85rem;background:var(--brand);color:#fff;
+  border-radius:var(--r-full);font-size:.75rem;font-weight:700;
+  font-family:var(--fb);white-space:nowrap;transition:all .15s;
+}
+.plan-banner-cta:hover{background:var(--brand-d)}
+
+/* ═══════════════════════════════════════════
+   WELCOME
+═══════════════════════════════════════════ */
+.welcome-row{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.welcome-text h1{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--ink);letter-spacing:-.03em;line-height:1.2}
+.welcome-text h1 em{font-style:italic;font-weight:300;color:var(--brand)}
+.welcome-text p{font-size:.84rem;color:var(--ink-3);margin-top:.22rem}
+.welcome-date{font-size:.78rem;color:var(--ink-4);font-weight:500;flex-shrink:0;margin-top:.3rem}
+
+/* ═══════════════════════════════════════════
+   KPI CARDS
+═══════════════════════════════════════════ */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.875rem;margin-bottom:1.5rem}
+
+.kpi-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:1.1rem;
+  transition:box-shadow .18s,transform .18s;position:relative;overflow:hidden;
+}
+.kpi-card:hover{box-shadow:var(--sh-md);transform:translateY(-1px)}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r-xl) var(--r-xl) 0 0}
+.kpi-card.c-brand::after{background:var(--brand)}
+.kpi-card.c-green::after{background:var(--green)}
+.kpi-card.c-amber::after{background:var(--amber)}
+.kpi-card.c-blue::after{background:var(--blue)}
+
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem}
+.kpi-icon{width:36px;height:36px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kpi-icon i{width:17px;height:17px}
+.kpi-icon.brand{background:var(--brand-bg)} .kpi-icon.brand i{color:var(--brand)}
+.kpi-icon.green{background:var(--green-bg)} .kpi-icon.green i{color:var(--green)}
+.kpi-icon.amber{background:var(--amber-bg)} .kpi-icon.amber i{color:var(--amber)}
+.kpi-icon.blue{background:var(--blue-bg)}   .kpi-icon.blue i{color:var(--blue)}
+
+.kpi-delta{display:flex;align-items:center;gap:3px;font-size:.7rem;font-weight:700;padding:.18rem .5rem;border-radius:var(--r-full)}
+.kpi-delta.up{background:var(--green-bg);color:var(--green)}
+.kpi-delta.down{background:var(--red-bg);color:var(--red)}
+.kpi-delta.neutral{background:var(--muted);color:var(--ink-3)}
+.kpi-delta i{width:11px;height:11px}
+
+.kpi-val{font-family:var(--fd);font-size:1.7rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:.2rem}
+.kpi-label{font-size:.76rem;color:var(--ink-3);font-weight:500}
+
+/* Skeleton loader */
+.skeleton{background:linear-gradient(90deg,var(--muted) 25%,#e8eaf0 50%,var(--muted) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--r-md)}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-val{height:28px;width:70%;margin-bottom:.3rem}
+.skel-lbl{height:14px;width:55%}
+
+/* ═══════════════════════════════════════════
+   CHARTS ROW
+═══════════════════════════════════════════ */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:.875rem;margin-bottom:1.5rem}
+
+.chart-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:1.25rem;
+}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.chart-title{font-size:.9rem;font-weight:700;color:var(--ink)}
+.chart-sub{font-size:.74rem;color:var(--ink-4);margin-top:.12rem}
+.chart-tabs{display:flex;gap:.25rem}
+.ctab{padding:.28rem .65rem;border-radius:var(--r-full);font-size:.72rem;font-weight:700;color:var(--ink-4);cursor:pointer;transition:all .15s}
+.ctab.active{background:var(--brand-bg);color:var(--brand)}
+.ctab:hover:not(.active){background:var(--muted)}
+.chart-wrap{position:relative;height:200px}
+
+/* Locked premium overlay */
+.locked-overlay{
+  position:absolute;inset:0;
+  background:rgba(248,249,252,.88);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:var(--r-lg);z-index:10;
+}
+.locked-icon{width:44px;height:44px;background:var(--brand-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:.65rem}
+.locked-icon i{width:20px;height:20px;color:var(--brand)}
+.locked-title{font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:.25rem}
+.locked-sub{font-size:.75rem;color:var(--ink-3);margin-bottom:.75rem;text-align:center;max-width:180px}
+.locked-btn{padding:.4rem .9rem;background:var(--brand);color:#fff;border-radius:var(--r-full);font-size:.75rem;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .15s}
+.locked-btn:hover{background:var(--brand-d)}
+
+/* ═══════════════════════════════════════════
+   BAR CHART ROW
+═══════════════════════════════════════════ */
+.bar-row{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1.5rem}
+
+/* ═══════════════════════════════════════════
+   ACTIVITY & INSIGHTS ROW
+═══════════════════════════════════════════ */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1.5rem}
+
+.section-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:1.25rem;
+}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.section-title{font-size:.9rem;font-weight:700;color:var(--ink)}
+.section-link{font-size:.74rem;font-weight:700;color:var(--brand);cursor:pointer}
+.section-link:hover{text-decoration:underline}
+
+/* Activity items */
+.activity-item{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.6rem 0;border-bottom:1px solid var(--border);
+}
+.activity-item:last-child{border-bottom:none;padding-bottom:0}
+.activity-item:first-child{padding-top:0}
+.act-icon{width:32px;height:32px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.act-icon i{width:15px;height:15px}
+.act-icon.sale{background:var(--green-bg)} .act-icon.sale i{color:var(--green)}
+.act-icon.refund{background:var(--red-bg)} .act-icon.refund i{color:var(--red)}
+.act-icon.new{background:var(--brand-bg)}  .act-icon.new i{color:var(--brand)}
+.act-icon.warn{background:var(--amber-bg)} .act-icon.warn i{color:var(--amber)}
+.act-text{flex:1;min-width:0}
+.act-title{font-size:.8rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act-sub{font-size:.7rem;color:var(--ink-4);margin-top:.1rem}
+.act-amount{font-size:.82rem;font-weight:700;color:var(--ink-2);flex-shrink:0}
+.act-amount.positive{color:var(--green)}
+.act-amount.negative{color:var(--red)}
+
+/* AI Insights */
+.insight-item{
+  display:flex;gap:.65rem;
+  padding:.65rem;background:var(--base);border-radius:var(--r-lg);
+  margin-bottom:.5rem;border:1px solid var(--border);
+}
+.insight-item:last-child{margin-bottom:0}
+.ins-icon{width:30px;height:30px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--brand-bg)}
+.ins-icon i{width:14px;height:14px;color:var(--brand)}
+.ins-text{font-size:.78rem;color:var(--ink-2);line-height:1.5}
+.ins-text strong{color:var(--ink);font-weight:700}
+
+/* Empty state */
+.empty-state{text-align:center;padding:2rem 1rem}
+.empty-state i{width:36px;height:36px;color:var(--ink-5);margin:0 auto .75rem}
+.empty-state p{font-size:.82rem;color:var(--ink-4)}
+
+/* Free limit bar */
+.free-limit{
+  background:var(--base);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:1rem 1.25rem;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.limit-info{flex:1;min-width:160px}
+.limit-label{font-size:.78rem;font-weight:700;color:var(--ink-2);margin-bottom:.35rem}
+.limit-bar{height:7px;background:var(--muted);border-radius:var(--r-full);overflow:hidden;margin-bottom:.3rem}
+.limit-fill{height:100%;border-radius:var(--r-full);background:var(--green);transition:width .5s var(--ease)}
+.limit-fill.warn{background:var(--amber)}
+.limit-fill.danger{background:var(--red)}
+.limit-count{font-size:.72rem;color:var(--ink-4)}
+.limit-cta{padding:.4rem .85rem;background:var(--brand);color:#fff;border-radius:var(--r-full);font-size:.75rem;font-weight:700;font-family:var(--fb);cursor:pointer;white-space:nowrap;transition:all .15s}
+.limit-cta:hover{background:var(--brand-d)}
+
+/* ═══════════════════════════════════════════
+   UPGRADE MODAL
+═══════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.5);
+  z-index:9000;display:flex;align-items:center;justify-content:center;
+  padding:1rem;opacity:0;pointer-events:none;transition:opacity .22s var(--ease);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+
+.modal-box{
+  background:var(--surface);border-radius:var(--r-2xl);
+  box-shadow:0 24px 64px rgba(15,23,42,.2);
+  width:100%;max-width:460px;
+  transform:scale(.95) translateY(10px);transition:transform .25s var(--ease);
+  overflow:hidden;
+}
+.modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
+
+.modal-top{
+  padding:2rem 2rem 1.5rem;
+  background:linear-gradient(135deg,var(--brand-d),var(--brand-l));
+  text-align:center;
+}
+.modal-badge{display:inline-flex;align-items:center;gap:5px;padding:.28rem .7rem;background:rgba(255,255,255,.18);border-radius:var(--r-full);font-size:.7rem;font-weight:700;color:#fff;margin-bottom:.9rem}
+.modal-badge i{width:13px;height:13px}
+.modal-top h2{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:#fff;letter-spacing:-.02em;margin-bottom:.3rem}
+.modal-top p{font-size:.85rem;color:rgba(255,255,255,.8)}
+
+.modal-body{padding:1.5rem 2rem}
+
+.modal-features{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.5rem}
+.mf{display:flex;align-items:center;gap:.45rem;font-size:.8rem;color:var(--ink-2)}
+.mf i{width:15px;height:15px;color:var(--green);flex-shrink:0}
+
+.modal-price{text-align:center;padding:.75rem;background:var(--brand-bg);border-radius:var(--r-xl);margin-bottom:1.25rem}
+.modal-price .price{font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--brand)}
+.modal-price .period{font-size:.8rem;color:var(--ink-3)}
+
+.modal-btns{display:flex;flex-direction:column;gap:.5rem}
+.btn-upgrade-now{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:.78rem;background:var(--brand);color:#fff;
+  border:none;border-radius:var(--r-lg);font-size:.9rem;font-weight:700;
+  font-family:var(--fb);cursor:pointer;transition:all .17s;box-shadow:var(--sh-brand);
+}
+.btn-upgrade-now:hover{background:var(--brand-d);transform:translateY(-1px)}
+.btn-remind{
+  padding:.65rem;color:var(--ink-3);font-size:.82rem;font-weight:500;
+  font-family:var(--fb);cursor:pointer;transition:color .15s;background:none;border:none;
+}
+.btn-remind:hover{color:var(--ink)}
+
+/* ═══════════════════════════════════════════
+   VIEWS (sections)
+═══════════════════════════════════════════ */
+.view{display:none}
+.view.active{display:block}
+
+/* Pricing page */
+.pricing-header{text-align:center;margin-bottom:2rem}
+.pricing-header h1{font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--ink);letter-spacing:-.03em;margin-bottom:.4rem}
+.pricing-header p{font-size:.88rem;color:var(--ink-3)}
+
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:680px;margin:0 auto}
+
+.price-card{
+  background:var(--surface);border:1.5px solid var(--border-2);
+  border-radius:var(--r-2xl);padding:1.75rem;position:relative;overflow:hidden;
+}
+.price-card.featured{
+  border-color:var(--brand);
+  background:linear-gradient(160deg,#f8f7ff,#fff);
+  box-shadow:var(--sh-brand);
+}
+.price-card.featured::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:120px;height:120px;background:var(--brand-bg);border-radius:50%;
+}
+
+.price-pop{display:inline-flex;align-items:center;gap:4px;padding:.22rem .65rem;background:var(--brand);color:#fff;border-radius:var(--r-full);font-size:.68rem;font-weight:800;margin-bottom:.85rem;text-transform:uppercase;letter-spacing:.04em}
+.price-pop i{width:11px;height:11px}
+
+.price-name{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:.3rem}
+.price-amount{font-family:var(--fd);font-size:2.2rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:.15rem}
+.price-period{font-size:.78rem;color:var(--ink-4);margin-bottom:1.25rem}
+
+.price-features{list-style:none;margin-bottom:1.5rem}
+.price-features li{display:flex;align-items:center;gap:.55rem;font-size:.82rem;color:var(--ink-2);padding:.32rem 0}
+.price-features li i{width:16px;height:16px;flex-shrink:0}
+.price-features li.has i{color:var(--green)}
+.price-features li.no{color:var(--ink-4)}
+.price-features li.no i{color:var(--ink-5)}
+
+.price-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;padding:.75rem;border:none;border-radius:var(--r-lg);
+  font-size:.875rem;font-weight:700;font-family:var(--fb);cursor:pointer;
+  transition:all .17s;
+}
+.price-btn.free{background:var(--muted);color:var(--ink-2)}
+.price-btn.free:hover{background:var(--ink-5);color:var(--ink)}
+.price-btn.paid{background:var(--brand);color:#fff;box-shadow:var(--sh-brand)}
+.price-btn.paid:hover{background:var(--brand-d);transform:translateY(-1px)}
+.price-btn i{width:16px;height:16px}
+
+/* Settings, Analytics, Reports placeholder */
+.section-placeholder{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);padding:3rem;text-align:center;
+}
+.section-placeholder i{width:44px;height:44px;color:var(--ink-5);margin:0 auto 1rem}
+.section-placeholder h3{font-weight:700;color:var(--ink);margin-bottom:.4rem}
+.section-placeholder p{font-size:.84rem;color:var(--ink-3)}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.tc{position:fixed;bottom:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.4rem;max-width:300px;width:calc(100vw - 2rem)}
+.tt{display:flex;align-items:center;gap:.55rem;padding:.7rem .85rem;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-lg);box-shadow:var(--sh-lg);font-size:.8rem;font-weight:500;animation:tin .2s var(--ease)}
+.tt.s{border-left:3px solid var(--green)}.tt.e{border-left:3px solid var(--red)}.tt.i{border-left:3px solid var(--brand)}
+.tt i{width:15px;height:15px;flex-shrink:0}
+.tt.s i{color:var(--green)}.tt.e i{color:var(--red)}.tt.i i{color:var(--brand)}
+@keyframes tin{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:1100px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .charts-row{grid-template-columns:1fr}
+  .bar-row{grid-template-columns:1fr}
+  .bottom-row{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr;max-width:360px}
+}
+@media(max-width:768px){
+  .sidebar{position:fixed;top:0;left:0;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar-search{display:none}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .page{padding:1rem}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr}
+  .welcome-row{flex-direction:column}
+  .modal-features{grid-template-columns:1fr}
+  .modal-body{padding:1.25rem}
+  .modal-top{padding:1.5rem 1.25rem 1.25rem}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ════ SIDEBAR ════ -->
+<div class="sidebar-overlay" id="sb-overlay"></div>
+<aside class="sidebar" id="sidebar">
+
+  <div class="sb-brand">
+    <img src="https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg" alt="Logo">
+    <span>SellerTrackr</span>
+  </div>
+
+  <div class="sb-scroll">
+    <div class="sb-section">Main</div>
+    <a class="nav-link active" data-view="dashboard" onclick="switchView('dashboard')">
+      <i data-lucide="layout-dashboard"></i><span>Dashboard</span>
+    </a>
+    <a class="nav-link" data-view="analytics" onclick="switchView('analytics')">
+      <i data-lucide="bar-chart-3"></i><span>Analytics</span>
+      <span class="badge" id="analytics-lock-badge">Pro</span>
+    </a>
+    <a class="nav-link" data-view="reports" onclick="switchView('reports')">
+      <i data-lucide="file-text"></i><span>Reports</span>
+    </a>
+
+    <div class="sb-section">Account</div>
+    <a class="nav-link" data-view="pricing" onclick="switchView('pricing')">
+      <i data-lucide="zap"></i><span>Pricing</span>
+    </a>
+    <a class="nav-link" data-view="settings" onclick="switchView('settings')">
+      <i data-lucide="settings"></i><span>Settings</span>
+    </a>
+    <a class="nav-link" data-view="support" onclick="switchView('support')">
+      <i data-lucide="life-buoy"></i><span>Support</span>
+    </a>
+  </div>
+
+  <div class="sb-footer">
+    <div class="plan-badge" id="plan-badge">
+      <div class="plan-icon free" id="plan-icon">
+        <i data-lucide="zap" id="plan-icon-i"></i>
+      </div>
+      <div>
+        <div class="plan-name" id="plan-name">Free Plan</div>
+        <div class="plan-sub" id="plan-sub">50 sales/month</div>
+      </div>
+    </div>
+    <div class="user-row" id="logout-row">
+      <img src="https://i.pravatar.cc/60?u=user" alt="" id="user-avatar">
+      <span class="user-name" id="sidebar-user-name">Loading…</span>
+      <i data-lucide="log-out"></i>
+    </div>
+  </div>
+</aside>
+
+<!-- ════ MAIN ════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="hamburger" id="hamburger"><i data-lucide="menu"></i></button>
+
+    <div class="topbar-search">
+      <i data-lucide="search"></i>
+      <input type="text" placeholder="Search sales, products…">
+    </div>
+
+    <div class="topbar-right">
+      <button class="icon-btn" id="notif-btn">
+        <i data-lucide="bell"></i>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="btn-upgrade" id="topbar-upgrade" onclick="openUpgradeModal()">
+        <i data-lucide="zap"></i>
+        <span id="upgrade-btn-text">Upgrade</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <div class="page" id="page">
+
+    <!-- ── DASHBOARD VIEW ── -->
+    <section class="view active" id="view-dashboard">
+
+      <!-- Free plan banner -->
+      <div class="plan-banner" id="free-banner">
+        <i data-lucide="zap"></i>
+        <div class="plan-banner-text">
+          You're on the <strong>Free Plan</strong>. Upgrade to Premium for unlimited sales, advanced analytics & more.
+        </div>
+        <button class="plan-banner-cta" onclick="openUpgradeModal()">Upgrade — ₨900/mo</button>
+      </div>
+
+      <!-- Welcome -->
+      <div class="welcome-row">
+        <div class="welcome-text">
+          <h1>Welcome, <em id="welcome-name">Seller</em>!</h1>
+          <p id="welcome-sub">Here's what's happening with your store today.</p>
+        </div>
+        <div class="welcome-date" id="welcome-date"></div>
+      </div>
+
+      <!-- Free plan usage bar -->
+      <div class="free-limit" id="free-limit-bar">
+        <div class="limit-info">
+          <div class="limit-label">Monthly Sales Usage</div>
+          <div class="limit-bar"><div class="limit-fill" id="limit-fill" style="width:0%"></div></div>
+          <div class="limit-count" id="limit-count">0 / 50 sales used</div>
+        </div>
+        <button class="limit-cta" onclick="openUpgradeModal()">Upgrade for Unlimited</button>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card c-brand">
+          <div class="kpi-top">
+            <div class="kpi-icon brand"><i data-lucide="trending-up"></i></div>
+            <div class="kpi-delta up" id="d-total-delta"><i data-lucide="arrow-up"></i><span>—</span></div>
+          </div>
+          <div class="kpi-val" id="d-total-sales"><div class="skeleton skel-val"></div></div>
+          <div class="kpi-label">Total Sales</div>
+        </div>
+        <div class="kpi-card c-green">
+          <div class="kpi-top">
+            <div class="kpi-icon green"><i data-lucide="banknote"></i></div>
+            <div class="kpi-delta up" id="d-rev-delta"><i data-lucide="arrow-up"></i><span>—</span></div>
+          </div>
+          <div class="kpi-val" id="d-monthly-rev"><div class="skeleton skel-val"></div></div>
+          <div class="kpi-label">Monthly Revenue</div>
+        </div>
+        <div class="kpi-card c-amber">
+          <div class="kpi-top">
+            <div class="kpi-icon amber"><i data-lucide="shopping-bag"></i></div>
+            <div class="kpi-delta neutral" id="d-orders-delta"><i data-lucide="minus"></i><span>—</span></div>
+          </div>
+          <div class="kpi-val" id="d-monthly-orders"><div class="skeleton skel-val"></div></div>
+          <div class="kpi-label">Orders This Month</div>
+        </div>
+        <div class="kpi-card c-blue">
+          <div class="kpi-top">
+            <div class="kpi-icon blue"><i data-lucide="cpu"></i></div>
+            <div class="kpi-delta up"><i data-lucide="arrow-up"></i><span>AI</span></div>
+          </div>
+          <div class="kpi-val" id="d-ai-score">—</div>
+          <div class="kpi-label">AI Insight Score</div>
+        </div>
+      </div>
+
+      <!-- Charts row: line + donut -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Sales Over Time</div>
+              <div class="chart-sub">Monthly revenue trend</div>
+            </div>
+            <div class="chart-tabs">
+              <div class="ctab active" onclick="switchChartPeriod('6m',this)">6M</div>
+              <div class="ctab" onclick="switchChartPeriod('1y',this)">1Y</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Sales Channels</div>
+              <div class="chart-sub">Revenue by source</div>
+            </div>
+          </div>
+          <div class="chart-wrap" style="position:relative">
+            <canvas id="donutChart"></canvas>
+            <div class="locked-overlay" id="donut-lock">
+              <div class="locked-icon"><i data-lucide="lock"></i></div>
+              <div class="locked-title">Premium Feature</div>
+              <div class="locked-sub">Upgrade to see channel breakdown</div>
+              <button class="locked-btn" onclick="openUpgradeModal()">Unlock</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bar chart row -->
+      <div class="bar-row">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Storefront Performance</div>
+              <div class="chart-sub">Sales by storefront</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Advanced Analytics</div>
+              <div class="chart-sub">AI-powered breakdown</div>
+            </div>
+          </div>
+          <div class="chart-wrap" style="position:relative;height:200px">
+            <canvas id="advChart" style="opacity:.25"></canvas>
+            <div class="locked-overlay" id="adv-lock">
+              <div class="locked-icon"><i data-lucide="lock"></i></div>
+              <div class="locked-title">Premium Feature</div>
+              <div class="locked-sub">Advanced AI analytics available in Premium</div>
+              <button class="locked-btn" onclick="openUpgradeModal()">Upgrade Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity + AI Insights -->
+      <div class="bottom-row">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">Recent Activity</div>
+            <span class="section-link">View all</span>
+          </div>
+          <div id="activity-list">
+            <!-- loaded by JS -->
+            <div class="empty-state"><i data-lucide="inbox"></i><p>No recent activity</p></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">AI Insights</div>
+            <span class="badge" style="background:var(--brand-bg);color:var(--brand);font-size:.65rem;font-weight:800;padding:2px 8px;border-radius:99px">Beta</span>
+          </div>
+          <div id="insights-list">
+            <!-- loaded by JS -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── ANALYTICS VIEW ── -->
+    <section class="view" id="view-analytics">
+      <div class="welcome-row" style="margin-bottom:1.25rem">
+        <div class="welcome-text"><h1 style="font-family:var(--fd);font-size:1.5rem;font-weight:700">Analytics</h1></div>
+      </div>
+      <div class="section-placeholder" id="analytics-placeholder">
+        <i data-lucide="lock"></i>
+        <h3>Premium Analytics</h3>
+        <p>Upgrade to access detailed analytics, cohort analysis, and AI-powered insights.</p>
+        <button style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--brand);color:#fff;border:none;border-radius:99px;font-weight:700;font-family:var(--fb);cursor:pointer;font-size:.84rem" onclick="openUpgradeModal()">Unlock Analytics</button>
+      </div>
+      <div id="analytics-content" style="display:none">
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">12-Month Revenue</div></div>
+            <div class="chart-wrap"><canvas id="analyticsLineChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Top Products</div></div>
+            <div class="chart-wrap"><canvas id="analyticsBarChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── REPORTS VIEW ── -->
+    <section class="view" id="view-reports">
+      <div class="welcome-row" style="margin-bottom:1.25rem">
+        <div class="welcome-text"><h1 style="font-family:var(--fd);font-size:1.5rem;font-weight:700">Reports</h1></div>
+      </div>
+      <div class="section-placeholder">
+        <i data-lucide="file-text"></i>
+        <h3>Sales Reports</h3>
+        <p>Download monthly/weekly reports. Available on Free plan — basic CSV exports only.</p>
+        <button style="margin-top:1rem;padding:.6rem 1.5rem;background:var(--brand);color:#fff;border:none;border-radius:99px;font-weight:700;font-family:var(--fb);cursor:pointer;font-size:.84rem" onclick="toast('Report generation coming soon!','i')">Generate Report</button>
+      </div>
+    </section>
+
+    <!-- ── PRICING VIEW ── -->
+    <section class="view" id="view-pricing">
+      <div class="pricing-header">
+        <h1>Choose Your Plan</h1>
+        <p>Start free, upgrade when you're ready</p>
+      </div>
+      <div class="pricing-grid">
+
+        <!-- Free -->
+        <div class="price-card">
+          <div class="price-name">Starter</div>
+          <div class="price-amount">Free</div>
+          <div class="price-period">Forever free</div>
+          <ul class="price-features">
+            <li class="has"><i data-lucide="check-circle"></i>50 Sales / month</li>
+            <li class="has"><i data-lucide="check-circle"></i>Basic Analytics</li>
+            <li class="has"><i data-lucide="check-circle"></i>1 Storefront</li>
+            <li class="has"><i data-lucide="check-circle"></i>Email Support</li>
+            <li class="no"><i data-lucide="x-circle"></i>AI Predictions</li>
+            <li class="no"><i data-lucide="x-circle"></i>Auto Reports</li>
+            <li class="no"><i data-lucide="x-circle"></i>Priority Support</li>
+          </ul>
+          <button class="price-btn free" id="free-plan-btn">
+            <i data-lucide="check"></i> Current Plan
+          </button>
+        </div>
+
+        <!-- Premium -->
+        <div class="price-card featured">
+          <div class="price-pop"><i data-lucide="star"></i> Most Popular</div>
+          <div class="price-name">Premium</div>
+          <div class="price-amount">₨900</div>
+          <div class="price-period">per month</div>
+          <ul class="price-features">
+            <li class="has"><i data-lucide="check-circle"></i>Unlimited Sales</li>
+            <li class="has"><i data-lucide="check-circle"></i>Advanced AI Analytics</li>
+            <li class="has"><i data-lucide="check-circle"></i>Unlimited Storefronts</li>
+            <li class="has"><i data-lucide="check-circle"></i>Auto Reports</li>
+            <li class="has"><i data-lucide="check-circle"></i>AI Predictions</li>
+            <li class="has"><i data-lucide="check-circle"></i>Priority Support 24/7</li>
+            <li class="has"><i data-lucide="check-circle"></i>Custom Branding</li>
+          </ul>
+          <button class="price-btn paid" onclick="openUpgradeModal()">
+            <i data-lucide="zap"></i> Upgrade to Premium
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SETTINGS VIEW ── -->
+    <section class="view" id="view-settings">
+      <div class="welcome-row" style="margin-bottom:1.25rem">
+        <div class="welcome-text"><h1 style="font-family:var(--fd);font-size:1.5rem;font-weight:700">Settings</h1></div>
+      </div>
+      <div class="section-card" style="max-width:500px">
+        <div class="section-header"><div class="section-title">Profile</div></div>
+        <div style="display:flex;flex-direction:column;gap:.75rem">
+          <div>
+            <label style="font-size:.74rem;font-weight:700;color:var(--ink-2);display:block;margin-bottom:.3rem">Full Name</label>
+            <input id="settings-name" type="text" style="width:100%;padding:.58rem .78rem;background:var(--base);border:1.5px solid var(--border-2);border-radius:var(--r-md);font-size:.84rem;font-family:var(--fb);color:var(--ink);outline:none" placeholder="Your name">
+          </div>
+          <div>
+            <label style="font-size:.74rem;font-weight:700;color:var(--ink-2);display:block;margin-bottom:.3rem">Email</label>
+            <input id="settings-email" type="email" disabled style="width:100%;padding:.58rem .78rem;background:var(--muted);border:1.5px solid var(--border-2);border-radius:var(--r-md);font-size:.84rem;font-family:var(--fb);color:var(--ink-3);outline:none">
+          </div>
+          <button onclick="saveSettings()" style="padding:.68rem;background:var(--brand);color:#fff;border:none;border-radius:var(--r-lg);font-weight:700;font-family:var(--fb);cursor:pointer;font-size:.86rem">Save Changes</button>
+          <button onclick="doLogout()" style="padding:.62rem;background:none;border:1.5px solid var(--border-2);border-radius:var(--r-lg);font-weight:600;font-family:var(--fb);cursor:pointer;font-size:.84rem;color:var(--red)">Sign Out</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SUPPORT VIEW ── -->
+    <section class="view" id="view-support">
+      <div class="welcome-row" style="margin-bottom:1.25rem">
+        <div class="welcome-text"><h1 style="font-family:var(--fd);font-size:1.5rem;font-weight:700">Support</h1></div>
+      </div>
+      <div class="section-placeholder">
+        <i data-lucide="life-buoy"></i>
+        <h3>Need Help?</h3>
+        <p>Email us at <a href="mailto:support@sellertrackr.com" style="color:var(--brand);font-weight:700">support@sellertrackr.com</a> — we respond within 24 hours.</p>
+      </div>
+    </section>
+
+  </div><!-- end .page -->
+</div><!-- end .main -->
+</div><!-- end .app -->
+
+<!-- UPGRADE MODAL -->
+<div class="modal-overlay" id="upgrade-modal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-badge"><i data-lucide="star"></i> Premium Plan</div>
+      <h2>Unlock Your Full Potential</h2>
+      <p>Everything you need to scale your business</p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-features">
+        <div class="mf"><i data-lucide="check-circle"></i>Unlimited Sales</div>
+        <div class="mf"><i data-lucide="check-circle"></i>AI Analytics</div>
+        <div class="mf"><i data-lucide="check-circle"></i>Auto Reports</div>
+        <div class="mf"><i data-lucide="check-circle"></i>Custom Branding</div>
+        <div class="mf"><i data-lucide="check-circle"></i>Priority Support</div>
+        <div class="mf"><i data-lucide="check-circle"></i>Unlimited Storefronts</div>
+      </div>
+      <div class="modal-price">
+        <div class="price">₨900<span style="font-size:1rem;font-weight:300;color:var(--ink-3)">/month</span></div>
+        <div class="period">Cancel anytime · No hidden fees</div>
+      </div>
+      <div class="modal-btns">
+        <button class="btn-upgrade-now" onclick="goToPayment()">
+          <i data-lucide="zap" style="width:17px;height:17px"></i>
+          Upgrade to Premium
+        </button>
+        <button class="btn-remind" onclick="closeUpgradeModal()">Remind me later</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tc" id="tc-wrap"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════════ */
+const SURL = 'https://dpxuopdoumomasmahnyo.supabase.co';
+const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+const ADMIN_EMAIL = 'maffaan373@gmail.com';
+const FREE_LIMIT  = 50;
+
+let sb, currentUser, userProfile;
+let isPremium = false;
+let lineChartInst, donutChartInst, barChartInst, advChartInst;
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+window.addEventListener('load', async function() {
+  if (window.lucide) window.lucide.createIcons();
+
+  try { sb = supabase.createClient(SURL, SKEY); }
+  catch(e) { toast('DB connection error','e'); return; }
+
+  // Set welcome date
+  document.getElementById('welcome-date').textContent =
+    new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  // Auth check
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  currentUser = session.user;
+
+  // Load profile & data
+  await loadProfile();
+  await loadDashboardData();
+  renderCharts();
+  renderInsights();
+
+  // Sidebar logout
+  document.getElementById('logout-row').addEventListener('click', doLogout);
+
+  // Hamburger
+  document.getElementById('hamburger').addEventListener('click', function(){
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sb-overlay').classList.toggle('open');
+  });
+  document.getElementById('sb-overlay').addEventListener('click', function(){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sb-overlay').classList.remove('open');
+  });
+
+  // Modal close on overlay click
+  document.getElementById('upgrade-modal').addEventListener('click', function(e){
+    if(e.target === this) closeUpgradeModal();
+  });
+});
+
+/* ══════════════════════════════════════════════
+   LOAD PROFILE
+══════════════════════════════════════════════ */
+async function loadProfile() {
+  const { data: profile } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('id', currentUser.id)
+    .single();
+
+  userProfile = profile || {};
+  isPremium   = userProfile.is_premium || false;
+
+  const name = userProfile.full_name || currentUser.email?.split('@')[0] || 'Seller';
+
+  // Welcome
+  document.getElementById('welcome-name').textContent = name.split(' ')[0];
+  document.getElementById('sidebar-user-name').textContent = name;
+  document.getElementById('welcome-sub').textContent =
+    isPremium
+      ? 'Premium plan active. All features unlocked.'
+      : "You're on the Free plan. Upgrade anytime.";
+
+  // Plan badge
+  document.getElementById('plan-name').textContent = isPremium ? 'Premium Plan' : 'Free Plan';
+  document.getElementById('plan-sub').textContent   = isPremium ? 'All features unlocked' : '50 sales/month';
+  const pi = document.getElementById('plan-icon');
+  if(isPremium){ pi.classList.replace('free','premium'); pi.querySelector('i').setAttribute('data-lucide','star'); }
+
+  // Settings
+  document.getElementById('settings-name').value  = name;
+  document.getElementById('settings-email').value = currentUser.email || '';
+
+  // Hide/show upgrade UI
+  if(isPremium){
+    const fb = document.getElementById('free-banner');
+    const lb = document.getElementById('free-limit-bar');
+    if(fb) fb.style.display='none';
+    if(lb) lb.style.display='none';
+    document.getElementById('topbar-upgrade').style.display='none';
+    document.getElementById('analytics-lock-badge').style.display='none';
+    document.getElementById('free-plan-btn').textContent='You are here';
+  }
+
+  // Unlock analytics if premium
+  if(isPremium){
+    document.getElementById('analytics-placeholder').style.display='none';
+    document.getElementById('analytics-content').style.display='block';
+    document.getElementById('donut-lock').style.display='none';
+    document.getElementById('adv-lock').style.display='none';
+  }
+
+  if(window.lucide) window.lucide.createIcons();
+}
+
+/* ══════════════════════════════════════════════
+   LOAD DASHBOARD DATA from Supabase
+══════════════════════════════════════════════ */
+async function loadDashboardData() {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+  // Fetch ALL sales for user
+  const { data: allSales, error } = await sb
+    .from('sales')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if(error){
+    toast('Error loading sales data: '+error.message, 'e');
+    // Show zeros
+    setKpi('d-total-sales','0');setKpi('d-monthly-rev','₨0');setKpi('d-monthly-orders','0');
+    renderActivityEmpty();
+    return;
+  }
+
+  const sales = allSales || [];
+
+  // KPIs
+  const totalSales    = sales.length;
+  const monthlySales  = sales.filter(s => s.created_at >= monthStart);
+  const monthlyRev    = monthlySales.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  const monthlyOrders = monthlySales.length;
+
+  // AI score (simple formula)
+  const aiScore = totalSales > 0
+    ? Math.min(99, Math.round(60 + (monthlyOrders/FREE_LIMIT)*30 + (totalSales>10?9:0)))
+    : 0;
+
+  setKpi('d-total-sales', totalSales.toString());
+  setKpi('d-monthly-rev', '₨'+monthlyRev.toLocaleString('en-PK',{maximumFractionDigits:0}));
+  setKpi('d-monthly-orders', monthlyOrders.toString());
+  document.getElementById('d-ai-score').textContent = totalSales>0 ? aiScore+'%' : '—';
+
+  // Free limit bar
+  if(!isPremium){
+    const pct = Math.min(100, (monthlyOrders/FREE_LIMIT)*100);
+    const fill = document.getElementById('limit-fill');
+    fill.style.width = pct+'%';
+    fill.className = 'limit-fill' + (pct>=90?' danger': pct>=70?' warn':'');
+    document.getElementById('limit-count').textContent =
+      monthlyOrders+' / '+FREE_LIMIT+' sales used this month';
+    if(pct>=90) setTimeout(()=>openUpgradeModal(),2000);
+  }
+
+  // Deltas (vs last month — simplified)
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth()-1, 1).toISOString();
+  const lastMonthEnd   = new Date(now.getFullYear(), now.getMonth(), 0, 23,59,59).toISOString();
+  const lastMonthSales = sales.filter(s=>s.created_at>=lastMonthStart&&s.created_at<=lastMonthEnd);
+  const lastMonthRev   = lastMonthSales.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+
+  if(lastMonthRev > 0){
+    const revPct = Math.round(((monthlyRev-lastMonthRev)/lastMonthRev)*100);
+    updateDelta('d-rev-delta', revPct);
+    updateDelta('d-orders-delta', Math.round(((monthlyOrders-lastMonthSales.length)/Math.max(1,lastMonthSales.length))*100));
+  }
+
+  // Recent activity
+  renderActivity(sales.slice(0,6));
+
+  // Store for chart use
+  window._salesData = sales;
+}
+
+function setKpi(id, val){
+  const el = document.getElementById(id);
+  if(el) el.innerHTML = val;
+}
+
+function updateDelta(id, pct){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const up = pct>=0;
+  el.className = 'kpi-delta '+(up?'up':'down');
+  el.innerHTML = '<i data-lucide="'+(up?'arrow-up':'arrow-down')+'"></i><span>'+(up?'+':'')+pct+'%</span>';
+  if(window.lucide) window.lucide.createIcons();
+}
+
+/* ══════════════════════════════════════════════
+   RENDER ACTIVITY
+══════════════════════════════════════════════ */
+function renderActivity(sales){
+  const list = document.getElementById('activity-list');
+  if(!sales || sales.length===0){ renderActivityEmpty(); return; }
+
+  list.innerHTML = sales.map(s=>{
+    const d = new Date(s.created_at);
+    const timeStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `
+      <div class="activity-item">
+        <div class="act-icon sale"><i data-lucide="shopping-bag"></i></div>
+        <div class="act-text">
+          <div class="act-title">${s.product_name||'Sale'}</div>
+          <div class="act-sub">${s.storefront||'Default'} · ${timeStr}</div>
+        </div>
+        <div class="act-amount positive">+₨${parseFloat(s.amount||0).toLocaleString('en-PK',{maximumFractionDigits:0})}</div>
+      </div>`;
+  }).join('');
+
+  if(window.lucide) window.lucide.createIcons();
+}
+
+function renderActivityEmpty(){
+  const list = document.getElementById('activity-list');
+  list.innerHTML = `
+    <div class="empty-state">
+      <i data-lucide="inbox"></i>
+      <p>No sales yet. Add your first sale to get started!</p>
+    </div>`;
+  if(window.lucide) window.lucide.createIcons();
+}
+
+/* ══════════════════════════════════════════════
+   AI INSIGHTS
+══════════════════════════════════════════════ */
+function renderInsights(){
+  const sales = window._salesData || [];
+  const list  = document.getElementById('insights-list');
+
+  const tips = [
+    { text: sales.length===0 ? '<strong>Add your first sale</strong> to start tracking revenue and insights.' : `You have <strong>${sales.length} total sales</strong>. Keep it up!`, icon:'trending-up' },
+    { text: isPremium ? '<strong>Premium active!</strong> All AI features are now unlocked.' : 'Upgrade to <strong>Premium</strong> to unlock AI predictions and advanced reports.', icon:'cpu' },
+    { text: '<strong>Tip:</strong> Add multiple storefronts to compare performance across channels.', icon:'store' },
+  ];
+
+  list.innerHTML = tips.map(t=>`
+    <div class="insight-item">
+      <div class="ins-icon"><i data-lucide="${t.icon}"></i></div>
+      <div class="ins-text">${t.text}</div>
+    </div>`).join('');
+
+  if(window.lucide) window.lucide.createIcons();
+}
+
+/* ══════════════════════════════════════════════
+   CHARTS
+══════════════════════════════════════════════ */
+function renderCharts(){
+  // Chart.js defaults
+  Chart.defaults.font.family = 'Plus Jakarta Sans, system-ui, sans-serif';
+  Chart.defaults.font.size   = 11;
+  Chart.defaults.color       = '#64748B';
+
+  const sales = window._salesData || [];
+
+  // Build 6-month line data
+  const months6 = getLast6Months();
+  const lineData = months6.map(m=>{
+    return sales
+      .filter(s=>{ const d=new Date(s.created_at); return d.getFullYear()===m.year&&d.getMonth()===m.month; })
+      .reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  });
+
+  // Line chart
+  const lc = document.getElementById('lineChart').getContext('2d');
+  const grad = lc.createLinearGradient(0,0,0,200);
+  grad.addColorStop(0,'rgba(67,56,202,.18)');
+  grad.addColorStop(1,'rgba(67,56,202,0)');
+
+  lineChartInst = new Chart(lc,{
+    type:'line',
+    data:{
+      labels: months6.map(m=>m.label),
+      datasets:[{
+        label:'Revenue (₨)',
+        data: lineData.length&&lineData.some(v=>v>0) ? lineData : [12000,18500,15200,21000,17800,24000],
+        borderColor:'#4338CA',
+        backgroundColor:grad,
+        borderWidth:2.5,fill:true,tension:.42,
+        pointBackgroundColor:'#4338CA',pointRadius:4,pointHoverRadius:6
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'#0F172A',titleColor:'#fff',bodyColor:'#CBD5E1',
+        padding:10,cornerRadius:10,
+        callbacks:{label:ctx=>'₨'+ctx.raw.toLocaleString('en-PK')}
+      }},
+      scales:{
+        x:{grid:{display:false},border:{display:false}},
+        y:{grid:{color:'rgba(15,23,42,.05)'},border:{display:false},
+          ticks:{callback:v=>'₨'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}
+      }
+    }
+  });
+
+  // Donut chart (always rendered, locked with overlay for free users)
+  donutChartInst = new Chart(document.getElementById('donutChart'),{
+    type:'doughnut',
+    data:{
+      labels:['Direct','Social','Market','Referral'],
+      datasets:[{data:[42,28,18,12],
+        backgroundColor:['#4338CA','#6366F1','#818CF8','#C7D2FE'],
+        borderWidth:0,hoverOffset:6}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{padding:12,usePointStyle:true,pointStyleWidth:8}},
+        tooltip:{backgroundColor:'#0F172A',padding:10,cornerRadius:10}}
+    }
+  });
+
+  // Bar chart
+  const storefronts = {};
+  sales.forEach(s=>{ storefronts[s.storefront||'Default']=(storefronts[s.storefront||'Default']||0)+parseFloat(s.amount||0); });
+  let barLabels=Object.keys(storefronts), barVals=Object.values(storefronts);
+  if(barLabels.length===0){ barLabels=['Default']; barVals=[0]; }
+
+  barChartInst = new Chart(document.getElementById('barChart'),{
+    type:'bar',
+    data:{
+      labels:barLabels,
+      datasets:[{label:'Revenue',data:barVals,
+        backgroundColor:'rgba(67,56,202,.8)',
+        borderRadius:6,borderSkipped:false}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'#0F172A',padding:10,cornerRadius:10,
+          callbacks:{label:ctx=>'₨'+ctx.raw.toLocaleString('en-PK')}}},
+      scales:{
+        x:{grid:{display:false},border:{display:false}},
+        y:{grid:{color:'rgba(15,23,42,.05)'},border:{display:false},
+          ticks:{callback:v=>'₨'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}
+      }
+    }
+  });
+
+  // Advanced chart (blurred for free)
+  advChartInst = new Chart(document.getElementById('advChart'),{
+    type:'line',
+    data:{
+      labels:['W1','W2','W3','W4','W5','W6','W7','W8'],
+      datasets:[
+        {label:'Sales',data:[22,35,28,45,38,52,41,60],borderColor:'#4338CA',borderWidth:2,fill:false,tension:.4},
+        {label:'Returns',data:[3,5,4,7,6,8,5,9],borderColor:'#EF4444',borderWidth:2,fill:false,tension:.4}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{display:false},y:{display:false}}}
+  });
+
+  // Analytics charts (only shown for premium)
+  if(isPremium){
+    const alc = document.getElementById('analyticsLineChart');
+    const abc = document.getElementById('analyticsBarChart');
+    if(alc){
+      new Chart(alc,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        datasets:[{label:'Revenue',data:lineData.concat(Array(12-lineData.length).fill(0)),
+          borderColor:'#4338CA',backgroundColor:'rgba(67,56,202,.08)',fill:true,tension:.42,borderWidth:2}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+          scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(15,23,42,.05)'}}}}});
+    }
+    if(abc){
+      new Chart(abc,{type:'bar',data:{labels:barLabels,
+        datasets:[{label:'Revenue',data:barVals,backgroundColor:'rgba(67,56,202,.75)',borderRadius:6}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+          scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(15,23,42,.05)'}}}}});
+    }
+  }
+}
+
+function getLast6Months(){
+  const months=[], now=new Date();
+  for(let i=5;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    months.push({year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleString('default',{month:'short'})});
+  }
+  return months;
+}
+
+function switchChartPeriod(period, el){
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  // Update line chart data
+  const sales  = window._salesData||[];
+  const months = period==='6m' ? getLast6Months() : getLast12Months();
+  const data   = months.map(m=>
+    sales.filter(s=>{const d=new Date(s.created_at);return d.getFullYear()===m.year&&d.getMonth()===m.month;})
+      .reduce((a,s)=>a+parseFloat(s.amount||0),0));
+  lineChartInst.data.labels   = months.map(m=>m.label);
+  lineChartInst.data.datasets[0].data = data.some(v=>v>0)?data:(period==='6m'?[12000,18500,15200,21000,17800,24000]:[8000,11000,14000,12500,18500,15200,21000,19000,17800,24000,22000,26000]);
+  lineChartInst.update();
+}
+
+function getLast12Months(){
+  const months=[],now=new Date();
+  for(let i=11;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    months.push({year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleString('default',{month:'short'})});
+  }
+  return months;
+}
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════ */
+function switchView(name){
+  // Guard: analytics requires premium
+  if(name==='analytics' && !isPremium){
+    openUpgradeModal(); return;
+  }
+
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+
+  const v = document.getElementById('view-'+name);
+  if(v) v.classList.add('active');
+  const l = document.querySelector('.nav-link[data-view="'+name+'"]');
+  if(l) l.classList.add('active');
+
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('open');
+}
+
+/* ══════════════════════════════════════════════
+   UPGRADE MODAL
+══════════════════════════════════════════════ */
+function openUpgradeModal(){
+  document.getElementById('upgrade-modal').classList.add('open');
+  if(window.lucide) window.lucide.createIcons();
+}
+function closeUpgradeModal(){
+  document.getElementById('upgrade-modal').classList.remove('open');
+}
+function goToPayment(){
+  closeUpgradeModal();
+  window.location.href='payment.html';
+}
+
+/* ══════════════════════════════════════════════
+   SETTINGS
+══════════════════════════════════════════════ */
+async function saveSettings(){
+  const name = document.getElementById('settings-name').value.trim();
+  if(!name){ toast('Name required','e'); return; }
+  const { error } = await sb.from('profiles').update({full_name:name,updated_at:new Date().toISOString()}).eq('id',currentUser.id);
+  if(error){ toast('Save failed: '+error.message,'e'); return; }
+  toast('Profile updated!','s');
+  document.getElementById('welcome-name').textContent = name.split(' ')[0];
+  document.getElementById('sidebar-user-name').textContent = name;
+}
+
+/* ══════════════════════════════════════════════
+   LOGOUT
+══════════════════════════════════════════════ */
+async function doLogout(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+function toast(msg,type){
+  const ic={s:'check-circle',e:'x-circle',i:'info',w:'alert-triangle'};
+  const c=document.getElementById('tc-wrap');
+  const el=document.createElement('div');
+  el.className='tt '+(type||'i');
+  el.innerHTML='<i data-lucide="'+(ic[type]||'info')+'"></i><span style="flex:1">'+msg+'</span>';
+  c.appendChild(el);
+  if(window.lucide) window.lucide.createIcons();
+  setTimeout(function(){el.style.opacity='0';el.style.transition='opacity .22s';setTimeout(function(){el.remove();},240);},3800);
+}
+</script>
+</body>
+</html>
