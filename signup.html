@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — SellerTrackr</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4338CA;--brand-d:#3730A3;--brand-l:#6366F1;--brand-bg:#EEF2FF;
+  --ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;
+  --surface:#fff;--base:#F8F9FC;--muted:#F1F4F9;
+  --border:rgba(15,23,42,.09);--b2:rgba(15,23,42,.15);
+  --green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --r-md:10px;--r-lg:14px;--r-xl:18px;--r-full:9999px;
+  --sh-brand:0 4px 18px rgba(67,56,202,.28);
+  --ease:cubic-bezier(.4,0,.2,1);--ease-out:cubic-bezier(0,0,.2,1);
+  --fd:'Fraunces',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-font-smoothing:antialiased}
+
+/* KEY: body = exactly viewport, no scroll */
+body{
+  font-family:var(--fb);background:var(--surface);color:var(--ink);
+  height:100vh;overflow:hidden;
+}
+
+/* 50/50 grid filling full viewport */
+.wrap{display:grid;grid-template-columns:1fr 1fr;height:100vh;overflow:hidden}
+
+/* ─── LEFT PANEL ─────────────────────── */
+.L{
+  position:relative;overflow:hidden;
+  background:linear-gradient(150deg,var(--brand-d) 0%,var(--brand) 50%,var(--brand-l) 100%);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:1.75rem 2rem;
+}
+.L::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+/* Glow orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(55px);pointer-events:none;z-index:0}
+.o1{width:260px;height:260px;background:rgba(255,255,255,.11);top:-60px;right:-50px;animation:of 9s ease-in-out infinite}
+.o2{width:180px;height:180px;background:rgba(99,102,241,.3);bottom:-20px;left:-30px;animation:of 12s ease-in-out infinite reverse}
+.o3{width:110px;height:110px;background:rgba(255,255,255,.07);top:48%;left:48%;animation:of 7s ease-in-out infinite 1.5s}
+@keyframes of{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-14px)}}
+
+.L-top{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center}
+
+/* ONLY logo icon — NO text */
+.L-icon{margin-bottom:1.6rem}
+.L-icon img{width:36px;height:36px;border-radius:9px;box-shadow:0 4px 14px rgba(0,0,0,.22)}
+
+.L-h{
+  font-family:var(--fd);font-size:clamp(1.45rem,2vw,2rem);
+  font-weight:700;color:#fff;line-height:1.18;letter-spacing:-.03em;
+  margin-bottom:.6rem;
+}
+.L-h em{font-style:italic;font-weight:300;color:rgba(255,255,255,.8)}
+.L-p{font-size:.82rem;color:rgba(255,255,255,.62);line-height:1.6;max-width:270px;margin-bottom:1.5rem}
+
+/* Floating cards */
+.cards{position:relative;height:188px;flex-shrink:0}
+.fc{
+  position:absolute;
+  background:rgba(255,255,255,.1);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.16);border-radius:var(--r-xl);
+  padding:.8rem 1rem;color:#fff;
+}
+.fc-a{left:0;top:0;width:218px;animation:c1 6s ease-in-out infinite}
+.fc-b{right:0;top:1.2rem;padding:.6rem .85rem;animation:c2 5s ease-in-out infinite 1s;min-width:110px}
+.fc-c{left:1.25rem;bottom:0;padding:.55rem .85rem;animation:c3 7.5s ease-in-out infinite 2s;display:flex;align-items:center;gap:.55rem;min-width:170px}
+@keyframes c1{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes c2{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes c3{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:.45rem}
+.val{font-family:var(--fd);font-size:1.45rem;font-weight:700;line-height:1}
+.delta{font-size:.68rem;font-weight:700;color:#4ade80;margin-top:.18rem}
+.bars{display:flex;align-items:flex-end;gap:3px;height:30px;margin-top:.55rem}
+.bar{flex:1;border-radius:2px 2px 0 0;background:rgba(255,255,255,.18);min-height:3px}
+.bar.h{background:rgba(255,255,255,.6)}
+.dot{width:6px;height:6px;border-radius:50%;background:#4ade80;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}70%{box-shadow:0 0 0 6px rgba(74,222,128,0)}}
+.ni{width:26px;height:26px;background:rgba(74,222,128,.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ni i{width:13px;height:13px;color:#4ade80}
+
+/* Testimonial */
+.L-bot{position:relative;z-index:1}
+.stars{color:#fbbf24;font-size:.7rem;letter-spacing:1px;margin-bottom:.3rem}
+.tq{font-size:.77rem;color:rgba(255,255,255,.72);line-height:1.6;font-style:italic;margin-bottom:.6rem}
+.ta{display:flex;align-items:center;gap:.55rem}
+.ta img{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.28)}
+.tn{font-size:.74rem;font-weight:700;color:#fff}
+.tr{font-size:.66rem;color:rgba(255,255,255,.48)}
+
+/* ─── RIGHT PANEL ─────────────────────── */
+.R{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:0 2rem;overflow:hidden;background:var(--surface);
+}
+
+/* form container — fixed max height so it stays in viewport */
+.box{width:100%;max-width:340px}
+
+/* Mobile-only logo (hidden on desktop) */
+.mob-logo{display:none;align-items:center;gap:7px;margin-bottom:1.25rem}
+.mob-logo img{width:24px;height:24px;border-radius:5px}
+.mob-logo span{font-weight:800;font-size:.88rem;color:var(--ink);letter-spacing:-.02em}
+
+.fh{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--ink);letter-spacing:-.03em;margin-bottom:.2rem;line-height:1.2}
+.fs{font-size:.8rem;color:var(--ink-3);margin-bottom:1.2rem}
+.fs a{color:var(--brand);font-weight:700}
+.fs a:hover{text-decoration:underline}
+
+/* Google btn */
+.btn-g{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:.62rem;background:var(--surface);
+  border:1.5px solid var(--b2);border-radius:var(--r-lg);
+  font-size:.82rem;font-weight:600;color:var(--ink);font-family:var(--fb);
+  cursor:pointer;transition:all .16s;margin-bottom:1rem;
+}
+.btn-g:hover{background:var(--muted);border-color:rgba(67,56,202,.3)}
+.btn-g img{width:16px;height:16px}
+.g-spin{display:none;width:14px;height:14px;border:2px solid var(--b2);border-top-color:var(--brand);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+.btn-g.L img,.btn-g.L .gt{display:none}
+.btn-g.L .g-spin{display:block}
+
+.div{display:flex;align-items:center;gap:.55rem;margin:.05rem 0 1rem;color:var(--ink-4);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.div::before,.div::after{content:'';flex:1;height:1px;background:var(--b2)}
+
+/* Fields */
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.7rem}
+.fi{margin-bottom:.7rem}
+.fi label{display:block;font-size:.72rem;font-weight:700;color:var(--ink-2);margin-bottom:.3rem}
+.fi input{
+  width:100%;padding:.56rem .75rem;background:var(--base);
+  border:1.5px solid var(--b2);border-radius:var(--r-md);
+  color:var(--ink);font-size:.82rem;font-family:var(--fb);
+  transition:border-color .14s,box-shadow .14s,background .14s;
+}
+.fi input::placeholder{color:var(--ink-4)}
+.fi input:focus{outline:none;border-color:var(--brand-l);box-shadow:0 0 0 3px rgba(99,102,241,.12);background:var(--surface)}
+.fi.err input{border-color:var(--red)}
+.fi .em{font-size:.68rem;color:var(--red);margin-top:.22rem;display:none}
+.fi.err .em{display:block}
+
+/* pw eye */
+.pw-r{position:relative}
+.pw-r input{padding-right:2.4rem}
+.eye{position:absolute;right:.65rem;top:50%;transform:translateY(-50%);color:var(--ink-4);cursor:pointer;display:flex;background:none;border:none;padding:0}
+.eye i{width:14px;height:14px}
+
+/* strength */
+.str{margin-top:.3rem;display:none}
+.str.on{display:block}
+.sb{display:flex;gap:2px;margin-bottom:2px}
+.sb-i{height:3px;flex:1;border-radius:2px;background:var(--b2);transition:background .2s}
+.sb-i.w{background:var(--red)}.sb-i.f{background:var(--amber)}.sb-i.g{background:var(--green)}
+.sl{font-size:.66rem;color:var(--ink-4)}
+.sl.w{color:var(--red)}.sl.f{color:var(--amber)}.sl.g{color:var(--green)}
+
+/* terms */
+.tr-row{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem}
+.tr-row input{width:13px;height:13px;margin-top:2px;accent-color:var(--brand);flex-shrink:0;cursor:pointer}
+.tr-row label{font-size:.75rem;color:var(--ink-3);line-height:1.45;cursor:pointer}
+.tr-row a{color:var(--brand);font-weight:600}
+
+/* submit */
+.btn-s{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;padding:.74rem;background:var(--brand);color:#fff;border:none;
+  border-radius:var(--r-lg);font-size:.85rem;font-weight:700;font-family:var(--fb);
+  cursor:pointer;transition:all .16s;box-shadow:var(--sh-brand);
+}
+.btn-s:hover:not(:disabled){background:var(--brand-d);box-shadow:0 6px 20px rgba(67,56,202,.36);transform:translateY(-1px)}
+.btn-s:active:not(:disabled){transform:translateY(0)}
+.btn-s:disabled{opacity:.58;cursor:not-allowed}
+.btn-s i{width:15px;height:15px;transition:transform .17s}
+.btn-s:hover:not(:disabled) i{transform:translateX(3px)}
+.b-spin{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+.btn-s.L .bt,.btn-s.L i{display:none}
+.btn-s.L .b-spin{display:block}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* entry */
+.box>*{opacity:0;transform:translateY(10px);animation:ef .42s var(--ease-out) both}
+.box>*:nth-child(1){animation-delay:.04s}.box>*:nth-child(2){animation-delay:.08s}
+.box>*:nth-child(3){animation-delay:.12s}.box>*:nth-child(4){animation-delay:.16s}
+.box>*:nth-child(5){animation-delay:.20s}.box>*:nth-child(6){animation-delay:.24s}
+.box>*:nth-child(7){animation-delay:.28s}
+@keyframes ef{to{opacity:1;transform:translateY(0)}}
+
+/* toast */
+.tc{position:fixed;bottom:1rem;right:1rem;z-index:999;display:flex;flex-direction:column;gap:.4rem;max-width:300px;width:calc(100vw - 2rem)}
+.tt{display:flex;align-items:center;gap:.55rem;padding:.7rem .85rem;background:var(--surface);border:1px solid var(--b2);border-radius:var(--r-lg);box-shadow:0 6px 24px rgba(15,23,42,.12);font-size:.8rem;font-weight:500;animation:tin .2s var(--ease-out)}
+.tt.s{border-left:3px solid var(--green)}.tt.e{border-left:3px solid var(--red)}
+.tt.w{border-left:3px solid var(--amber)}.tt.i{border-left:3px solid var(--brand)}
+.tt i{width:15px;height:15px;flex-shrink:0}
+.tt.s i{color:var(--green)}.tt.e i{color:var(--red)}.tt.w i{color:var(--amber)}.tt.i i{color:var(--brand)}
+@keyframes tin{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+
+/* responsive */
+@media(max-width:900px){
+  body{height:auto;overflow-y:auto}
+  .wrap{grid-template-columns:1fr;height:auto}
+  .L{display:none}
+  .R{padding:2.5rem 1.5rem;min-height:100vh;justify-content:flex-start;padding-top:3rem}
+  .mob-logo{display:flex}
+}
+@media(max-width:460px){
+  .R{padding:1.5rem 1.1rem}
+  .row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ════ LEFT PANEL ════ -->
+<div class="L">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+
+  <div class="L-top">
+    <!-- Icon ONLY — no text/name -->
+    <div class="L-icon">
+      <img src="https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg" alt="">
+    </div>
+
+    <div class="L-h">Grow your<br>business with<br><em>real data</em></div>
+    <div class="L-p">Join 10,000+ sellers who track sales, predict trends, and make smarter decisions.</div>
+
+    <!-- Animated cards -->
+    <div class="cards">
+      <div class="fc fc-a">
+        <div class="lbl">Monthly Revenue</div>
+        <div class="val">₨84,200</div>
+        <div class="delta">▲ 32% from last month</div>
+        <div class="bars">
+          <div class="bar" style="height:38%"></div><div class="bar h" style="height:56%"></div>
+          <div class="bar" style="height:44%"></div><div class="bar h" style="height:72%"></div>
+          <div class="bar" style="height:52%"></div><div class="bar h" style="height:84%"></div>
+          <div class="bar" style="height:64%"></div><div class="bar h" style="height:100%"></div>
+        </div>
+      </div>
+      <div class="fc fc-b">
+        <div class="lbl">Sales</div>
+        <div style="display:flex;align-items:center;gap:.45rem">
+          <div class="val" style="font-size:1.2rem">1,284</div>
+          <div class="dot"></div>
+        </div>
+        <div style="font-size:.64rem;color:rgba(255,255,255,.55)">This month</div>
+      </div>
+      <div class="fc fc-c">
+        <div class="ni"><i data-lucide="trending-up"></i></div>
+        <div>
+          <div style="font-size:.72rem;font-weight:700">New sale!</div>
+          <div style="font-size:.63rem;color:rgba(255,255,255,.58)">UI Kit Pro — ₨4,500</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonial -->
+  <div class="L-bot">
+    <div class="stars">★★★★★</div>
+    <div class="tq">"30% profit increase in 3 months. Now I know exactly what to sell and when."</div>
+    <div class="ta">
+      <img src="https://i.pravatar.cc/64?u=sarah" alt="">
+      <div><div class="tn">Sarah Jenkins</div><div class="tr">CEO, Zenith Store</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ RIGHT FORM PANEL ════ -->
+<div class="R">
+  <div class="box">
+
+    <!-- Mobile only logo -->
+    <div class="mob-logo">
+      <img src="https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg" alt="">
+      <span>SellerTrackr</span>
+    </div>
+
+    <div class="fh">Create account</div>
+    <div class="fs">Already have one? <a href="login.html">Sign in</a></div>
+
+    <!-- Google — calls Supabase directly, no module imports -->
+    <button class="btn-g" id="gb" type="button">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+      <div class="g-spin"></div>
+      <span class="gt">Continue with Google</span>
+    </button>
+
+    <div class="div">or with email</div>
+
+    <form id="sf" novalidate>
+      <div class="row">
+        <div class="fi" id="ffn">
+          <label for="fn">Full Name</label>
+          <input id="fn" type="text" placeholder="John Doe" autocomplete="name">
+          <div class="em">Required</div>
+        </div>
+        <div class="fi" id="fun">
+          <label for="un">Username</label>
+          <input id="un" type="text" placeholder="johndoe" autocomplete="username">
+          <div class="em">Required</div>
+        </div>
+      </div>
+
+      <div class="fi" id="fem">
+        <label for="em">Email address</label>
+        <input id="em" type="email" placeholder="name@company.com" autocomplete="email">
+        <div class="em">Valid email required</div>
+      </div>
+
+      <div class="fi" id="fpw">
+        <label for="pw">Password</label>
+        <div class="pw-r">
+          <input id="pw" type="password" placeholder="Min. 8 characters" autocomplete="new-password">
+          <button class="eye" type="button" id="ey"><i data-lucide="eye"></i></button>
+        </div>
+        <div class="str" id="str">
+          <div class="sb">
+            <div class="sb-i" id="s1"></div><div class="sb-i" id="s2"></div>
+            <div class="sb-i" id="s3"></div><div class="sb-i" id="s4"></div>
+          </div>
+          <div class="sl" id="sl">Weak</div>
+        </div>
+        <div class="em">Min. 8 characters required</div>
+      </div>
+
+      <div class="tr-row">
+        <input type="checkbox" id="tc">
+        <label for="tc">I agree to the <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a></label>
+      </div>
+
+      <button type="submit" class="btn-s" id="sb">
+        <span class="bt">Create Account</span>
+        <i data-lucide="arrow-right"></i>
+        <div class="b-spin"></div>
+      </button>
+    </form>
+
+  </div>
+</div>
+</div>
+
+<div class="tc" id="tc-wrap"></div>
+
+<script>
+// ── Wait for everything to load ──
+window.addEventListener('load', function() {
+  if (window.lucide) window.lucide.createIcons();
+
+  // ── Supabase init (UMD global) ──
+  const SURL = 'https://dpxuopdoumomasmahnyo.supabase.co';
+  const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+
+  let sb;
+  try {
+    sb = supabase.createClient(SURL, SKEY);
+  } catch(e) {
+    console.error('Supabase init failed:', e);
+  }
+
+  // ── Toast ──
+  function toast(msg, type) {
+    const ic = {s:'check-circle', e:'x-circle', w:'alert-triangle', i:'info'};
+    const c = document.getElementById('tc-wrap');
+    const el = document.createElement('div');
+    el.className = 'tt ' + (type||'i');
+    el.innerHTML = '<i data-lucide="' + (ic[type]||'info') + '"></i><span style="flex:1">' + msg + '</span>';
+    c.appendChild(el);
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(function(){
+      el.style.opacity='0'; el.style.transition='opacity .22s';
+      setTimeout(function(){ el.remove(); }, 240);
+    }, 3800);
+  }
+
+  // ── Eye toggle ──
+  var pwEl = document.getElementById('pw');
+  document.getElementById('ey').addEventListener('click', function() {
+    var show = pwEl.type === 'password';
+    pwEl.type = show ? 'text' : 'password';
+    this.innerHTML = show
+      ? '<i data-lucide="eye-off" style="width:14px;height:14px"></i>'
+      : '<i data-lucide="eye" style="width:14px;height:14px"></i>';
+    if (window.lucide) window.lucide.createIcons();
+  });
+
+  // ── Password strength ──
+  function strScore(v) {
+    var s=0;
+    if(v.length>=8) s++;
+    if(v.length>=12) s++;
+    if(/[A-Z]/.test(v) && /[0-9]/.test(v)) s++;
+    if(/[^A-Za-z0-9]/.test(v)) s++;
+    return s;
+  }
+  pwEl.addEventListener('input', function() {
+    var v = pwEl.value;
+    var box = document.getElementById('str');
+    box.classList.toggle('on', v.length > 0);
+    if (!v.length) return;
+    var sc = strScore(v);
+    var cls = sc<=1?'w':sc<=2?'f':'g';
+    var lbl = sc<=1?'Weak':sc<=2?'Fair':'Strong';
+    ['s1','s2','s3','s4'].forEach(function(id,i){
+      var b = document.getElementById(id);
+      b.className = 'sb-i' + (i < Math.max(sc,1) ? ' '+cls : '');
+    });
+    var l = document.getElementById('sl');
+    l.textContent = lbl; l.className = 'sl '+cls;
+  });
+
+  // ── Clear errors on input ──
+  [['fn','ffn'],['un','fun'],['em','fem'],['pw','fpw']].forEach(function(p){
+    var el = document.getElementById(p[0]);
+    var wrap = document.getElementById(p[1]);
+    if(el && wrap) el.addEventListener('input', function(){ wrap.classList.remove('err'); });
+  });
+
+  // ── Google OAuth ──
+  document.getElementById('gb').addEventListener('click', async function() {
+    if (!sb) { toast('Supabase connection error. Check config.', 'e'); return; }
+    var btn = this;
+    btn.classList.add('L'); btn.disabled = true;
+
+    var { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/user-dashboard.html',
+        queryParams: { access_type: 'offline', prompt: 'consent' }
+      }
+    });
+
+    if (error) {
+      btn.classList.remove('L'); btn.disabled = false;
+      if (error.message.includes('provider') || error.message.includes('not enabled')) {
+        toast('Google login Supabase mein enable nahi. Authentication > Providers mein Google on karein.', 'w');
+      } else {
+        toast('Google error: ' + error.message, 'e');
+      }
+    }
+    // On success browser redirects automatically
+  });
+
+  // ── Signup form ──
+  document.getElementById('sf').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var fn = document.getElementById('fn').value.trim();
+    var un = document.getElementById('un').value.trim();
+    var em = document.getElementById('em').value.trim();
+    var pw = document.getElementById('pw').value;
+    var tc = document.getElementById('tc').checked;
+
+    var ok = true;
+    function chk(id, cond) {
+      var el = document.getElementById(id);
+      el.classList.toggle('err', !cond);
+      if(!cond) ok = false;
+    }
+    chk('ffn', fn.length > 0);
+    chk('fun', un.length > 0);
+    chk('fem', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
+    chk('fpw', pw.length >= 8);
+
+    if (!ok) { toast('Please fix the errors above', 'w'); return; }
+    if (!tc)  { toast('Terms & Privacy accept karein', 'w'); return; }
+    if (!sb)  { toast('Supabase connection error', 'e'); return; }
+
+    var btn = document.getElementById('sb');
+    btn.classList.add('L'); btn.disabled = true;
+
+    var result = await sb.auth.signUp({
+      email: em, password: pw,
+      options: {
+        data: { full_name: fn, username: un },
+        emailRedirectTo: window.location.origin + '/user-dashboard.html'
+      }
+    });
+
+    btn.classList.remove('L'); btn.disabled = false;
+
+    if (result.error) {
+      var msg = result.error.message;
+      if(msg.includes('already registered')) msg = 'Ye email registered hai. Login karein.';
+      else if(msg.includes('Password'))      msg = 'Password 8+ characters hona chahiye.';
+      toast(msg, 'e');
+      return;
+    }
+
+    // Supabase duplicate check
+    if (result.data?.user?.identities?.length === 0) {
+      toast('Ye email pehle se registered hai. Login karein.', 'w');
+      return;
+    }
+
+    toast('Account ban gaya! Email check karein verification ke liye.', 's');
+    setTimeout(function(){ window.location.href = 'verify-email.html'; }, 1600);
+  });
+});
+</script>
+</body>
+</html>
