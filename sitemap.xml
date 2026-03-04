@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://sellertrackr.com/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://r2-bucket.flowith.net/f/738a58f66308b7d7/sellertrackr_logo_design_index_1%401024x1024.jpeg</image:loc>
+      <image:title>SellerTrackr — Sales Analytics Platform</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sellertrackr.com/index.html</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

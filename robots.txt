@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+
+# Block app/dashboard pages from crawling
+Disallow: /user-dashboard.html
+Disallow: /user-analytics.html
+Disallow: /user-reports.html
+Disallow: /user-settings.html
+Disallow: /user-support.html
+Disallow: /user-pricing.html
+Disallow: /admin-dashboard.html
+Disallow: /admin-users.html
+Disallow: /admin-payments.html
+Disallow: /admin-feedback.html
+Disallow: /admin-analytics.html
+Disallow: /admin-login.html
+Disallow: /login.html
+Disallow: /signup.html
+Disallow: /payment.html
+Disallow: /verify-email.html
+Disallow: /assets/js/
+
+# Allow important public pages
+Allow: /index.html
+Allow: /assets/css/
+Allow: /assets/images/
+
+Sitemap: https://sellertrackr.com/sitemap.xml
