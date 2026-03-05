@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help Center — SellerTrackr</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#4338CA;--brand-d:#3730A3;--brand-l:#6366F1;--brand-bg:#EEF2FF;--ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;--surface:#FFFFFF;--base:#F8F9FC;--muted:#F1F4F9;--border:rgba(15,23,42,.08);--border-2:rgba(15,23,42,.14);--green:#10B981;--amber:#F59E0B;--r-md:10px;--r-lg:14px;--r-xl:20px;--r-2xl:28px;--r-full:9999px;--sh-md:0 4px 12px rgba(15,23,42,.08);--sh-lg:0 12px 32px rgba(15,23,42,.09);--sh-brand:0 6px 24px rgba(67,56,202,.28);--ease:cubic-bezier(.4,0,.2,1);--font-display:'Fraunces',Georgia,serif;--font-body:'Plus Jakarta Sans',system-ui,sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--base);color:var(--ink);line-height:1.65;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.container{width:100%;max-width:900px;margin:0 auto;padding:0 1.25rem}
+.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;height:60px;gap:1rem}
+.nav-logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:1rem;color:var(--ink);flex-shrink:0}
+.nav-logo img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.nav-back{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.84rem;font-weight:600;color:var(--ink-3);padding:.4rem .8rem;border-radius:var(--r-md);transition:all .15s}
+.nav-back:hover{background:var(--muted);color:var(--ink)}
+.nav-back i{width:15px;height:15px}
+.page-hero{background:linear-gradient(135deg,var(--brand),var(--brand-l));padding:3rem 0 2.5rem;text-align:center;color:#fff}
+.page-hero h1{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+.page-hero p{font-size:.95rem;opacity:.8;max-width:480px;margin:0 auto 1.5rem}
+.search-wrap{max-width:460px;margin:0 auto;position:relative}
+.search-wrap input{width:100%;padding:.75rem 1rem .75rem 2.8rem;border-radius:var(--r-full);border:none;font-size:.9rem;font-family:var(--font-body);outline:none;box-shadow:var(--sh-lg)}
+.search-wrap i{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--ink-4)}
+.page-body{padding:3rem 0 4rem}
+.cats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:3rem}
+.cat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.4rem;text-align:center;transition:all .2s var(--ease);cursor:pointer}
+.cat-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px);border-color:rgba(99,102,241,.25)}
+.cat-icon{width:46px;height:46px;background:var(--brand-bg);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;color:var(--brand)}
+.cat-icon i{width:20px;height:20px}
+.cat-title{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.3rem}
+.cat-sub{font-size:.76rem;color:var(--ink-4)}
+.section-title{font-size:1.05rem;font-weight:800;color:var(--ink);margin-bottom:1rem}
+.faq-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;margin-bottom:2rem}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer;gap:1rem}
+.faq-q:hover{background:var(--base)}
+.faq-qt{font-size:.875rem;font-weight:600;color:var(--ink)}
+.faq-ic{width:16px;height:16px;color:var(--ink-4);flex-shrink:0;transition:transform .22s}
+.faq-item.open .faq-ic{transform:rotate(180deg);color:var(--brand)}
+.faq-item.open .faq-qt{color:var(--brand)}
+.faq-ans{font-size:.84rem;color:var(--ink-3);line-height:1.75;padding:0 1.25rem;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s}
+.faq-item.open .faq-ans{max-height:300px;padding:.05rem 1.25rem 1rem}
+.cta-box{background:linear-gradient(135deg,var(--brand-bg),#e0e7ff);border:1px solid rgba(99,102,241,.2);border-radius:var(--r-2xl);padding:2rem;text-align:center}
+.cta-box h3{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:.4rem}
+.cta-box p{font-size:.84rem;color:var(--ink-3);margin-bottom:1rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.6rem 1.25rem;border-radius:var(--r-lg);font-size:.85rem;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:all .16s}
+.btn-brand{background:var(--brand);color:#fff;border:none;box-shadow:var(--sh-brand)}
+.btn-brand:hover{background:var(--brand-d)}
+.footer{background:var(--ink);padding:2rem 0;margin-top:0}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.9rem;color:#fff}
+.footer-logo img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.footer-links-row{display:flex;gap:1.25rem;flex-wrap:wrap}
+.footer-links-row a{font-size:.8rem;color:rgba(255,255,255,.45);transition:color .15s}
+.footer-links-row a:hover{color:#fff}
+.footer-copy{font-size:.76rem;color:rgba(255,255,255,.25);width:100%;margin-top:.5rem}
+@media(max-width:640px){
+  .cats-grid{grid-template-columns:1fr 1fr}
+  .page-hero{padding:2rem 0 2rem}
+  .page-body{padding:2rem 0 3rem}
+  .footer-inner{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:400px){.cats-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="container" style="max-width:1100px">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="SellerTrackr">
+        <span>SellerTrackr</span>
+      </a>
+      <a href="index.html" class="nav-back"><i data-lucide="arrow-left"></i> Back to Home</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <h1>Help Center</h1>
+    <p>Find answers, guides, and tips to get the most out of SellerTrackr.</p>
+    <div class="search-wrap">
+      <i data-lucide="search"></i>
+      <input type="text" placeholder="Search articles, guides...">
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+  <div class="container">
+    <div class="cats-grid">
+      <div class="cat-card"><div class="cat-icon"><i data-lucide="rocket"></i></div><div class="cat-title">Getting Started</div><div class="cat-sub">Setup your account in minutes</div></div>
+      <div class="cat-card"><div class="cat-icon"><i data-lucide="bar-chart-2"></i></div><div class="cat-title">Analytics</div><div class="cat-sub">Understand your sales data</div></div>
+      <div class="cat-card"><div class="cat-icon"><i data-lucide="store"></i></div><div class="cat-title">Storefronts</div><div class="cat-sub">Connect Daraz, Instagram & more</div></div>
+      <div class="cat-card"><div class="cat-icon"><i data-lucide="credit-card"></i></div><div class="cat-title">Billing</div><div class="cat-sub">Plans, payments & upgrades</div></div>
+      <div class="cat-card"><div class="cat-icon"><i data-lucide="shield"></i></div><div class="cat-title">Account & Security</div><div class="cat-sub">Manage your profile safely</div></div>
+      <div class="cat-card"><div class="cat-icon"><i data-lucide="file-text"></i></div><div class="cat-title">Reports</div><div class="cat-sub">Export and share your data</div></div>
+    </div>
+
+    <div class="section-title">Frequently Asked Questions</div>
+    <div class="faq-list" id="faq">
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-qt">How do I add my first sale?</span><i data-lucide="chevron-down" class="faq-ic"></i></div>
+        <div class="faq-ans">Go to Reports page and click "Add Sale". Fill in product name, amount, store, channel, and status. Your sale will be saved instantly and reflected in your dashboard analytics.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-qt">What is the free plan limit?</span><i data-lucide="chevron-down" class="faq-ic"></i></div>
+        <div class="faq-ans">The free plan allows up to 50 sales per month. Once you reach this limit, you'll need to upgrade to Premium (₨900/month) to continue adding sales. Premium gives you unlimited sales and all advanced features.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-qt">How do I upgrade to Premium?</span><i data-lucide="chevron-down" class="faq-ic"></i></div>
+        <div class="faq-ans">Click "Upgrade" in your dashboard sidebar or visit the Pricing page. We accept payments via JazzCash, EasyPaisa, and bank transfer. Your account is upgraded instantly after payment confirmation.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-qt">Can I export my sales data?</span><i data-lucide="chevron-down" class="faq-ic"></i></div>
+        <div class="faq-ans">Yes — CSV export is available for Premium users. Go to Reports and click the "Export CSV" button. Free users can upgrade to access this feature.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-qt">Is my data secure?</span><i data-lucide="chevron-down" class="faq-ic"></i></div>
+        <div class="faq-ans">Absolutely. All data is stored securely using Supabase with row-level security. Your sales data is only accessible to you. We use HTTPS encryption for all connections and never share your data with third parties.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-qt">How do I reset my password?</span><i data-lucide="chevron-down" class="faq-ic"></i></div>
+        <div class="faq-ans">On the login page, click "Forgot Password" and enter your email. You'll receive a password reset link within a few minutes. Check your spam folder if you don't see it in your inbox.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-qt">Which platforms are supported?</span><i data-lucide="chevron-down" class="faq-ic"></i></div>
+        <div class="faq-ans">SellerTrackr supports Daraz, Instagram, WhatsApp, and any custom storefront. You can track sales from multiple platforms in one dashboard and filter by store or channel.</div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Still need help?</h3>
+      <p>Our support team is ready to assist you. We typically respond within 24 hours.</p>
+      <a href="contact.html" class="btn btn-brand"><i data-lucide="mail"></i> Contact Support</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container" style="max-width:1100px">
+    <div class="footer-inner">
+      <div class="footer-logo"><img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt=""><span>SellerTrackr</span></div>
+      <div class="footer-links-row">
+        <a href="help-center.html">Help Center</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+      </div>
+      <div class="footer-copy">© 2026 SellerTrackr Inc. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+if(window.lucide)window.lucide.createIcons();
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen)item.classList.add('open');
+    if(window.lucide)window.lucide.createIcons();
+  });
+});
+</script>
+</body>
+</html>
