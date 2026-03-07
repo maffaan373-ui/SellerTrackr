@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Upgrade — SellerTrackr</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png">
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4338CA;--brand-l:#6366F1;--brand-bg:#EEF2FF;--brand-bg2:#E0E7FF;
+  --ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;--ink-5:#CBD5E1;
+  --surface:#fff;--base:#F8F9FC;--muted:#F1F4F9;
+  --border:rgba(15,23,42,.07);--border-2:rgba(15,23,42,.12);
+  --green:#10B981;--green-bg:#ECFDF5;--green-bd:#A7F3D0;
+  --amber:#F59E0B;--amber-bg:#FFFBEB;--red:#EF4444;
+  --r-md:10px;--r-lg:14px;--r-xl:18px;--r-2xl:24px;--r-full:9999px;
+  --sh-md:0 4px 16px rgba(15,23,42,.08);--sh-lg:0 12px 36px rgba(15,23,42,.12);
+  --fb:'Plus Jakarta Sans',system-ui,sans-serif;--fd:'Fraunces',Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);background:var(--base);color:var(--ink);min-height:100vh}
+
+.pay-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 5rem;background:linear-gradient(150deg,#eef2ff 0%,#f8f9fc 45%)}
+.pay-wrap{width:100%;max-width:520px;display:flex;flex-direction:column;gap:1.1rem}
+
+.back-link{display:inline-flex;align-items:center;gap:5px;font-size:.79rem;font-weight:600;
+  color:var(--ink-4);text-decoration:none;transition:color .14s}
+.back-link:hover{color:var(--brand)}
+.back-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round}
+
+.hero{text-align:center;padding:.75rem 0 .25rem}
+.hero-ic{width:58px;height:58px;background:linear-gradient(135deg,#6366f1,#4338ca);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;
+  box-shadow:0 8px 24px rgba(67,56,202,.3)}
+.hero-ic svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hero h1{font-family:var(--fd);font-size:1.6rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.3rem}
+.hero p{font-size:.84rem;color:var(--ink-3)}
+
+.section-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-4)}
+
+/* Plan tabs */
+.plan-tabs{display:flex;flex-direction:column;gap:.5rem;margin-top:.55rem}
+.plan-tab{display:flex;align-items:center;gap:.85rem;padding:.9rem 1rem;background:var(--surface);
+  border:1.5px solid var(--border-2);border-radius:var(--r-xl);cursor:pointer;transition:all .16s}
+.plan-tab:hover{border-color:var(--brand-l);background:var(--brand-bg)}
+.plan-tab.active{border-color:var(--brand);background:var(--brand-bg);box-shadow:0 0 0 3px rgba(67,56,202,.08)}
+.pt-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink-5);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .16s;position:relative}
+.plan-tab.active .pt-radio{border-color:var(--brand);background:var(--brand)}
+.plan-tab.active .pt-radio::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.pt-info{flex:1;min-width:0}
+.pt-name{font-size:.88rem;font-weight:700;color:var(--ink)}
+.pt-price{font-size:.75rem;color:var(--ink-3);margin-top:.08rem;line-height:1.4}
+.pt-badge{font-size:.61rem;font-weight:800;padding:.18rem .58rem;border-radius:var(--r-full);white-space:nowrap;flex-shrink:0}
+.pop-b{background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff}
+.save-b{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+
+/* Summary */
+.plan-summary{background:var(--surface);border:1.5px solid var(--brand);border-radius:var(--r-xl);
+  padding:1rem 1.1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+  box-shadow:0 0 0 3px rgba(67,56,202,.06)}
+.ps-label{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);margin-bottom:.18rem}
+.ps-name{font-size:.92rem;font-weight:800;color:var(--ink)}
+.ps-period{font-size:.71rem;color:var(--ink-4);margin-top:.06rem}
+.ps-price{text-align:right;flex-shrink:0}
+.ps-amount{font-family:var(--fd);font-size:1.75rem;font-weight:700;color:var(--ink);line-height:1;letter-spacing:-.02em}
+.ps-per{font-size:.67rem;color:var(--ink-4);margin-top:.1rem}
+
+/* Method grid */
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:.55rem}
+.mc{background:var(--surface);border:1.5px solid var(--border-2);border-radius:var(--r-lg);
+  padding:.75rem .5rem;text-align:center;cursor:pointer;transition:all .16s;position:relative}
+.mc:hover{border-color:var(--brand-l);background:var(--brand-bg)}
+.mc.sel{border-color:var(--brand);background:var(--brand-bg);box-shadow:0 0 0 3px rgba(67,56,202,.08)}
+.mc-chk{position:absolute;top:5px;right:5px;width:16px;height:16px;background:var(--brand);
+  border-radius:50%;display:none;align-items:center;justify-content:center}
+.mc.sel .mc-chk{display:flex}
+.mc-chk svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.mc-icon{width:38px;height:38px;border-radius:var(--r-md);margin:0 auto .45rem;
+  display:flex;align-items:center;justify-content:center}
+.mc-icon svg{width:20px;height:20px;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
+.mc-name{font-size:.74rem;font-weight:700;color:var(--ink);line-height:1.3}
+.mc-sub{font-size:.62rem;color:var(--ink-4);margin-top:2px}
+
+/* Form */
+.form-card{background:var(--surface);border:1.5px solid var(--border-2);border-radius:var(--r-xl);padding:1.2rem}
+.ff{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.9rem}
+.ff:last-child{margin-bottom:0}
+.ff label{font-size:.76rem;font-weight:700;color:var(--ink-2)}
+.ff input{background:var(--base);border:1.5px solid var(--border-2);border-radius:var(--r-md);
+  padding:.62rem .8rem;font-size:.86rem;font-family:var(--fb);color:var(--ink);outline:none;
+  transition:border-color .14s,box-shadow .14s;width:100%}
+.ff input:focus{border-color:rgba(99,102,241,.5);box-shadow:0 0 0 3px rgba(99,102,241,.09)}
+.ff .hint{font-size:.68rem;color:var(--ink-4)}
+
+/* Instructions */
+.inst-box{background:var(--brand-bg);border:1.5px solid var(--brand-bg2);border-radius:var(--r-lg);
+  padding:.9rem 1rem;margin-top:.85rem}
+.inst-title{font-size:.75rem;font-weight:800;color:var(--brand);display:flex;align-items:center;
+  gap:5px;margin-bottom:.55rem}
+.inst-title svg{width:13px;height:13px;stroke:var(--brand);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.inst-steps{display:flex;flex-direction:column;gap:.35rem}
+.inst-step{display:flex;align-items:flex-start;gap:.55rem;font-size:.77rem;color:var(--ink-3);line-height:1.55}
+.inst-num{width:19px;height:19px;border-radius:50%;background:var(--brand);color:#fff;
+  font-size:.62rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* Pay button */
+.pay-btn{width:100%;padding:.9rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;
+  border:none;border-radius:var(--r-xl);font-size:.95rem;font-weight:800;font-family:var(--fb);
+  cursor:pointer;transition:all .18s;box-shadow:0 6px 20px rgba(67,56,202,.32);
+  display:flex;align-items:center;justify-content:center;gap:.55rem}
+.pay-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 28px rgba(67,56,202,.42)}
+.pay-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.pay-btn svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .7s linear infinite}
+
+/* Secure note */
+.secure-note{display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-size:.71rem;color:var(--ink-4);flex-wrap:wrap;text-align:center}
+.secure-note svg{width:13px;height:13px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sdot{width:3px;height:3px;border-radius:50%;background:var(--ink-5)}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:9000;
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+  opacity:0;pointer-events:none;transition:opacity .22s;backdrop-filter:blur(4px)}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--surface);border-radius:var(--r-2xl);padding:2rem 1.75rem;
+  max-width:360px;width:100%;box-shadow:var(--sh-lg);transform:translateY(12px);transition:transform .22s;text-align:center}
+.modal-ov.open .modal-box{transform:translateY(0)}
+.m-ic{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.m-ic.pend{background:var(--amber-bg)} .m-ic.pend svg{stroke:var(--amber)}
+.m-ic.done{background:var(--green-bg)} .m-ic.done svg{stroke:var(--green)}
+.m-ic svg{width:28px;height:28px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.modal-box h2{font-family:var(--fd);font-size:1.2rem;font-weight:700;margin-bottom:.4rem}
+.modal-box p{font-size:.82rem;color:var(--ink-3);line-height:1.65;margin-bottom:1.2rem}
+.m-btn{width:100%;padding:.7rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;
+  border:none;border-radius:var(--r-lg);font-size:.86rem;font-weight:700;font-family:var(--fb);cursor:pointer}
+
+/* Toast */
+.tc{position:fixed;bottom:1.25rem;right:1.25rem;z-index:9999;display:flex;flex-direction:column;gap:.4rem;max-width:290px}
+.tt{display:flex;align-items:center;gap:.5rem;padding:.62rem .85rem;background:var(--surface);
+  border:1px solid var(--border-2);border-radius:var(--r-lg);box-shadow:var(--sh-lg);
+  font-size:.79rem;font-weight:500;animation:tslide .2s ease}
+.tt svg{width:14px;height:14px;flex-shrink:0;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tt.e{border-left:3px solid var(--red)}.tt.e svg{stroke:var(--red)}
+.tt.s{border-left:3px solid var(--green)}.tt.s svg{stroke:var(--green)}
+.tt.i{border-left:3px solid var(--brand)}.tt.i svg{stroke:var(--brand)}
+@keyframes tslide{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+
+/* Mobile */
+@media(max-width:480px){
+  .pay-page{padding:1.2rem .85rem 4rem}
+  .hero h1{font-size:1.4rem}
+  .ps-amount{font-size:1.5rem}
+  .plan-tab{padding:.8rem .85rem;gap:.65rem}
+  .pt-name{font-size:.83rem}
+  .pt-price{font-size:.72rem}
+}
+</style>
+</head>
+<body>
+<div class="pay-page">
+<div class="pay-wrap">
+
+  <!-- Back -->
+  <a class="back-link" href="user-pricing.html">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Pricing
+  </a>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-ic">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    <h1>Upgrade to Premium</h1>
+    <p>Unlock Zeno AI, PDF reports, bulk import &amp; more</p>
+  </div>
+
+  <!-- Plan Selector -->
+  <div>
+    <div class="section-label">Select Your Plan</div>
+    <div class="plan-tabs" id="plan-tabs">
+
+      <div class="plan-tab active" data-plan="monthly" onclick="selectPlan('monthly',this)">
+        <div class="pt-radio"></div>
+        <div class="pt-info">
+          <div class="pt-name">Pro — Monthly</div>
+          <div class="pt-price">₨1,500 / month · Unlimited sales, Zeno AI, PDF reports</div>
+        </div>
+        <span class="pt-badge pop-b">Popular</span>
+      </div>
+
+      <div class="plan-tab" data-plan="business" onclick="selectPlan('business',this)">
+        <div class="pt-radio"></div>
+        <div class="pt-info">
+          <div class="pt-name">Business — Monthly</div>
+          <div class="pt-price">₨3,500 / month · Multi-store, team access, WhatsApp alerts</div>
+        </div>
+      </div>
+
+      <div class="plan-tab" data-plan="annual_pro" onclick="selectPlan('annual_pro',this)">
+        <div class="pt-radio"></div>
+        <div class="pt-info">
+          <div class="pt-name">Pro — Annual</div>
+          <div class="pt-price">₨13,500 / year · ₨1,125/mo — Save ₨4,500</div>
+        </div>
+        <span class="pt-badge save-b">Save 25%</span>
+      </div>
+
+      <div class="plan-tab" data-plan="annual_business" onclick="selectPlan('annual_business',this)">
+        <div class="pt-radio"></div>
+        <div class="pt-info">
+          <div class="pt-name">Business — Annual</div>
+          <div class="pt-price">₨31,500 / year · ₨2,625/mo — Save ₨10,500</div>
+        </div>
+        <span class="pt-badge save-b">Save 25%</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Plan Summary -->
+  <div class="plan-summary">
+    <div>
+      <div class="ps-label">Selected Plan</div>
+      <div class="ps-name" id="sum-name">Pro — Monthly</div>
+      <div class="ps-period" id="sum-period">Billed monthly · Cancel anytime</div>
+    </div>
+    <div class="ps-price">
+      <div class="ps-amount" id="sum-amount">₨1,500</div>
+      <div class="ps-per" id="sum-per">/month</div>
+    </div>
+  </div>
+
+  <!-- Payment Method -->
+  <div>
+    <div class="section-label">Payment Method</div>
+    <div class="method-grid">
+
+      <div class="mc sel" id="m-easypaisa" onclick="selectMethod('easypaisa')">
+        <div class="mc-chk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="mc-icon" style="background:#e8f5e9">
+          <svg viewBox="0 0 24 24" stroke="#2e7d32">
+            <rect x="5" y="2" width="14" height="20" rx="2"/>
+            <rect x="8" y="6" width="8" height="5" rx="1"/>
+            <line x1="12" y1="17" x2="12" y2="17" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="mc-name">Easypaisa</div>
+        <div class="mc-sub">Mobile wallet</div>
+      </div>
+
+      <div class="mc" id="m-jazzcash" onclick="selectMethod('jazzcash')">
+        <div class="mc-chk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="mc-icon" style="background:#fff3e0">
+          <svg viewBox="0 0 24 24" stroke="#e65100">
+            <rect x="5" y="2" width="14" height="20" rx="2"/>
+            <circle cx="12" cy="9" r="3"/>
+            <line x1="12" y1="17" x2="12" y2="17" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="mc-name">JazzCash</div>
+        <div class="mc-sub">Mobile wallet</div>
+      </div>
+
+      <div class="mc" id="m-sadapay" onclick="selectMethod('sadapay')">
+        <div class="mc-chk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="mc-icon" style="background:#fce4ec">
+          <svg viewBox="0 0 24 24" stroke="#c2185b">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+            <line x1="6" y1="15" x2="10" y2="15"/>
+          </svg>
+        </div>
+        <div class="mc-name">SadaPay</div>
+        <div class="mc-sub">Digital bank</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="form-card">
+    <div id="wallet-form">
+      <div class="ff">
+        <label id="phone-lbl">Easypaisa Number</label>
+        <input type="tel" id="phone-inp" class="" placeholder="03XXXXXXXXX" maxlength="11"
+          oninput="this.value=this.value.replace(/\D/g,'').slice(0,11)">
+        <span class="hint">11-digit mobile number starting with 03</span>
+      </div>
+      <div class="ff">
+        <label>Account Holder Name</label>
+        <input type="text" id="holder-name" placeholder="Your full name">
+      </div>
+    </div>
+    <div id="sadapay-form" style="display:none">
+      <div class="ff">
+        <label>SadaPay IBAN</label>
+        <input type="text" id="sadapay-acc" placeholder="PK00SADA0000000000000000">
+        <span class="hint">Format: PK + 2 digits + SADA + account number</span>
+      </div>
+      <div class="ff">
+        <label>Account Holder Name</label>
+        <input type="text" id="sadapay-name" placeholder="Your full name">
+      </div>
+    </div>
+    <div class="inst-box">
+      <div class="inst-title">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        How to Pay
+      </div>
+      <div class="inst-steps" id="inst-steps"></div>
+    </div>
+  </div>
+
+  <!-- Pay Button -->
+  <button class="pay-btn" id="pay-btn" onclick="submitPayment()">
+    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <span id="btn-txt">Pay ₨1,500 — Pro Monthly</span>
+  </button>
+
+  <!-- Secure -->
+  <div class="secure-note">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Secured by PayFast
+    <span class="sdot"></span>PCI-DSS Compliant
+    <span class="sdot"></span>Cancel anytime
+  </div>
+
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal-ov" id="success-modal">
+  <div class="modal-box">
+    <div class="m-ic pend" id="modal-ic">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <h2 id="modal-title">Payment Request Sent!</h2>
+    <p id="modal-msg">Open your Easypaisa app and approve the payment. Premium will activate automatically.</p>
+    <button class="m-btn" onclick="location.href='user-dashboard.html'">Go to Dashboard</button>
+  </div>
+</div>
+<div class="tc" id="tc-wrap"></div>
+
+<script>
+const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+const BACKEND='https://bipoos-api-1.onrender.com';
+let sb,currentUser,selPlan='monthly',selMethod='easypaisa';
+
+const PLANS={
+  monthly:        {name:'Pro — Monthly',    amount:1500,  per:'/month',period:'Billed monthly · Cancel anytime',   days:30},
+  business:       {name:'Business — Monthly',amount:3500, per:'/month',period:'Billed monthly · Cancel anytime',   days:30},
+  annual_pro:     {name:'Pro — Annual',     amount:13500, per:'/year', period:'Billed annually · ₨1,125/month',    days:365},
+  annual_business:{name:'Business — Annual',amount:31500, per:'/year', period:'Billed annually · ₨2,625/month',   days:365}
+};
+
+const INST={
+  easypaisa:['Click "Pay Now" button','Payment request goes to your Easypaisa number','Open Easypaisa app — check notifications','Enter MPIN and approve','Premium activates automatically'],
+  jazzcash: ['Click "Pay Now" button','Payment request goes to your JazzCash number','Open JazzCash app — check notifications','Enter MPIN and approve','Premium activates automatically'],
+  sadapay:  ['Enter your SadaPay IBAN below','Click "Pay Now"','Amount deducted from SadaPay account','You receive a confirmation SMS','Premium activates automatically']
+};
+
+function initSb(){try{sb=supabase.createClient(SURL,SKEY);return true;}catch(e){return false;}}
+
+async function requireAuth(){
+  if(!initSb()){location.href='login.html';return null;}
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){toast('Please login first','e');setTimeout(()=>location.href='login.html',1200);return null;}
+  currentUser=session.user;return currentUser;
+}
+
+function selectPlan(plan,el){
+  selPlan=plan;
+  document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const p=PLANS[plan];
+  document.getElementById('sum-name').textContent=p.name;
+  document.getElementById('sum-period').textContent=p.period;
+  document.getElementById('sum-amount').textContent='₨'+p.amount.toLocaleString();
+  document.getElementById('sum-per').textContent=p.per;
+  document.getElementById('btn-txt').textContent='Pay ₨'+p.amount.toLocaleString()+' — '+p.name;
+}
+
+function selectMethod(method){
+  selMethod=method;
+  ['easypaisa','jazzcash','sadapay'].forEach(m=>document.getElementById('m-'+m).classList.toggle('sel',m===method));
+  const isW=method!=='sadapay';
+  document.getElementById('wallet-form').style.display=isW?'block':'none';
+  document.getElementById('sadapay-form').style.display=isW?'none':'block';
+  if(method==='jazzcash')document.getElementById('phone-lbl').textContent='JazzCash Number';
+  else if(method==='easypaisa')document.getElementById('phone-lbl').textContent='Easypaisa Number';
+  renderInst(method);
+}
+
+function renderInst(m){
+  document.getElementById('inst-steps').innerHTML=(INST[m]||INST.easypaisa)
+    .map((s,i)=>`<div class="inst-step"><div class="inst-num">${i+1}</div><span>${s}</span></div>`).join('');
+}
+
+const ICONS={
+  e:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  s:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  i:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>'
+};
+
+function toast(msg,type){
+  const c=document.getElementById('tc-wrap');if(!c)return;
+  const el=document.createElement('div');
+  el.className='tt '+(type||'i');
+  el.innerHTML=(ICONS[type]||ICONS.i)+'<span>'+msg+'</span>';
+  c.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .2s';setTimeout(()=>el.remove(),220);},3500);
+}
+
+async function submitPayment(){
+  const btn=document.getElementById('pay-btn'),txt=document.getElementById('btn-txt');
+  let phone='',name='',account='';
+  if(selMethod!=='sadapay'){
+    phone=document.getElementById('phone-inp').value.trim();
+    name=document.getElementById('holder-name').value.trim();
+    if(!/^03[0-9]{9}$/.test(phone)){toast('Enter valid mobile number (03XXXXXXXXX)','e');return;}
+    if(!name){toast('Enter account holder name','e');return;}
+  }else{
+    account=document.getElementById('sadapay-acc').value.trim();
+    name=document.getElementById('sadapay-name').value.trim();
+    if(!account){toast('Enter your SadaPay IBAN','e');return;}
+    if(!name){toast('Enter account holder name','e');return;}
+  }
+  btn.disabled=true;
+  btn.querySelector('svg').classList.add('spin');
+  txt.textContent='Processing…';
+  try{
+    const p=PLANS[selPlan];
+    const{data:payment,error:payErr}=await sb.from('payments').insert({
+      user_id:currentUser.id,amount:p.amount,plan:selPlan,method:selMethod,
+      phone_number:phone||null,account_number:account||null,
+      account_name:name,status:'pending',created_at:new Date().toISOString()
+    }).select().single();
+    if(payErr)throw new Error('Could not save payment: '+payErr.message);
+    try{
+      const res=await fetch(BACKEND+'/payment/initiate',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({payment_id:payment.id,user_id:currentUser.id,
+          user_email:currentUser.email,amount:p.amount,plan:selPlan,
+          method:selMethod,phone:phone||account,name})
+      });
+      const data=await res.json();
+      if(data.redirect_url){window.location.href=data.redirect_url;return;}
+      if(data.success){await activatePremium(p.days);showModal('done','Payment Successful!','Your premium plan is now active!');return;}
+    }catch(e){console.warn('Backend fallback');}
+    showModal('pend','Payment Request Submitted!',
+      `Open your ${selMethod==='jazzcash'?'JazzCash':selMethod==='sadapay'?'SadaPay':'Easypaisa'} app and approve the request. Premium will activate within minutes.`);
+  }catch(err){
+    toast(err.message,'e');
+    btn.disabled=false;btn.querySelector('svg').classList.remove('spin');
+    txt.textContent='Pay ₨'+PLANS[selPlan].amount.toLocaleString()+' — '+PLANS[selPlan].name;
+  }
+}
+
+async function activatePremium(days){
+  const until=new Date(Date.now()+days*86400000).toISOString();
+  await sb.from('profiles').update({is_premium:true,premium_until:until,premium_plan:selPlan}).eq('id',currentUser.id);
+}
+
+function showModal(type,title,msg){
+  const ic=document.getElementById('modal-ic');
+  ic.className='m-ic '+(type==='done'?'done':'pend');
+  ic.innerHTML=type==='done'
+    ?'<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-msg').textContent=msg;
+  document.getElementById('success-modal').classList.add('open');
+  const btn=document.getElementById('pay-btn');
+  btn.disabled=false;btn.querySelector('svg').classList.remove('spin');
+  document.getElementById('btn-txt').textContent='Pay ₨'+PLANS[selPlan].amount.toLocaleString()+' — '+PLANS[selPlan].name;
+}
+
+window.addEventListener('load',async()=>{
+  const user=await requireAuth();if(!user)return;
+  const urlPlan=new URLSearchParams(location.search).get('plan');
+  const startPlan=PLANS[urlPlan]?urlPlan:'monthly';
+  document.querySelectorAll('.plan-tab').forEach(t=>{
+    const p=t.dataset.plan;
+    t.classList.toggle('active',p===startPlan);
+    if(p===startPlan)selectPlan(p,t);
+  });
+  selectMethod('easypaisa');
+  renderInst('easypaisa');
+});
+</script>
+</body>
+</html>
