@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sign Up — SellerTrackr</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4338CA;--brand-d:#3730A3;--brand-l:#6366F1;--brand-bg:#EEF2FF;
+  --ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;
+  --surface:#fff;--base:#F8F9FC;--muted:#F1F4F9;
+  --b2:rgba(15,23,42,.15);--green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --r-md:10px;--r-lg:14px;--r-xl:20px;--r-full:9999px;
+  --sh-brand:0 4px 18px rgba(67,56,202,.28);
+  --fd:'Fraunces',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:hidden}
+
+.wrap{display:grid;grid-template-columns:1.15fr 1fr;height:100vh}
+
+/* ══ LEFT ══ */
+.L{
+  position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#2D2B8F 0%,#3730A3 30%,#4338CA 65%,#5B5FCF 100%);
+  display:flex;flex-direction:column;padding:2.5rem 2.75rem;
+}
+.L::before{content:'';position:absolute;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:36px 36px}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:0}
+.o1{width:320px;height:320px;background:rgba(255,255,255,.08);top:-80px;right:-60px;animation:of 9s ease-in-out infinite}
+.o2{width:220px;height:220px;background:rgba(99,102,241,.22);bottom:-40px;left:-50px;animation:of 12s ease-in-out infinite reverse}
+.o3{width:140px;height:140px;background:rgba(255,255,255,.05);top:42%;left:44%;animation:of 7s ease-in-out infinite 1.5s}
+@keyframes of{0%,100%{transform:translate(0,0)}50%{transform:translate(12px,-16px)}}
+
+.L-brand{position:relative;z-index:1;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.L-brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.25)}
+.L-brand-name{font-weight:800;font-size:1rem;color:#fff;letter-spacing:-.02em}
+
+.L-mid{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 0}
+.L-h{font-family:var(--fd);font-size:clamp(1.9rem,2.5vw,2.7rem);font-weight:700;color:#fff;line-height:1.12;letter-spacing:-.03em;margin-bottom:.75rem}
+.L-h em{font-style:italic;font-weight:300;color:rgba(255,255,255,.72)}
+.L-p{font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.65;max-width:290px;margin-bottom:2rem}
+
+/* Floating cards */
+.cards{position:relative;height:210px;flex-shrink:0}
+.fc{position:absolute;background:rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.17);border-radius:var(--r-xl);padding:.9rem 1.1rem;color:#fff}
+.fc-a{left:0;top:0;width:240px;animation:c1 6s ease-in-out infinite}
+.fc-b{right:0;top:1.2rem;padding:.65rem .95rem;animation:c2 5s ease-in-out infinite 1s;min-width:120px}
+.fc-c{left:1.2rem;bottom:0;padding:.6rem .9rem;animation:c3 7.5s ease-in-out infinite 2s;display:flex;align-items:center;gap:.55rem;min-width:180px}
+@keyframes c1{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes c2{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes c3{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.lbl{font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:.45rem}
+.val{font-family:var(--fd);font-size:1.5rem;font-weight:700;line-height:1}
+.delta{font-size:.69rem;font-weight:700;color:#4ade80;margin-top:.2rem}
+.bars{display:flex;align-items:flex-end;gap:3px;height:34px;margin-top:.55rem}
+.bar{flex:1;border-radius:2px 2px 0 0;background:rgba(255,255,255,.18);min-height:3px}
+.bar.h{background:rgba(255,255,255,.6)}
+.dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
+.ni{width:28px;height:28px;background:rgba(74,222,128,.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ni svg{width:14px;height:14px;stroke:#4ade80;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ══ RIGHT ══ */
+.R{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2rem 3rem;background:var(--surface);overflow-y:auto}
+.box{width:100%;max-width:360px}
+
+.mob-logo{display:none;align-items:center;gap:9px;margin-bottom:1.5rem}
+.mob-logo img{width:30px;height:30px;border-radius:50%;object-fit:cover}
+.mob-logo span{font-weight:800;font-size:.95rem;color:var(--ink)}
+
+.fh{font-family:var(--fd);font-size:1.9rem;font-weight:700;color:var(--ink);letter-spacing:-.03em;margin-bottom:.3rem;line-height:1.15}
+.fs{font-size:.82rem;color:var(--ink-3);margin-bottom:1.4rem}
+.fs a{color:var(--brand);font-weight:700}
+.fs a:hover{text-decoration:underline}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.85rem}
+.fi{margin-bottom:.85rem}
+.fi label{display:block;font-size:.74rem;font-weight:700;color:var(--ink-2);margin-bottom:.32rem}
+.fi input{width:100%;padding:.65rem .85rem;background:var(--base);border:1.5px solid var(--b2);border-radius:var(--r-md);color:var(--ink);font-size:.875rem;font-family:var(--fb);transition:all .15s}
+.fi input::placeholder{color:var(--ink-4)}
+.fi input:focus{outline:none;border-color:var(--brand-l);box-shadow:0 0 0 3px rgba(99,102,241,.12);background:var(--surface)}
+.fi.err input{border-color:var(--red)}
+.fi .em{font-size:.69rem;color:var(--red);margin-top:.22rem;display:none}
+.fi.err .em{display:block}
+
+.pw-r{position:relative}
+.pw-r input{width:100%;padding:.65rem .85rem;padding-right:2.6rem;background:var(--base);border:1.5px solid var(--b2);border-radius:var(--r-md);color:var(--ink);font-size:.875rem;font-family:var(--fb);transition:all .15s}
+.pw-r input::placeholder{color:var(--ink-4)}
+.pw-r input:focus{outline:none;border-color:var(--brand-l);box-shadow:0 0 0 3px rgba(99,102,241,.12);background:var(--surface)}
+.eye{position:absolute;right:.72rem;top:50%;transform:translateY(-50%);color:var(--ink-4);cursor:pointer;background:none;border:none;padding:0;display:flex}
+.eye svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.str{margin-top:.3rem;display:none}.str.on{display:block}
+.sb-w{display:flex;gap:2px;margin-bottom:2px}
+.sb-i{height:3px;flex:1;border-radius:2px;background:var(--b2);transition:background .2s}
+.sb-i.w{background:var(--red)}.sb-i.f{background:var(--amber)}.sb-i.g{background:var(--green)}
+.sl{font-size:.66rem;color:var(--ink-4)}
+.sl.w{color:var(--red)}.sl.f{color:var(--amber)}.sl.g{color:var(--green)}
+
+.tr-row{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem}
+.tr-row input[type=checkbox]{width:13px;height:13px;margin-top:2px;accent-color:var(--brand);flex-shrink:0;cursor:pointer}
+.tr-row label{font-size:.76rem;color:var(--ink-3);line-height:1.45;cursor:pointer}
+.tr-row a{color:var(--brand);font-weight:600}
+
+.btn-s{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:.84rem;background:var(--brand);color:#fff;border:none;border-radius:var(--r-lg);font-size:.9rem;font-weight:700;font-family:var(--fb);cursor:pointer;transition:all .16s;box-shadow:var(--sh-brand)}
+.btn-s:hover:not(:disabled){background:var(--brand-d);transform:translateY(-1px);box-shadow:0 6px 22px rgba(67,56,202,.38)}
+.btn-s:disabled{opacity:.55;cursor:not-allowed}
+.btn-s svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .17s;flex-shrink:0}
+.btn-s:hover:not(:disabled) svg{transform:translateX(3px)}
+.b-spin{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+.btn-s.ld .bt,.btn-s.ld svg{display:none}
+.btn-s.ld .b-spin{display:block}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.box>*{opacity:0;transform:translateY(8px);animation:ef .4s cubic-bezier(0,0,.2,1) both}
+.box>*:nth-child(1){animation-delay:.04s}.box>*:nth-child(2){animation-delay:.08s}
+.box>*:nth-child(3){animation-delay:.12s}.box>*:nth-child(4){animation-delay:.16s}
+.box>*:nth-child(5){animation-delay:.20s}.box>*:nth-child(6){animation-delay:.24s}
+@keyframes ef{to{opacity:1;transform:translateY(0)}}
+
+.tc{position:fixed;bottom:1rem;right:1rem;z-index:999;display:flex;flex-direction:column;gap:.4rem;max-width:300px;width:calc(100vw - 2rem)}
+.tt{display:flex;align-items:center;gap:.55rem;padding:.7rem .85rem;background:var(--surface);border:1px solid var(--b2);border-radius:var(--r-lg);box-shadow:0 6px 24px rgba(15,23,42,.12);font-size:.8rem;font-weight:500}
+.tt.s{border-left:3px solid var(--green)}.tt.e{border-left:3px solid var(--red)}.tt.w{border-left:3px solid var(--amber)}.tt.i{border-left:3px solid var(--brand)}
+.tt svg{width:15px;height:15px;flex-shrink:0;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tt.s svg{stroke:var(--green)}.tt.e svg{stroke:var(--red)}.tt.w svg{stroke:var(--amber)}.tt.i svg{stroke:var(--brand)}
+
+
+
+
+  .wrap{grid-template-columns:1fr;height:100vh;overflow:hidden}
+  .L{display:none}
+  .R{
+    height:100vh;overflow:hidden;
+    padding:0 1.5rem;
+    justify-content:center;
+  }
+  .mob-logo{display:flex;margin-bottom:.7rem}
+  .mob-logo img{width:26px;height:26px}
+  .mob-logo span{font-size:.85rem}
+  .fh{font-size:1.35rem;margin-bottom:.15rem}
+  .fs{margin-bottom:1rem;font-size:.76rem}
+  .row2{gap:.5rem;margin-bottom:.6rem}
+  .fi{margin-bottom:.6rem}
+  .fi label{font-size:.69rem;margin-bottom:.2rem}
+  .fi input{padding:.48rem .72rem;font-size:.8rem}
+  .pw-r input{padding:.48rem .72rem;padding-right:2.3rem;font-size:.8rem}
+  .str{margin-top:.22rem}
+  .tr-row{margin-bottom:.75rem}
+  .tr-row label{font-size:.72rem}
+  .btn-s{padding:.68rem;font-size:.86rem}
+  .box{max-width:340px}
+}
+
+  .fh{font-size:1.25rem}
+  .row2{grid-template-columns:1fr}
+  .fi input,.pw-r input{padding:.44rem .68rem;font-size:.78rem}
+  .btn-s{padding:.62rem}
+}
+
+
+@media(max-width:900px){
+  html{height:100vh;overflow:hidden}
+  body{height:100vh;overflow:hidden;position:fixed;width:100%;top:0;left:0}
+  .wrap{grid-template-columns:1fr;height:100vh;overflow:hidden}
+  .L{display:none!important}
+  .R{
+    height:100vh;width:100%;overflow:hidden;
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    padding:0 1.5rem;
+  }
+  .box{width:100%;max-width:320px;overflow:hidden}
+  .box>*{animation:none!important;opacity:1!important;transform:none!important}
+  .mob-logo{display:flex!important;margin-bottom:.5rem}
+  .mob-logo img{width:24px;height:24px}
+  .mob-logo span{font-size:.8rem}
+  .fh{font-size:1.3rem!important;margin-bottom:.1rem!important;line-height:1.1}
+  .fs{font-size:.73rem!important;margin-bottom:.65rem!important}
+  .row2{gap:.4rem!important;margin-bottom:.5rem!important}
+  .fi{margin-bottom:.48rem!important}
+  .fi label{font-size:.66rem!important;margin-bottom:.14rem!important}
+  .fi input{padding:.4rem .65rem!important;font-size:.77rem!important}
+  .pw-r input{padding:.4rem .65rem!important;padding-right:2.1rem!important;font-size:.77rem!important}
+  .str{margin-top:.14rem!important}
+  .sb-i{height:2px!important}
+  .sl{font-size:.6rem!important}
+  .tr-row{margin-bottom:.55rem!important}
+  .tr-row label{font-size:.68rem!important}
+  .btn-s{padding:.58rem!important;font-size:.83rem!important}
+}
+@media(max-width:360px){
+  .R{padding:0 1rem}
+  .fh{font-size:1.15rem!important}
+  .row2{grid-template-columns:1fr!important;gap:.38rem!important;margin-bottom:.4rem!important}
+  .fi input,.pw-r input{padding:.35rem .58rem!important;font-size:.73rem!important}
+  .fi{margin-bottom:.38rem!important}
+  .fs{margin-bottom:.5rem!important}
+  .btn-s{padding:.52rem!important}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══ LEFT ═══ -->
+<div class="L">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+  <div class="L-brand">
+    <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="">
+    <span class="L-brand-name">SellerTrackr</span>
+  </div>
+
+  <div class="L-mid">
+    <div class="L-h">Grow your<br>business with<br><em>real data</em></div>
+    <div class="L-p">Track your sales, predict trends, and make smarter decisions every day.</div>
+
+    <div class="cards">
+      <div class="fc fc-a">
+        <div class="lbl">Monthly Revenue</div>
+        <div class="val">₨84,200</div>
+        <div class="delta">▲ 32% from last month</div>
+        <div class="bars">
+          <div class="bar" style="height:38%"></div><div class="bar h" style="height:55%"></div>
+          <div class="bar" style="height:44%"></div><div class="bar h" style="height:72%"></div>
+          <div class="bar" style="height:52%"></div><div class="bar h" style="height:84%"></div>
+          <div class="bar" style="height:64%"></div><div class="bar h" style="height:100%"></div>
+        </div>
+      </div>
+      <div class="fc fc-b">
+        <div class="lbl">Sales</div>
+        <div style="display:flex;align-items:center;gap:.45rem">
+          <div class="val" style="font-size:1.25rem">1,284</div>
+          <div class="dot"></div>
+        </div>
+        <div style="font-size:.64rem;color:rgba(255,255,255,.5)">This month</div>
+      </div>
+      <div class="fc fc-c">
+        <div class="ni">
+          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <div>
+          <div style="font-size:.74rem;font-weight:700">New sale!</div>
+          <div style="font-size:.63rem;color:rgba(255,255,255,.55)">UI Kit Pro — ₨4,500</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RIGHT ═══ -->
+<div class="R">
+  <div class="box">
+    <div class="mob-logo">
+      <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="">
+      <span>SellerTrackr</span>
+    </div>
+
+    <div class="fh">Create account</div>
+    <div class="fs">Already have one? <a href="login.html">Sign in</a></div>
+
+    <form id="sf" novalidate>
+      <div class="row2">
+        <div class="fi" id="ffn">
+          <label for="fn">Full Name</label>
+          <input id="fn" type="text" placeholder="Name" autocomplete="name">
+          <div class="em">Required</div>
+        </div>
+        <div class="fi" id="fun">
+          <label for="un">Username</label>
+          <input id="un" type="text" placeholder="Username" autocomplete="username">
+          <div class="em">Required</div>
+        </div>
+      </div>
+
+      <div class="fi" id="fem">
+        <label for="em">Email address</label>
+        <input id="em" type="email" placeholder="name@company.com" autocomplete="email">
+        <div class="em">Valid email required</div>
+      </div>
+
+      <div class="fi" id="fpw">
+        <label for="pw">Password</label>
+        <div class="pw-r">
+          <input id="pw" type="password" placeholder="Min. 8 characters" autocomplete="new-password">
+          <button class="eye" type="button" id="ey">
+            <svg id="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="str" id="str">
+          <div class="sb-w">
+            <div class="sb-i" id="s1"></div><div class="sb-i" id="s2"></div>
+            <div class="sb-i" id="s3"></div><div class="sb-i" id="s4"></div>
+          </div>
+          <div class="sl" id="sl">Weak</div>
+        </div>
+        <div class="em">Min. 8 characters required</div>
+      </div>
+
+      <div class="tr-row">
+        <input type="checkbox" id="tc">
+        <label for="tc">I agree to the <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a></label>
+      </div>
+
+      <button type="submit" class="btn-s" id="sb">
+        <span class="bt">Create Account</span>
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <div class="b-spin"></div>
+      </button>
+    </form>
+  </div>
+</div>
+</div>
+<div class="tc" id="tc-wrap"></div>
+
+<script>
+const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+const APP_URL='https://sellertrackr.com';
+const ADMIN_EMAIL='maffaan373@gmail.com';
+let sb;try{sb=supabase.createClient(SURL,SKEY);}catch(e){}
+
+function toast(msg,type){
+  const ic={s:'<polyline points="20 6 9 17 4 12"/>',e:'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',w:'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',i:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'};
+  const c=document.getElementById('tc-wrap'),el=document.createElement('div');
+  el.className='tt '+(type||'i');
+  el.innerHTML='<svg viewBox="0 0 24 24">'+(ic[type]||ic.i)+'</svg><span style="flex:1">'+msg+'</span>';
+  c.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .22s';setTimeout(()=>el.remove(),240);},3800);
+}
+
+// Eye toggle
+document.getElementById('ey').addEventListener('click',function(){
+  var show=document.getElementById('pw').type==='password';
+  document.getElementById('pw').type=show?'text':'password';
+  document.getElementById('eye-icon').innerHTML=show
+    ?'<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    :'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+});
+
+// Password strength
+document.getElementById('pw').addEventListener('input',function(){
+  var v=this.value,box=document.getElementById('str');
+  box.classList.toggle('on',v.length>0);
+  if(!v.length)return;
+  var s=0;
+  if(v.length>=8)s++;if(v.length>=12)s++;
+  if(/[A-Z]/.test(v)&&/[0-9]/.test(v))s++;
+  if(/[^A-Za-z0-9]/.test(v))s++;
+  var cls=s<=1?'w':s<=2?'f':'g',lbl=s<=1?'Weak':s<=2?'Fair':'Strong';
+  ['s1','s2','s3','s4'].forEach((id,i)=>{document.getElementById(id).className='sb-i'+(i<Math.max(s,1)?' '+cls:'');});
+  var l=document.getElementById('sl');l.textContent=lbl;l.className='sl '+cls;
+});
+
+// Clear errors
+[['fn','ffn'],['un','fun'],['em','fem'],['pw','fpw']].forEach(([inp,wrap])=>{
+  var el=document.getElementById(inp);
+  if(el)el.addEventListener('input',()=>document.getElementById(wrap).classList.remove('err'));
+});
+
+// Submit
+document.getElementById('sf').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var fn=document.getElementById('fn').value.trim();
+  var un=document.getElementById('un').value.trim();
+  var em=document.getElementById('em').value.trim();
+  var pw=document.getElementById('pw').value;
+  var tc=document.getElementById('tc').checked;
+  var ok=true;
+  function chk(id,cond){document.getElementById(id).classList.toggle('err',!cond);if(!cond)ok=false;}
+  chk('ffn',fn.length>0);chk('fun',un.length>0);
+  chk('fem',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
+  chk('fpw',pw.length>=8);
+  if(!ok){toast('Please fix the errors above','w');return;}
+  if(!tc){toast('Terms & Privacy accept karein','w');return;}
+  if(!sb){toast('Connection error','e');return;}
+  var btn=document.getElementById('sb');btn.classList.add('ld');btn.disabled=true;
+  var result=await sb.auth.signUp({
+    email:em,password:pw,
+    options:{data:{full_name:fn,username:un,is_admin:em===ADMIN_EMAIL},emailRedirectTo:APP_URL+'/user-dashboard.html'}
+  });
+  btn.classList.remove('ld');btn.disabled=false;
+  if(result.error){
+    var msg=result.error.message;
+    if(msg.includes('already registered'))msg='Ye email registered hai. Login karein.';
+    else if(msg.includes('Password'))msg='Password 8+ characters hona chahiye.';
+    toast(msg,'e');return;
+  }
+  if(result.data?.user?.identities?.length===0){toast('Ye email pehle se registered hai. Login karein.','w');return;}
+  if(em===ADMIN_EMAIL)await sb.from('profiles').upsert({id:result.data.user.id,email:em,role:'admin'});
+  toast('Account ban gaya! Email check karein verification ke liye.','s');
+  setTimeout(()=>window.location.href='verify-email.html',1600);
+});
+</script>
+</body>
+</html>
