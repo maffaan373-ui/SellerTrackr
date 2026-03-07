@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theme — SellerTrackr Admin</title>
+<link rel="icon" href="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png">
+<script>
+(function(){
+  var T={'light':{'--base':'#F8F9FC','--surface':'#FFFFFF','--muted':'#F1F4F9','--ink':'#0F172A','--ink-2':'#334155','--ink-3':'#64748B','--ink-4':'#94A3B8','--border':'rgba(15,23,42,.08)','--border-2':'rgba(15,23,42,.14)','--brand':'#4338CA','--brand-bg':'#EEF2FF'},'dark-navy':{'--base':'#0D1117','--surface':'#161B22','--muted':'#21262D','--ink':'#E6EDF3','--ink-2':'#CDD9E5','--ink-3':'#ADBAC7','--ink-4':'#768390','--border':'rgba(240,246,252,.1)','--border-2':'rgba(240,246,252,.18)','--brand':'#6366F1','--brand-bg':'#1C2A3A'},'dark-gray':{'--base':'#1A1A1A','--surface':'#242424','--muted':'#2D2D2D','--ink':'#F0F0F0','--ink-2':'#D4D4D4','--ink-3':'#B0B0B0','--ink-4':'#808080','--border':'rgba(255,255,255,.08)','--border-2':'rgba(255,255,255,.14)','--brand':'#818CF8','--brand-bg':'#2D2D45'},'black':{'--base':'#000000','--surface':'#111111','--muted':'#1C1C1C','--ink':'#FFFFFF','--ink-2':'#E5E5E5','--ink-3':'#BBBBBB','--ink-4':'#777777','--border':'rgba(255,255,255,.08)','--border-2':'rgba(255,255,255,.14)','--brand':'#6366F1','--brand-bg':'#1C1C2E'},'light-purple':{'--base':'#F5F3FF','--surface':'#FFFFFF','--muted':'#EDE9FE','--ink':'#1E1B4B','--ink-2':'#312E81','--ink-3':'#6D28D9','--ink-4':'#A78BFA','--border':'rgba(124,58,237,.1)','--border-2':'rgba(124,58,237,.2)','--brand':'#7C3AED','--brand-bg':'#EDE9FE'}};
+  var t=localStorage.getItem('admin-theme')||'light';
+  var v=T[t]||T.light;
+  for(var k in v) document.documentElement.style.setProperty(k,v[k]);
+})();
+</script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4338CA;--brand-bg:#EEF2FF;
+  --ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;
+  --surface:#fff;--base:#F8F9FC;--muted:#F1F4F9;
+  --border:rgba(15,23,42,.08);--border-2:rgba(15,23,42,.14);
+  --r-md:10px;--r-lg:14px;--r-xl:18px;--r-2xl:24px;--r-full:9999px;
+  --sidebar-w:240px;--topbar-h:60px;
+  --fd:'Fraunces',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);background:var(--base);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+.app{display:flex;height:100vh;overflow:hidden}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;transition:transform .26s ease;z-index:200}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:0 1.25rem;height:var(--topbar-h);border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-brand img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.sb-scroll{flex:1;overflow-y:auto;padding:1rem 0}
+.sb-section{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);padding:.15rem 1.25rem .45rem;margin-top:.5rem}
+.nav-link{display:flex;align-items:center;gap:.65rem;padding:.58rem 1.25rem;margin:0 .5rem;border-radius:var(--r-md);font-size:.84rem;font-weight:500;color:var(--ink-3);transition:all .16s}
+.nav-link:hover{background:var(--muted);color:var(--ink)}
+.nav-link.active{background:var(--brand-bg);color:var(--brand);font-weight:700}
+.nav-link svg{width:17px;height:17px;flex-shrink:0}
+.sb-footer{padding:.75rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+.settings-btn{display:flex;align-items:center;gap:.6rem;padding:.45rem .5rem;border-radius:var(--r-md);cursor:pointer;transition:background .15s;width:100%}
+.settings-btn:hover{background:var(--muted)}
+.gear-icon{width:28px;height:28px;border-radius:var(--r-md);background:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-name{font-size:.8rem;font-weight:700;color:var(--ink)}
+.sb-sub{font-size:.68rem;color:var(--ink-4)}
+
+/* OVERLAY */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:490;backdrop-filter:blur(2px)}
+.sidebar-overlay.open{display:block}
+
+/* TOPBAR */
+.topbar{height:var(--topbar-h);display:flex;align-items:center;gap:.75rem;padding:0 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.topbar-title{font-weight:800;font-size:1rem;color:var(--ink)}
+.topbar-sub{font-size:.75rem;color:var(--ink-4);margin-top:.05rem}
+.topbar-back{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:600;color:var(--ink-3);padding:.38rem .8rem;border-radius:var(--r-md);transition:all .15s}
+.topbar-back:hover{background:var(--muted);color:var(--ink)}
+.topbar-back svg{width:14px;height:14px}
+
+/* HAMBURGER — hidden desktop, visible mobile */
+.hamburger{display:none;width:36px;height:36px;border-radius:var(--r-md);align-items:center;justify-content:center;color:var(--ink-3);flex-shrink:0}
+.hamburger:hover{background:var(--muted)}
+
+/* PAGE */
+.page{flex:1;overflow-y:auto;padding:2rem}
+.page-title{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;letter-spacing:-.02em}
+.page-title em{font-style:italic;font-weight:300;color:var(--brand)}
+.page-sub{font-size:.84rem;color:var(--ink-3);margin-bottom:2rem}
+.current-badge{display:inline-flex;align-items:center;gap:4px;font-size:.73rem;font-weight:700;padding:.2rem .65rem;border-radius:var(--r-full);background:var(--brand-bg);color:var(--brand);margin-bottom:1.25rem}
+.current-badge svg{width:11px;height:11px;stroke:var(--brand);fill:none;stroke-width:2.5}
+
+/* THEME GRID */
+.themes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:780px}
+.theme-card{border-radius:var(--r-2xl);overflow:hidden;border:2.5px solid transparent;cursor:pointer;transition:all .2s;position:relative}
+.theme-card:hover{transform:translateY(-3px);box-shadow:0 4px 14px rgba(15,23,42,.09)}
+.theme-card.selected{border-color:var(--brand);box-shadow:0 0 0 3px rgba(67,56,202,.15)}
+.theme-check{position:absolute;top:.75rem;right:.75rem;width:22px;height:22px;border-radius:50%;background:var(--brand);display:none;align-items:center;justify-content:center}
+.theme-card.selected .theme-check{display:flex}
+.theme-check svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:3}
+.theme-preview{height:90px;position:relative;overflow:hidden}
+.theme-sidebar-demo{position:absolute;left:0;top:0;bottom:0;width:32%;display:flex;flex-direction:column;gap:4px;padding:8px 6px}
+.theme-sb-item{height:6px;border-radius:3px;opacity:.6}
+.theme-sb-item.active{opacity:1}
+.theme-main-demo{position:absolute;right:0;top:0;bottom:0;left:32%;padding:8px;display:flex;flex-direction:column;gap:5px}
+.theme-topbar-demo{height:8px;border-radius:4px;margin-bottom:4px}
+.theme-cards-demo{display:grid;grid-template-columns:1fr 1fr;gap:4px;flex:1}
+.theme-card-demo{border-radius:4px}
+.theme-info{padding:.9rem 1rem;display:flex;align-items:center;justify-content:space-between}
+.theme-name{font-size:.88rem;font-weight:800;color:var(--ink)}
+.theme-tag{font-size:.68rem;font-weight:700;padding:.15rem .5rem;border-radius:var(--r-full)}
+.apply-btn{display:flex;align-items:center;gap:6px;padding:.65rem 1.25rem;background:var(--brand);color:#fff;border-radius:var(--r-lg);font-size:.85rem;font-weight:700;font-family:var(--fb);cursor:pointer;border:none;transition:all .16s;margin-top:1.75rem;box-shadow:0 4px 18px rgba(67,56,202,.28)}
+.apply-btn:hover{opacity:.9;transform:translateY(-1px)}
+.apply-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5}
+
+/* MOBILE */
+@media(max-width:768px){
+  .app{display:block;height:auto;min-height:100vh;overflow:visible}
+  .main{display:flex;flex-direction:column;min-height:100vh;overflow:visible;height:auto}
+  .page{overflow:visible;height:auto}
+  .hamburger{display:flex !important}
+  .sidebar{
+    position:fixed !important;
+    top:0 !important;left:0 !important;bottom:0 !important;
+    height:100vh !important;width:240px !important;
+    transform:translateX(-100%);
+    transition:transform .26s ease;
+    z-index:500 !important;
+  }
+  .sidebar.open{transform:translateX(0) !important}
+  .themes-grid{grid-template-columns:1fr 1fr}
+  .topbar{padding:0 1rem;position:sticky;top:0;z-index:100}
+}
+@media(max-width:480px){
+  .themes-grid{grid-template-columns:1fr}
+  .page{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="">
+    <div>
+      <div style="font-weight:800;font-size:.9rem;color:var(--ink)">SellerTrackr</div>
+      <div style="font-size:.62rem;color:var(--ink-4)">developed by <strong style="color:var(--brand)">Affaan</strong></div>
+    </div>
+  </div>
+  <div class="sb-scroll">
+    <div class="sb-section">Navigation</div>
+    <a class="nav-link" href="admin-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Overview</span></a>
+    <a class="nav-link" href="admin-users.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Users</span></a>
+    <a class="nav-link" href="admin-payments.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>Payments</span></a>
+    <a class="nav-link" href="admin-feedback.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Contact Messages</span></a>
+    <a class="nav-link" href="admin-analytics.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Analytics</span></a>
+    <div class="sb-section">Settings</div>
+    <a class="nav-link active" href="admin-theme.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Theme</span></a>
+  </div>
+  <div class="sb-footer">
+    <div class="settings-btn" onclick="doLogout()">
+      <div class="gear-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+      <div><div class="sb-name" id="admin-name">Admin</div><div class="sb-sub">Logout</div></div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div>
+      <div class="topbar-title">Theme & Appearance</div>
+      <div class="topbar-sub">Customize your admin panel</div>
+    </div>
+    <a href="admin-dashboard.html" class="topbar-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Dashboard
+    </a>
+  </header>
+
+  <div class="page">
+    <h1 class="page-title">Choose a <em>Theme</em></h1>
+    <p class="page-sub">Select a color theme for your admin panel. Changes apply instantly across all pages.</p>
+    <div class="current-badge">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="current-label">Light</span> is active
+    </div>
+
+    <div class="themes-grid">
+      <div class="theme-card selected" data-theme="light" onclick="selectTheme('light',this)">
+        <div class="theme-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="theme-preview" style="background:#F8F9FC">
+          <div class="theme-sidebar-demo" style="background:#fff;border-right:1px solid #e2e8f0">
+            <div class="theme-sb-item" style="background:#4338CA;height:8px;border-radius:4px"></div>
+            <div class="theme-sb-item" style="background:#e2e8f0"></div>
+            <div class="theme-sb-item" style="background:#e2e8f0"></div>
+            <div class="theme-sb-item active" style="background:#EEF2FF;border-radius:4px;height:7px"></div>
+          </div>
+          <div class="theme-main-demo" style="background:#F8F9FC">
+            <div class="theme-topbar-demo" style="background:#fff;border:1px solid #e2e8f0"></div>
+            <div class="theme-cards-demo">
+              <div class="theme-card-demo" style="background:#fff;border:1px solid #e2e8f0"></div>
+              <div class="theme-card-demo" style="background:#fff;border:1px solid #e2e8f0"></div>
+              <div class="theme-card-demo" style="background:#fff;border:1px solid #e2e8f0"></div>
+              <div class="theme-card-demo" style="background:#EEF2FF"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-info" style="background:#fff;border-top:1px solid #e2e8f0">
+          <span class="theme-name">Light</span>
+          <span class="theme-tag" style="background:#EEF2FF;color:#4338CA">Default</span>
+        </div>
+      </div>
+
+      <div class="theme-card" data-theme="dark-navy" onclick="selectTheme('dark-navy',this)">
+        <div class="theme-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="theme-preview" style="background:#0D1117">
+          <div class="theme-sidebar-demo" style="background:#161B22;border-right:1px solid #30363D">
+            <div class="theme-sb-item" style="background:#6366F1;height:8px;border-radius:4px"></div>
+            <div class="theme-sb-item" style="background:#30363D"></div>
+            <div class="theme-sb-item" style="background:#30363D"></div>
+            <div class="theme-sb-item active" style="background:#1F2D3D;border-radius:4px;height:7px"></div>
+          </div>
+          <div class="theme-main-demo" style="background:#0D1117">
+            <div class="theme-topbar-demo" style="background:#161B22;border:1px solid #30363D"></div>
+            <div class="theme-cards-demo">
+              <div class="theme-card-demo" style="background:#161B22;border:1px solid #30363D"></div>
+              <div class="theme-card-demo" style="background:#161B22;border:1px solid #30363D"></div>
+              <div class="theme-card-demo" style="background:#161B22;border:1px solid #30363D"></div>
+              <div class="theme-card-demo" style="background:#1C2A3A"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-info" style="background:#161B22;border-top:1px solid #30363D">
+          <span class="theme-name" style="color:#E6EDF3">Dark Navy</span>
+          <span class="theme-tag" style="background:#1C2A3A;color:#6366F1">Dark</span>
+        </div>
+      </div>
+
+      <div class="theme-card" data-theme="dark-gray" onclick="selectTheme('dark-gray',this)">
+        <div class="theme-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="theme-preview" style="background:#1A1A1A">
+          <div class="theme-sidebar-demo" style="background:#242424;border-right:1px solid #333">
+            <div class="theme-sb-item" style="background:#818CF8;height:8px;border-radius:4px"></div>
+            <div class="theme-sb-item" style="background:#333"></div>
+            <div class="theme-sb-item" style="background:#333"></div>
+            <div class="theme-sb-item active" style="background:#2D2D2D;border-radius:4px;height:7px"></div>
+          </div>
+          <div class="theme-main-demo" style="background:#1A1A1A">
+            <div class="theme-topbar-demo" style="background:#242424;border:1px solid #333"></div>
+            <div class="theme-cards-demo">
+              <div class="theme-card-demo" style="background:#242424;border:1px solid #333"></div>
+              <div class="theme-card-demo" style="background:#242424;border:1px solid #333"></div>
+              <div class="theme-card-demo" style="background:#242424;border:1px solid #333"></div>
+              <div class="theme-card-demo" style="background:#2D2D2D"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-info" style="background:#242424;border-top:1px solid #333">
+          <span class="theme-name" style="color:#E5E5E5">Dark Gray</span>
+          <span class="theme-tag" style="background:#333;color:#818CF8">Dark</span>
+        </div>
+      </div>
+
+      <div class="theme-card" data-theme="black" onclick="selectTheme('black',this)">
+        <div class="theme-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="theme-preview" style="background:#000">
+          <div class="theme-sidebar-demo" style="background:#111;border-right:1px solid #222">
+            <div class="theme-sb-item" style="background:#6366F1;height:8px;border-radius:4px"></div>
+            <div class="theme-sb-item" style="background:#222"></div>
+            <div class="theme-sb-item" style="background:#222"></div>
+            <div class="theme-sb-item active" style="background:#1A1A1A;border-radius:4px;height:7px"></div>
+          </div>
+          <div class="theme-main-demo" style="background:#000">
+            <div class="theme-topbar-demo" style="background:#111;border:1px solid #222"></div>
+            <div class="theme-cards-demo">
+              <div class="theme-card-demo" style="background:#111;border:1px solid #222"></div>
+              <div class="theme-card-demo" style="background:#111;border:1px solid #222"></div>
+              <div class="theme-card-demo" style="background:#111;border:1px solid #222"></div>
+              <div class="theme-card-demo" style="background:#1A1A1A"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-info" style="background:#111;border-top:1px solid #222">
+          <span class="theme-name" style="color:#fff">Black</span>
+          <span class="theme-tag" style="background:#222;color:#818CF8">Dark</span>
+        </div>
+      </div>
+
+      <div class="theme-card" data-theme="light-purple" onclick="selectTheme('light-purple',this)">
+        <div class="theme-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="theme-preview" style="background:#F5F3FF">
+          <div class="theme-sidebar-demo" style="background:#EDE9FE;border-right:1px solid #DDD6FE">
+            <div class="theme-sb-item" style="background:#7C3AED;height:8px;border-radius:4px"></div>
+            <div class="theme-sb-item" style="background:#DDD6FE"></div>
+            <div class="theme-sb-item" style="background:#DDD6FE"></div>
+            <div class="theme-sb-item active" style="background:#C4B5FD;border-radius:4px;height:7px;opacity:.5"></div>
+          </div>
+          <div class="theme-main-demo" style="background:#F5F3FF">
+            <div class="theme-topbar-demo" style="background:#EDE9FE;border:1px solid #DDD6FE"></div>
+            <div class="theme-cards-demo">
+              <div class="theme-card-demo" style="background:#fff;border:1px solid #DDD6FE"></div>
+              <div class="theme-card-demo" style="background:#fff;border:1px solid #DDD6FE"></div>
+              <div class="theme-card-demo" style="background:#fff;border:1px solid #DDD6FE"></div>
+              <div class="theme-card-demo" style="background:#EDE9FE"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-info" style="background:#fff;border-top:1px solid #EDE9FE">
+          <span class="theme-name">Light Purple</span>
+          <span class="theme-tag" style="background:#EDE9FE;color:#7C3AED">Light</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="apply-btn" id="apply-btn" onclick="applyTheme()">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      Apply Theme
+    </button>
+  </div>
+</div>
+</div>
+
+<script>
+var THEMES = {
+  'light':        {label:'Light',       vars:{'--base':'#F8F9FC','--surface':'#FFFFFF','--muted':'#F1F4F9','--ink':'#0F172A','--ink-2':'#334155','--ink-3':'#64748B','--ink-4':'#94A3B8','--border':'rgba(15,23,42,.08)','--border-2':'rgba(15,23,42,.14)','--brand':'#4338CA','--brand-bg':'#EEF2FF'}},
+  'dark-navy':    {label:'Dark Navy',   vars:{'--base':'#0D1117','--surface':'#161B22','--muted':'#21262D','--ink':'#E6EDF3','--ink-2':'#CDD9E5','--ink-3':'#ADBAC7','--ink-4':'#768390','--border':'rgba(240,246,252,.1)','--border-2':'rgba(240,246,252,.18)','--brand':'#6366F1','--brand-bg':'#1C2A3A'}},
+  'dark-gray':    {label:'Dark Gray',   vars:{'--base':'#1A1A1A','--surface':'#242424','--muted':'#2D2D2D','--ink':'#F0F0F0','--ink-2':'#D4D4D4','--ink-3':'#B0B0B0','--ink-4':'#808080','--border':'rgba(255,255,255,.08)','--border-2':'rgba(255,255,255,.14)','--brand':'#818CF8','--brand-bg':'#2D2D45'}},
+  'black':        {label:'Black',       vars:{'--base':'#000000','--surface':'#111111','--muted':'#1C1C1C','--ink':'#FFFFFF','--ink-2':'#E5E5E5','--ink-3':'#BBBBBB','--ink-4':'#777777','--border':'rgba(255,255,255,.08)','--border-2':'rgba(255,255,255,.14)','--brand':'#6366F1','--brand-bg':'#1C1C2E'}},
+  'light-purple': {label:'Light Purple',vars:{'--base':'#F5F3FF','--surface':'#FFFFFF','--muted':'#EDE9FE','--ink':'#1E1B4B','--ink-2':'#312E81','--ink-3':'#6D28D9','--ink-4':'#A78BFA','--border':'rgba(124,58,237,.1)','--border-2':'rgba(124,58,237,.2)','--brand':'#7C3AED','--brand-bg':'#EDE9FE'}},
+};
+var selectedTheme = localStorage.getItem('admin-theme') || 'light';
+
+function toggleSidebar() {
+  var s = document.getElementById('sidebar');
+  var o = document.getElementById('sb-overlay');
+  var open = s.classList.contains('open');
+  if (open) { s.classList.remove('open'); o.classList.remove('open'); }
+  else       { s.classList.add('open');    o.classList.add('open'); }
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('open');
+}
+
+function applyVars(key) {
+  var v = THEMES[key] && THEMES[key].vars;
+  if (!v) return;
+  for (var k in v) document.documentElement.style.setProperty(k, v[k]);
+}
+function selectTheme(key, el) {
+  document.querySelectorAll('.theme-card').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedTheme = key;
+  applyVars(key);
+}
+function applyTheme() {
+  localStorage.setItem('admin-theme', selectedTheme);
+  var info = THEMES[selectedTheme];
+  var lbl = document.getElementById('current-label');
+  if (lbl) lbl.textContent = info ? info.label : selectedTheme;
+  var btn = document.getElementById('apply-btn');
+  if (!btn) return;
+  btn.textContent = '✓ Applied!';
+  btn.style.background = '#10B981';
+  setTimeout(function(){ btn.textContent = 'Apply Theme'; btn.style.background = ''; }, 2000);
+}
+function doLogout() {
+  if (window.sb) window.sb.auth.signOut().then(function(){ window.location.href='admin-login.html'; });
+  else window.location.href = 'admin-login.html';
+}
+
+window.addEventListener('load', function() {
+  var SURL='https://dpxuopdoumomasmahnyo.supabase.co';
+  var SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+  try { window.sb = supabase.createClient(SURL, SKEY); } catch(e){}
+  if (window.sb) {
+    window.sb.auth.getSession().then(function(r){
+      var s = r.data && r.data.session;
+      if (!s) { window.location.href='admin-login.html'; return; }
+      var n = document.getElementById('admin-name');
+      if (n) n.textContent = s.user.email.split('@')[0] || 'Admin';
+    });
+  }
+  var saved = localStorage.getItem('admin-theme') || 'light';
+  selectedTheme = saved;
+  applyVars(saved);
+  document.querySelectorAll('.theme-card').forEach(function(c){
+    c.classList.toggle('selected', c.dataset.theme === saved);
+  });
+  var lbl = document.getElementById('current-label');
+  if (lbl && THEMES[saved]) lbl.textContent = THEMES[saved].label;
+});
+</script>
+</body>
+</html>
