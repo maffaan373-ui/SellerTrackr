@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeno AI — SellerTrackr</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png">
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4338CA;--brand-d:#3730A3;--brand-l:#6366F1;--brand-bg:#EEF2FF;
+  --ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;
+  --surface:#FFFFFF;--base:#F8F9FC;--muted:#F1F4F9;
+  --border:rgba(15,23,42,.07);--border-2:rgba(15,23,42,.12);
+  --green:#10B981;--red:#EF4444;--red-bg:#FEF2F2;
+  --r-md:10px;--r-lg:14px;--r-xl:18px;--r-2xl:24px;--r-full:9999px;
+  --sh-md:0 4px 14px rgba(15,23,42,.08);--sh-lg:0 10px 32px rgba(15,23,42,.1);
+  --sidebar-w:240px;--topbar-h:60px;
+  --fd:'Fraunces',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);background:var(--base);color:var(--ink);height:100vh;overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.app{display:flex;height:100vh;overflow:hidden}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:transform .28s var(--ease);z-index:200}
+.sb-brand{display:flex;align-items:center;gap:6px;padding:0 1.25rem;height:var(--topbar-h);border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-brand img{width:28px;height:28px;border-radius:7px}
+.sb-brand span{font-weight:800;font-size:.93rem;color:var(--ink);letter-spacing:-.02em}
+.sb-scroll{flex:1;overflow-y:auto;padding:1rem 0}
+.sb-section{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);padding:.15rem 1.25rem .45rem;margin-top:.5rem}
+.nav-link{display:flex;align-items:center;gap:.65rem;padding:.58rem 1.25rem;margin:0 .5rem;border-radius:var(--r-md);font-size:.84rem;font-weight:500;color:var(--ink-3);transition:all .16s;cursor:pointer}
+.nav-link i{width:17px;height:17px;flex-shrink:0}
+.nav-link .nb{margin-left:auto;font-size:.64rem;font-weight:800;padding:1px 7px;border-radius:var(--r-full);background:var(--brand-bg);color:var(--brand)}
+.nav-link:hover{background:var(--muted);color:var(--ink)}
+.nav-link.active{background:linear-gradient(135deg,#eef2ff,#e0e7ff);color:var(--brand);font-weight:700}
+.nav-link.active i{color:var(--brand)}
+.sb-footer{padding:.75rem 1rem;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface)}
+.plan-badge-sb{display:flex;align-items:center;gap:.55rem;padding:.62rem .75rem;background:var(--muted);border-radius:var(--r-lg);margin-bottom:.55rem}
+.plan-icon-sb{width:26px;height:26px;background:var(--brand-bg);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plan-icon-sb i{width:13px;height:13px;color:var(--brand)}
+.plan-icon-sb.premium{background:linear-gradient(135deg,#38bdf8,#0ea5e9);box-shadow:0 2px 8px rgba(14,165,233,.35)}
+.plan-icon-sb.premium svg.prem-svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.5}
+.plan-name-sb{font-size:.74rem;font-weight:700;color:var(--ink)}
+.plan-sub-sb{font-size:.65rem;color:var(--ink-4)}
+.user-menu-wrap{position:relative}
+.user-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .25rem;cursor:pointer;border-radius:var(--r-md);transition:background .15s}
+.user-row:hover{background:var(--muted)}
+.user-name{font-size:.8rem;font-weight:700;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-row i{width:15px;height:15px;color:var(--ink-4);flex-shrink:0}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:190;backdrop-filter:blur(2px)}
+.user-menu-popup{position:absolute;bottom:calc(100% + 8px);left:0;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-lg);box-shadow:var(--sh-lg);z-index:9999;display:none;min-width:175px;padding:4px 0}
+.user-menu-popup.open{display:block;animation:umpIn .15s ease}
+@keyframes umpIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ump-item{display:flex;align-items:center;gap:.6rem;padding:.56rem .9rem;font-size:.81rem;font-weight:600;color:var(--ink-2);background:none;border:none;width:100%;text-align:left;text-decoration:none;cursor:pointer;font-family:var(--fb);transition:background .12s}
+.ump-item:hover{background:var(--muted);color:var(--ink)}
+.ump-item i{width:14px;height:14px;flex-shrink:0}
+.ump-item.danger{color:var(--red)}.ump-item.danger:hover{background:var(--red-bg)}
+.ump-divider{height:1px;background:var(--border);margin:3px 0}
+
+/* TOPBAR */
+.topbar{height:var(--topbar-h);flex-shrink:0;display:flex;align-items:center;gap:.75rem;padding:0 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);z-index:100}
+.hamburger{display:none;width:34px;height:34px;border-radius:var(--r-md);align-items:center;justify-content:center;color:var(--ink-3);transition:background .15s}
+.hamburger:hover{background:var(--muted)}
+.hamburger i{width:18px;height:18px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:.5rem}
+.icon-btn{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:var(--ink-3);transition:all .15s}
+.icon-btn:hover{background:var(--muted);color:var(--ink)}
+.icon-btn i{width:17px;height:17px}
+
+/* ZENO HEADER */
+.zeno-header{display:flex;align-items:center;gap:10px}
+.zeno-av-top{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#4338ca);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(99,102,241,.35);flex-shrink:0;position:relative}
+.zeno-av-top svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2}
+.online-dot{position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;background:#10b981;border:2px solid var(--surface)}
+.zeno-hd-title{font-weight:800;font-size:1rem;color:var(--ink);letter-spacing:-.02em}
+.zeno-hd-sub{font-size:.67rem;color:var(--ink-4);margin-top:.05rem}
+.ai-pill{display:inline-flex;padding:.1rem .48rem;background:linear-gradient(135deg,#6366f1,#4338ca);color:#fff;border-radius:var(--r-full);font-size:.6rem;font-weight:800;letter-spacing:.06em;margin-left:5px;vertical-align:middle}
+
+/* CHAT AREA */
+.chat-outer{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-msgs{flex:1;overflow-y:auto;padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:.8rem;scroll-behavior:smooth}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px}
+
+/* MESSAGES */
+.msg{display:flex;gap:.6rem;animation:mIn .16s ease}
+@keyframes mIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.msg.umsg{flex-direction:row-reverse}
+.mav{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;margin-top:3px}
+.mav.zav{background:linear-gradient(135deg,#6366f1,#4338ca);box-shadow:0 2px 8px rgba(99,102,241,.28)}
+.mav.zav svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2}
+.mav.uav{background:var(--brand-bg);color:var(--brand);font-size:.8rem}
+.mbody{max-width:73%;display:flex;flex-direction:column;gap:3px}
+.msg.umsg .mbody{align-items:flex-end}
+.mname{font-size:.65rem;font-weight:700;color:var(--ink-4);padding:0 2px}
+.mbubble{padding:.7rem .95rem;border-radius:var(--r-xl);font-size:.84rem;line-height:1.7;color:var(--ink-2);word-break:break-word}
+.msg.zmsg .mbubble{background:var(--surface);border:1px solid var(--border);border-top-left-radius:4px;box-shadow:0 2px 10px rgba(15,23,42,.06)}
+.msg.umsg .mbubble{background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border-top-right-radius:4px}
+.mbubble strong{font-weight:700}
+.mbubble ul{padding-left:1.1rem;margin:.2rem 0}
+.mbubble li{margin:.12rem 0}
+.mtime{font-size:.61rem;color:var(--ink-4);padding:0 2px}
+.msg.umsg .mtime{text-align:right}
+
+/* TYPING */
+.typing-bubble{padding:.62rem .85rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);border-top-left-radius:4px;box-shadow:0 2px 10px rgba(15,23,42,.06);display:inline-flex}
+.tdots{display:flex;align-items:center;gap:4px}
+.tdots span{width:7px;height:7px;background:var(--ink-4);border-radius:50%;animation:td 1.2s infinite}
+.tdots span:nth-child(2){animation-delay:.16s}
+.tdots span:nth-child(3){animation-delay:.32s}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.45}28%{transform:translateY(-5px);opacity:1}}
+
+/* SUGGESTIONS */
+.sugs-bar{padding:.55rem 1.5rem .45rem;display:flex;flex-wrap:wrap;gap:.4rem;border-top:1px solid var(--border);background:var(--surface)}
+.sug{padding:.32rem .78rem;background:var(--base);border:1.5px solid var(--border-2);border-radius:var(--r-full);font-size:.74rem;font-weight:600;color:var(--ink-3);cursor:pointer;transition:all .13s;white-space:nowrap}
+.sug:hover{background:var(--brand-bg);border-color:var(--brand-bg);color:var(--brand);transform:translateY(-1px)}
+
+/* INPUT */
+.input-area{padding:.8rem 1.5rem .95rem;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
+.input-row{display:flex;align-items:flex-end;gap:.5rem;background:var(--base);border:1.5px solid var(--border-2);border-radius:var(--r-xl);padding:.55rem .6rem .55rem .88rem;transition:border-color .14s,box-shadow .14s}
+.input-row:focus-within{border-color:rgba(99,102,241,.45);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+.chat-ta{flex:1;background:none;border:none;outline:none;font-family:var(--fb);font-size:.85rem;color:var(--ink);resize:none;max-height:110px;line-height:1.6;padding:.1rem 0}
+.chat-ta::placeholder{color:var(--ink-4)}
+.send-btn{width:34px;height:34px;background:linear-gradient(135deg,#4338ca,#6366f1);border:none;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0}
+.send-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 14px rgba(67,56,202,.38)}
+.send-btn:disabled{opacity:.32;cursor:not-allowed}
+.send-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5}
+.input-hint{text-align:center;font-size:.65rem;color:var(--ink-4);margin-top:.38rem}
+
+/* EMPTY STATE */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:2rem;text-align:center;gap:.9rem}
+.es-av{width:80px;height:80px;background:linear-gradient(135deg,#6366f1,#4338ca);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 36px rgba(67,56,202,.28);animation:float 3.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.es-av svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:1.8}
+.es-title{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--ink)}
+.es-title em{font-style:italic;color:var(--brand)}
+.es-sub{font-size:.81rem;color:var(--ink-3);max-width:275px;line-height:1.65}
+.es-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem;margin-top:.25rem;max-width:360px}
+.es-chip{padding:.3rem .76rem;background:var(--surface);border:1.5px solid var(--border-2);border-radius:var(--r-full);font-size:.73rem;font-weight:600;color:var(--ink-3);cursor:pointer;transition:all .13s}
+.es-chip:hover{background:var(--brand-bg);border-color:var(--brand-bg);color:var(--brand)}
+
+/* PREMIUM WALL */
+.pwall{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:2rem;text-align:center;gap:1rem}
+.pw-av{width:72px;height:72px;background:linear-gradient(135deg,#6366f1,#4338ca);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(67,56,202,.3)}
+.pw-av svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:2}
+.pw-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink)}
+.pw-sub{font-size:.82rem;color:var(--ink-3);max-width:295px;line-height:1.65}
+.pw-btn{display:inline-flex;align-items:center;gap:7px;padding:.72rem 1.7rem;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border:none;border-radius:var(--r-lg);font-size:.87rem;font-weight:700;font-family:var(--fb);cursor:pointer;box-shadow:0 4px 18px rgba(67,56,202,.3);transition:all .16s}
+.pw-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(67,56,202,.4)}
+.pw-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{position:fixed;top:0;left:0;bottom:0;height:100vh !important;transform:translateX(-100%);z-index:500}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar{padding:0 1rem}
+  .chat-msgs{padding:1rem}
+  .input-area{padding:.65rem 1rem .75rem}
+  .sugs-bar{padding:.45rem 1rem}
+  .mbody{max-width:86%}
+  .zeno-hd-sub{display:none}
+}
+@media(max-width:480px){.mbody{max-width:91%}.mbubble{font-size:.8rem}}
+</style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sb-overlay"></div>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="Logo">
+    <span>SellerTrackr</span>
+  </div>
+  <div class="sb-scroll">
+    <div class="sb-section">Main</div>
+    <a class="nav-link" href="user-dashboard.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+    <a class="nav-link" href="user-analytics.html"><i data-lucide="bar-chart-3"></i><span>Analytics</span><span class="nb">Pro</span></a>
+    <a class="nav-link" href="user-reports.html"><i data-lucide="file-text"></i><span>Reports</span></a>
+    <a class="nav-link active" href="user-ai.html"><i data-lucide="sparkles"></i><span>Zeno AI</span></a>
+    <div class="sb-section">Account</div>
+    <a class="nav-link" href="user-pricing.html"><i data-lucide="zap"></i><span>Pricing</span></a>
+  </div>
+  <div class="sb-footer">
+    <div class="plan-badge-sb">
+      <div class="plan-icon-sb" id="plan-icon-sb"><i data-lucide="zap"></i></div>
+      <div>
+        <div class="plan-name-sb" id="plan-name-sb">Free Plan</div>
+        <div class="plan-sub-sb" id="plan-sub-sb">50 sales/month</div>
+      </div>
+    </div>
+    <div class="user-menu-wrap">
+      <div class="user-row" id="logout-row">
+        <img src="" alt="" id="user-avatar" style="display:none;width:28px;height:28px;border-radius:50%;object-fit:cover">
+        <span class="user-name" id="sidebar-user-name">Loading...</span>
+        <i data-lucide="settings"></i>
+      </div>
+      <div class="user-menu-popup" id="user-menu-popup">
+        <a class="ump-item" href="user-settings.html"><i data-lucide="settings"></i>Settings</a>
+        <a class="ump-item" href="user-support.html"><i data-lucide="life-buoy"></i>Support</a>
+        <div class="ump-divider"></div>
+        <button class="ump-item danger" id="popup-logout"><i data-lucide="log-out"></i>Logout</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <button class="hamburger" id="hamburger"><i data-lucide="menu"></i></button>
+    <div class="zeno-header">
+      <div class="zeno-av-top">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <div class="online-dot"></div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center">
+          <span class="zeno-hd-title">Zeno</span>
+          <span class="ai-pill">AI</span>
+        </div>
+        <div class="zeno-hd-sub">by SellerTrackr &middot; Your sales advisor</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" title="Clear chat" onclick="clearChat()"><i data-lucide="rotate-ccw"></i></button>
+    </div>
+  </header>
+
+  <!-- CHAT -->
+  <div class="chat-outer" id="chat-outer">
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="empty-state" id="empty-state">
+        <div class="es-av">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </div>
+        <div class="es-title">Salam! Main hoon <em>Zeno</em></div>
+        <div class="es-sub">Tumhara AI sales advisor. Apne business ke baare mein kuch bhi puchho.</div>
+        <div class="es-chips" id="es-chips">
+          <div class="es-chip" onclick="qa(this)">📊 Is mahine ki sales?</div>
+          <div class="es-chip" onclick="qa(this)">🏆 Best selling product?</div>
+          <div class="es-chip" onclick="qa(this)">💰 Total revenue kitna hai?</div>
+          <div class="es-chip" onclick="qa(this)">📈 Best sales channel?</div>
+          <div class="es-chip" onclick="qa(this)">🔍 Meri sales analyze karo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sugs-bar" id="sugs-bar" style="display:none">
+      <div class="sug" onclick="qa(this)">📊 Is mahine ki sales?</div>
+      <div class="sug" onclick="qa(this)">🏆 Best product?</div>
+      <div class="sug" onclick="qa(this)">💰 Total revenue?</div>
+      <div class="sug" onclick="qa(this)">📈 Best channel?</div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-row">
+        <textarea class="chat-ta" id="chat-ta" placeholder="Zeno se kuch bhi puchho..." rows="1"
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMsg()">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="input-hint">Zeno tumhara real sales data padh ke jawab deta hai &middot; Premium feature</div>
+    </div>
+  </div>
+
+  <!-- PREMIUM WALL -->
+  <div class="pwall" id="pwall">
+    <div class="pw-av">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    </div>
+    <div class="pw-title">Zeno AI Unlock Karo</div>
+    <div class="pw-sub">Zeno tumhara sales data padh ke real business sawaalon ka jawab deta hai. Premium plan mein available hai.</div>
+    <button class="pw-btn" onclick="location.href='user-pricing.html'">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Upgrade to Premium — &#8360;1,500/mo
+    </button>
+  </div>
+</div>
+</div>
+
+<script>
+const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+const ZENO_API='https://bipoos-api-1.onrender.com/chat';
+const HKEY='zeno_history_v2';
+
+let sb,currentUser,userProfile={},salesData=[],isPremium=false;
+let msgs=[],busy=false;
+
+function initSb(){try{sb=supabase.createClient(SURL,SKEY);return true;}catch(e){return false;}}
+async function requireAuth(){
+  if(!initSb()){location.href='login.html';return null;}
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){location.href='login.html';return null;}
+  currentUser=session.user;return currentUser;
+}
+async function fetchProfile(){
+  try{
+    const{data,error}=await sb.from('profiles').select('full_name,is_premium,avatar_url').eq('id',currentUser.id).single();
+    if(error){userProfile={full_name:currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Seller',is_premium:false};}
+    else{userProfile=data||{};if(!userProfile.full_name)userProfile.full_name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Seller';}
+  }catch(e){userProfile={full_name:currentUser.email?.split('@')[0]||'Seller',is_premium:false};}
+}
+async function fetchSales(){
+  try{const{data}=await sb.from('sales').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});salesData=data||[];}
+  catch(e){salesData=[];}
+}
+
+function buildCtx(){
+  if(!salesData.length)return 'User ka koi sales record nahi hai abhi tak.';
+  const now=new Date();
+  const tm=salesData.filter(s=>{const d=new Date(s.created_at);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
+  const tot=salesData.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  const mrev=tm.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  const prods={},chs={},sts={};
+  salesData.forEach(s=>{
+    const p=s.product_name||'Unknown';prods[p]=(prods[p]||0)+parseFloat(s.amount||0);
+    const c=s.channel||'Direct';chs[c]=(chs[c]||0)+parseFloat(s.amount||0);
+    const st=s.status||'completed';sts[st]=(sts[st]||0)+1;
+  });
+  const tp=Object.entries(prods).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,v])=>`${n}: Rs.${Math.round(v).toLocaleString()}`).join(', ');
+  const tc=Object.entries(chs).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`${n}: Rs.${Math.round(v).toLocaleString()}`).join(', ');
+  const ts=Object.entries(sts).map(([k,v])=>`${k}: ${v}`).join(', ');
+  return `Seller: ${userProfile.full_name}
+Plan: ${isPremium?'Premium':'Free'}
+Total sales: ${salesData.length} records
+Total revenue (all time): Rs.${Math.round(tot).toLocaleString()}
+This month: ${tm.length} orders, Rs.${Math.round(mrev).toLocaleString()}
+Top products by revenue: ${tp||'none'}
+Sales by channel: ${tc||'none'}
+Order statuses: ${ts||'none'}
+Recent 5: ${salesData.slice(0,5).map(s=>`${s.product_name||'Sale'} Rs.${s.amount} (${s.channel||'Direct'}, ${s.status||'completed'}, ${(s.created_at||'').split('T')[0]})`).join(' | ')}`;
+}
+
+function fmtTime(){return new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});}
+
+function renderMsg(role,text){
+  const wrap=document.getElementById('chat-msgs');
+  const es=document.getElementById('empty-state');if(es)es.remove();
+
+  const div=document.createElement('div');
+  div.className=`msg ${role==='user'?'umsg':'zmsg'}`;
+
+  const av=document.createElement('div');
+  av.className=`mav ${role==='user'?'uav':'zav'}`;
+  if(role==='assistant'){
+    av.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>';
+  } else {
+    av.textContent=(userProfile.full_name||'U')[0].toUpperCase();
+  }
+
+  const body=document.createElement('div');body.className='mbody';
+  const name=document.createElement('div');name.className='mname';
+  name.textContent=role==='user'?(userProfile.full_name||'You'):'Zeno';
+  const bubble=document.createElement('div');bubble.className='mbubble';
+  // Simple markdown rendering
+  let html=text
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^[*\-] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/\n/g,'<br>');
+  bubble.innerHTML=html;
+  const time=document.createElement('div');time.className='mtime';time.textContent=fmtTime();
+
+  body.appendChild(name);body.appendChild(bubble);body.appendChild(time);
+  div.appendChild(av);div.appendChild(body);
+  wrap.appendChild(div);
+  wrap.scrollTop=wrap.scrollHeight;
+
+  if(role==='assistant'){
+    const sb2=document.getElementById('sugs-bar');if(sb2)sb2.style.display='flex';
+  }
+}
+
+function showTyping(){
+  busy=true;
+  const wrap=document.getElementById('chat-msgs');
+  const d=document.createElement('div');d.className='msg zmsg';d.id='tymsg';
+  d.innerHTML=`<div class="mav zav"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+  <div class="mbody"><div class="mname">Zeno</div><div class="typing-bubble"><div class="tdots"><span></span><span></span><span></span></div></div></div>`;
+  wrap.appendChild(d);wrap.scrollTop=wrap.scrollHeight;
+}
+function hideTyping(){busy=false;const t=document.getElementById('tymsg');if(t)t.remove();}
+
+function saveHistory(){
+  try{localStorage.setItem(HKEY,JSON.stringify(msgs.slice(-30)));}catch(e){}
+}
+function loadHistory(){
+  try{
+    const s=localStorage.getItem(HKEY);if(!s)return;
+    const h=JSON.parse(s);if(!h||!h.length)return;
+    msgs=h;
+    const es=document.getElementById('empty-state');if(es)es.remove();
+    h.forEach(m=>renderMsg(m.role==='assistant'?'assistant':'user',m.content));
+  }catch(e){msgs=[];}
+}
+
+async function sendMsg(){
+  const ta=document.getElementById('chat-ta');
+  const text=ta.value.trim();
+  if(!text||busy)return;
+  ta.value='';ta.style.height='auto';
+  document.getElementById('send-btn').disabled=true;
+
+  renderMsg('user',text);
+  msgs.push({role:'user',content:text});
+  saveHistory();
+  showTyping();
+
+  try{
+    const sys=`Tum Zeno ho — SellerTrackr ka AI sales advisor for Pakistani sellers.
+
+TUMHARI IDENTITY:
+- Naam: Zeno
+- Banaya: SellerTrackr ne
+- Kaam: Pakistani sellers ki sales data analyze karke unhe advice dena
+- Agar koi tumhara naam puchhe: "Main Zeno hoon, SellerTrackr ka AI sales advisor!"
+
+RULES:
+- SIRF provided data use karo, kuch bhi invent mat karo
+- Pakistani context (Rs. currency, business terminology)
+- Concise aur helpful raho — zyada lamba jawab mat do
+- Bullet points use karo lists ke liye
+- Urdu/English mix bilkul theek hai
+
+SELLER KA DATA:
+${buildCtx()}`;
+
+    const res=await fetch(ZENO_API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:sys,messages:msgs.slice(-14)})
+    });
+    if(!res.ok)throw new Error('API error: '+res.status);
+    const data=await res.json();
+    const reply=data.reply||'Koi jawab nahi mila.';
+    hideTyping();
+    renderMsg('assistant',reply);
+    msgs.push({role:'assistant',content:reply});
+    saveHistory();
+  }catch(e){
+    hideTyping();
+    renderMsg('assistant','⚠️ Zeno se connect nahi ho pa raha. Thodi der baad try karo.\n\nError: '+e.message);
+    console.error('Zeno:',e);
+  }
+  document.getElementById('send-btn').disabled=false;
+  setTimeout(()=>{const ta=document.getElementById('chat-ta');if(ta)ta.focus();},80);
+}
+
+function qa(el){
+  const t=el.textContent.replace(/^[\u{1F300}-\u{1FFFF} ]*/u,'').trim();
+  document.getElementById('chat-ta').value=t;
+  sendMsg();
+}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+
+function clearChat(){
+  msgs=[];
+  try{localStorage.removeItem(HKEY);}catch(e){}
+  const wrap=document.getElementById('chat-msgs');
+  wrap.innerHTML=`<div class="empty-state" id="empty-state">
+    <div class="es-av"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+    <div class="es-title">Salam! Main hoon <em>Zeno</em></div>
+    <div class="es-sub">Tumhara AI sales advisor. Apne business ke baare mein kuch bhi puchho.</div>
+    <div class="es-chips">
+      <div class="es-chip" onclick="qa(this)">📊 Is mahine ki sales?</div>
+      <div class="es-chip" onclick="qa(this)">🏆 Best selling product?</div>
+      <div class="es-chip" onclick="qa(this)">💰 Total revenue kitna hai?</div>
+      <div class="es-chip" onclick="qa(this)">📈 Best sales channel?</div>
+    </div>
+  </div>`;
+  const sb2=document.getElementById('sugs-bar');if(sb2)sb2.style.display='none';
+}
+
+function setupSidebar(){
+  const h=document.getElementById('hamburger'),s=document.getElementById('sidebar'),o=document.getElementById('sb-overlay');
+  if(h)h.addEventListener('click',()=>{s?.classList.toggle('open');o?.classList.toggle('open');});
+  if(o)o.addEventListener('click',()=>{s?.classList.remove('open');o?.classList.remove('open');});
+}
+function setupUserMenu(){
+  const row=document.getElementById('logout-row'),popup=document.getElementById('user-menu-popup');
+  if(!row||!popup)return;
+  row.addEventListener('click',e=>{e.stopPropagation();popup.classList.toggle('open');if(window.lucide)window.lucide.createIcons();});
+  document.addEventListener('click',()=>popup.classList.remove('open'));
+  popup.addEventListener('click',e=>e.stopPropagation());
+  const lb=document.getElementById('popup-logout');
+  if(lb)lb.addEventListener('click',async()=>{await sb?.auth.signOut();location.href='login.html';});
+}
+
+window.addEventListener('load',async()=>{
+  if(window.lucide)window.lucide.createIcons();
+  setupSidebar();setupUserMenu();
+  const user=await requireAuth();if(!user)return;
+  await fetchProfile();
+  isPremium=userProfile.is_premium||false;
+
+  const sn=document.getElementById('sidebar-user-name');if(sn)sn.textContent=userProfile.full_name;
+  const av=document.getElementById('user-avatar');
+  if(av){const url=userProfile.avatar_url||currentUser.user_metadata?.avatar_url||'';if(url){av.src=url;av.style.display='block';}}
+  const pn=document.getElementById('plan-name-sb');if(pn)pn.textContent=isPremium?'Premium Plan':'Free Plan';
+  const ps=document.getElementById('plan-sub-sb');if(ps)ps.textContent=isPremium?'All features unlocked':'50 sales/month';
+  if(isPremium){
+    const pi=document.getElementById('plan-icon-sb');
+    if(pi){pi.className='plan-icon-sb premium';pi.innerHTML='<svg class="prem-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>';}
+  }
+  if(window.lucide)window.lucide.createIcons();
+
+  if(!isPremium){
+    document.getElementById('chat-outer').style.display='none';
+    document.getElementById('pwall').style.display='flex';
+    return;
+  }
+
+  await fetchSales();
+  loadHistory();
+  setTimeout(()=>{const ta=document.getElementById('chat-ta');if(ta)ta.focus();},150);
+});
+</script>
+</body>
+</html>
