@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Block admin pages from Google
+Disallow: /admin-dashboard.html
+Disallow: /admin-analytics.html
+Disallow: /admin-feedback.html
+Disallow: /admin-payments.html
+Disallow: /admin-users.html
+Disallow: /admin-theme.html
+Disallow: /admin-login.html
+
+Sitemap: https://sellertrackr.com/sitemap.xml
