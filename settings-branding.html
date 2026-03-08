@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Custom Branding — SellerTrackr</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png">
+<meta name="robots" content="noindex,nofollow">
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4338CA;--brand-d:#3730A3;--brand-l:#6366F1;--brand-bg:#EEF2FF;
+  --ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;--ink-5:#CBD5E1;
+  --surface:#FFFFFF;--base:#F8F9FC;--muted:#F1F4F9;
+  --border:rgba(15,23,42,.07);--border-2:rgba(15,23,42,.12);
+  --green:#10B981;--green-bg:#ECFDF5;--amber:#F59E0B;--amber-bg:#FFFBEB;
+  --red:#EF4444;--red-bg:#FEF2F2;
+  --r-md:10px;--r-lg:14px;--r-xl:18px;--r-2xl:24px;--r-full:9999px;
+  --sh-sm:0 1px 3px rgba(15,23,42,.06);--sh-md:0 4px 14px rgba(15,23,42,.08);
+  --sh-lg:0 10px 32px rgba(15,23,42,.1);--sh-brand:0 4px 18px rgba(67,56,202,.28);
+  --sidebar-w:240px;--topbar-h:60px;
+  --fd:'Fraunces',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);background:var(--base);color:var(--ink);height:100vh;overflow:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.app{display:flex;height:100vh;overflow:hidden}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:transform .28s var(--ease);z-index:200}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:0 1.25rem;height:var(--topbar-h);border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-brand img{width:28px;height:28px;border-radius:7px}
+.sb-brand span{font-weight:800;font-size:.93rem;color:var(--ink);letter-spacing:-.02em}
+.sb-scroll{flex:1;overflow-y:auto;padding:1rem 0}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-section{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-4);padding:.15rem 1.25rem .45rem;margin-top:.5rem}
+.sb-section:first-child{margin-top:0}
+.nav-link{display:flex;align-items:center;gap:.65rem;padding:.58rem 1.25rem;margin:0 .5rem;border-radius:var(--r-md);font-size:.84rem;font-weight:500;color:var(--ink-3);transition:all .16s;cursor:pointer}
+.nav-link i{width:17px;height:17px;flex-shrink:0}
+.nav-link:hover{background:var(--muted);color:var(--ink)}
+.nav-link.active{background:var(--brand-bg);color:var(--brand);font-weight:700}
+.sb-footer{padding:.75rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+.user-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .25rem;cursor:pointer;border-radius:var(--r-md);transition:background .15s}
+.user-row:hover{background:var(--muted)}
+.user-row img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.user-name{font-size:.8rem;font-weight:700;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-row i{width:15px;height:15px;color:var(--ink-4);flex-shrink:0}
+.plan-badge-sb{display:flex;align-items:center;gap:.55rem;padding:.62rem .75rem;background:var(--muted);border-radius:var(--r-lg);margin-bottom:.55rem}
+.plan-icon-sb{width:26px;height:26px;background:var(--brand-bg);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plan-icon-sb i{width:13px;height:13px;color:var(--brand)}
+.plan-icon-sb.premium{background:linear-gradient(135deg,#38bdf8,#0ea5e9)}
+.plan-icon-sb.premium svg.prem-svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.5}
+.plan-name-sb{font-size:.74rem;font-weight:700;color:var(--ink)}
+.plan-sub-sb{font-size:.65rem;color:var(--ink-4)}
+.user-menu-wrap{position:relative}
+.user-menu-popup{position:absolute;bottom:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-xl);box-shadow:var(--sh-lg);overflow:hidden;opacity:0;pointer-events:none;transform:translateY(6px);transition:all .18s;z-index:300}
+.user-menu-popup.open{opacity:1;pointer-events:auto;transform:translateY(0)}
+.ump-item{display:flex;align-items:center;gap:.55rem;padding:.6rem .85rem;font-size:.8rem;font-weight:500;color:var(--ink-2);cursor:pointer;transition:background .12s;width:100%;text-align:left}
+.ump-item i{width:14px;height:14px;flex-shrink:0}
+.ump-item:hover{background:var(--muted)}
+.ump-item.danger{color:var(--red)}
+.ump-item.danger:hover{background:var(--red-bg)}
+.ump-divider{height:1px;background:var(--border);margin:.2rem 0}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:190;backdrop-filter:blur(2px)}
+.topbar{height:var(--topbar-h);flex-shrink:0;display:flex;align-items:center;gap:.75rem;padding:0 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);z-index:100}
+.hamburger{display:none;width:34px;height:34px;border-radius:var(--r-md);align-items:center;justify-content:center;color:var(--ink-3);transition:background .15s}
+.hamburger:hover{background:var(--muted)}
+.hamburger i{width:18px;height:18px}
+.back-btn{display:flex;align-items:center;gap:5px;color:var(--ink-3);font-size:.8rem;font-weight:600;cursor:pointer;border:none;background:none;font-family:var(--fb);padding:.3rem .5rem;border-radius:var(--r-md);transition:color .14s}
+.back-btn:hover{color:var(--brand);background:var(--brand-bg)}
+.back-btn i{width:15px;height:15px}
+.topbar-title{font-weight:800;font-size:1rem;color:var(--ink);letter-spacing:-.02em}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:.5rem}
+.icon-btn{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:var(--ink-3);transition:all .15s;position:relative}
+.icon-btn:hover{background:var(--muted);color:var(--ink)}
+.icon-btn i{width:18px;height:18px}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface)}
+.notif-wrap{position:relative}
+.notif-panel{position:absolute;top:calc(100% + 8px);right:0;width:280px;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-2xl);box-shadow:var(--sh-lg);z-index:500;opacity:0;pointer-events:none;transform:translateY(6px);transition:all .18s}
+.notif-panel.open{opacity:1;pointer-events:auto;transform:translateY(0)}
+.notif-head{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+.notif-head-title{font-size:.8rem;font-weight:700;color:var(--ink)}
+.notif-mark{font-size:.72rem;color:var(--brand);font-weight:600;cursor:pointer;background:none;border:none;font-family:var(--fb)}
+.notif-list{padding:.4rem 0}
+.notif-empty{padding:1rem;text-align:center;font-size:.78rem;color:var(--ink-4)}
+.page{flex:1;overflow-y:auto;padding:1.5rem}
+.page::-webkit-scrollbar{width:5px}
+.page::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px}
+/* Card */
+.sub-page-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);padding:1.75rem;max-width:540px}
+.spc-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
+.spc-icon{width:42px;height:42px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.spc-icon i{width:19px;height:19px}
+.spc-icon.green{background:var(--green-bg)}.spc-icon.green i{color:var(--green)}
+.spc-title{font-size:1rem;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.spc-sub{font-size:.74rem;color:var(--ink-4);margin-top:.1rem}
+/* Premium locked */
+.prem-lock{display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1.5rem;gap:.75rem}
+.pl-icon{width:56px;height:56px;background:var(--brand-bg);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.pl-icon i{width:24px;height:24px;color:var(--brand)}
+.pl-title{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--ink)}
+.pl-sub{font-size:.8rem;color:var(--ink-3);max-width:280px;line-height:1.65}
+.pl-btn{display:inline-flex;align-items:center;gap:6px;padding:.62rem 1.4rem;background:var(--brand);color:#fff;border:none;border-radius:var(--r-lg);font-size:.85rem;font-weight:700;font-family:var(--fb);cursor:pointer;box-shadow:var(--sh-brand);transition:all .15s}
+.pl-btn:hover{background:var(--brand-d);transform:translateY(-1px)}
+.pl-btn i{width:15px;height:15px}
+/* Form */
+.mfield{margin-bottom:.9rem}
+.mfield label{display:block;font-size:.66rem;font-weight:700;color:var(--ink-3);margin-bottom:.28rem;text-transform:uppercase;letter-spacing:.05em}
+.mfield input{width:100%;padding:.58rem .88rem;background:var(--base);border:1.5px solid var(--border-2);border-radius:var(--r-lg);font-size:.84rem;font-family:var(--fb);color:var(--ink);outline:none;transition:border-color .14s}
+.mfield input:focus{border-color:var(--brand-l);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+.color-row{display:flex;align-items:center;gap:.75rem}
+.color-swatch{width:42px;height:42px;border-radius:var(--r-lg);border:2px solid var(--border-2);cursor:pointer;overflow:hidden;flex-shrink:0}
+.color-swatch input[type=color]{width:100%;height:100%;border:none;cursor:pointer;padding:0;background:none}
+/* Quick color presets */
+.preset-colors{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}
+.preset-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .14s;flex-shrink:0}
+.preset-dot:hover,.preset-dot.sel{border-color:var(--ink-2);transform:scale(1.15)}
+/* Preview card */
+.preview-section{margin:.6rem 0 1rem}
+.preview-label{font-size:.66rem;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.brand-preview-card{border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--border)}
+.bpc-header{padding:.9rem 1.1rem;display:flex;align-items:center;gap:.65rem}
+.bpc-logo{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.2);font-size:.85rem;font-weight:800;color:#fff;flex-shrink:0}
+.bpc-name{font-size:.9rem;font-weight:800;color:#fff}
+.bpc-tagline{font-size:.68rem;color:rgba(255,255,255,.7)}
+.bpc-body{padding:.9rem 1.1rem;background:var(--base);display:flex;gap:.6rem}
+.bpc-stat{flex:1;background:var(--surface);border-radius:var(--r-lg);padding:.65rem .75rem;border:1px solid var(--border)}
+.bpc-stat-val{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:.06rem}
+.bpc-stat-label{font-size:.65rem;color:var(--ink-4)}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:.58rem 1.2rem;border:none;border-radius:var(--r-lg);font-size:.84rem;font-weight:700;font-family:var(--fb);cursor:pointer;transition:all .16s;white-space:nowrap}
+.btn i{width:15px;height:15px}
+.btn.primary{background:var(--brand);color:#fff;box-shadow:var(--sh-brand)}
+.btn.primary:hover{background:var(--brand-d);transform:translateY(-1px)}
+.btn.ghost{background:var(--muted);color:var(--ink-2)}
+.btn.ghost:hover{background:var(--ink-5)}
+.btn-row{display:flex;align-items:center;gap:.6rem;margin-top:1.35rem;padding-top:1.1rem;border-top:1px solid var(--border)}
+.tc{position:fixed;bottom:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.4rem;max-width:300px;width:calc(100vw - 2rem)}
+.tt{display:flex;align-items:center;gap:.55rem;padding:.7rem .85rem;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-lg);box-shadow:var(--sh-lg);font-size:.8rem;font-weight:500;animation:tin .2s var(--ease)}
+.tt.s{border-left:3px solid var(--green)}.tt.e{border-left:3px solid var(--red)}.tt.i{border-left:3px solid var(--brand)}
+.tt i{width:15px;height:15px;flex-shrink:0}
+.tt.s i{color:var(--green)}.tt.e i{color:var(--red)}.tt.i i{color:var(--brand)}
+@keyframes tin{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:768px){
+  .sidebar{position:fixed;top:0;left:0;bottom:0;height:100dvh!important;transform:translateX(-100%);z-index:500}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar{padding:0 1rem}
+  .page{padding:1rem 1rem 3rem}
+  .sub-page-card{max-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar-overlay" id="sb-overlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand"><img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt=""><span>SellerTrackr</span></div>
+  <div class="sb-scroll">
+    <div class="sb-section">Main</div>
+    <a class="nav-link" href="user-dashboard.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+    <a class="nav-link" href="user-analytics.html"><i data-lucide="bar-chart-3"></i><span>Analytics</span></a>
+    <a class="nav-link" href="user-reports.html"><i data-lucide="file-text"></i><span>Reports</span></a>
+    <a class="nav-link" href="user-ai.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M12 5v2M12 17v2M5 12h2M17 12h2"/><path d="M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/><circle cx="12" cy="12" r="7" stroke-dasharray="2 2"/></svg><span>Zeno AI</span></a>
+    <div class="sb-section">Account</div>
+    <a class="nav-link" href="user-pricing.html"><i data-lucide="zap"></i><span>Pricing</span></a>
+    <a class="nav-link active" href="user-settings.html"><i data-lucide="settings"></i><span>Settings</span></a>
+  </div>
+  <div class="sb-footer">
+    <div class="plan-badge-sb"><div class="plan-icon-sb" id="plan-icon-sb"><i data-lucide="zap"></i></div><div><div class="plan-name-sb" id="plan-name-sb">Free Plan</div><div class="plan-sub-sb" id="plan-sub-sb">50 sales/month</div></div></div>
+    <div class="user-menu-wrap" id="user-menu-wrap">
+      <div class="user-row" id="logout-row">
+        <img src="" alt="" id="user-avatar" style="display:none;width:28px;height:28px;border-radius:50%;object-fit:cover">
+        <span class="user-name" id="sidebar-user-name">Loading…</span>
+        <i data-lucide="settings"></i>
+      </div>
+      <div class="user-menu-popup" id="user-menu-popup">
+        <a class="ump-item" href="user-settings.html"><i data-lucide="settings"></i>Settings</a>
+        <a class="ump-item" href="user-support.html"><i data-lucide="life-buoy"></i>Support</a>
+        <div class="ump-divider"></div>
+        <button class="ump-item danger" id="popup-logout"><i data-lucide="log-out"></i>Logout</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <button class="hamburger" id="hamburger"><i data-lucide="menu"></i></button>
+    <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left"></i>Settings</button>
+    <div style="margin-left:.5rem"><div class="topbar-title">Custom Branding</div></div>
+    <div class="topbar-right">
+      <div class="notif-wrap">
+        <button class="icon-btn" id="bell-btn"><i data-lucide="bell"></i><span class="notif-dot" id="notif-dot" style="display:none"></span></button>
+        <div class="notif-panel" id="notif-panel">
+          <div class="notif-head"><span class="notif-head-title">Notifications</span><button class="notif-mark">Mark read</button></div>
+          <div class="notif-list"><div class="notif-empty">No notifications</div></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="sub-page-card">
+      <div class="spc-header">
+        <div class="spc-icon green"><i data-lucide="palette"></i></div>
+        <div>
+          <div class="spc-title">Custom Branding</div>
+          <div class="spc-sub">Personalize your store's look and identity</div>
+        </div>
+      </div>
+
+      <!-- Premium locked state -->
+      <div class="prem-lock" id="branding-locked" style="display:none">
+        <div class="pl-icon"><i data-lucide="lock"></i></div>
+        <div class="pl-title">Premium Feature</div>
+        <div class="pl-sub">Upgrade to Premium to unlock custom branding — set your store name, colors, and identity.</div>
+        <button class="pl-btn" onclick="location.href='user-pricing.html'"><i data-lucide="zap"></i>Upgrade to Premium</button>
+      </div>
+
+      <!-- Branding form -->
+      <div id="branding-form">
+        <div class="mfield">
+          <label>Brand / Store Name</label>
+          <input type="text" id="b-name" placeholder="My Awesome Store" oninput="updatePreview()">
+        </div>
+
+        <div class="mfield">
+          <label>Brand Color</label>
+          <div class="color-row">
+            <div class="color-swatch"><input type="color" id="b-color" value="#4338CA" oninput="onColorPick(this.value)"></div>
+            <input type="text" id="b-color-hex" placeholder="#4338CA" oninput="syncColorHex(this.value)">
+          </div>
+          <!-- Preset colors -->
+          <div class="preset-colors" id="preset-colors">
+            <div class="preset-dot" style="background:#4338CA" onclick="setColor('#4338CA')" title="Indigo"></div>
+            <div class="preset-dot" style="background:#0EA5E9" onclick="setColor('#0EA5E9')" title="Sky Blue"></div>
+            <div class="preset-dot" style="background:#10B981" onclick="setColor('#10B981')" title="Emerald"></div>
+            <div class="preset-dot" style="background:#F59E0B" onclick="setColor('#F59E0B')" title="Amber"></div>
+            <div class="preset-dot" style="background:#EF4444" onclick="setColor('#EF4444')" title="Red"></div>
+            <div class="preset-dot" style="background:#8B5CF6" onclick="setColor('#8B5CF6')" title="Violet"></div>
+            <div class="preset-dot" style="background:#EC4899" onclick="setColor('#EC4899')" title="Pink"></div>
+            <div class="preset-dot" style="background:#0F172A" onclick="setColor('#0F172A')" title="Dark"></div>
+          </div>
+        </div>
+
+        <div class="preview-section">
+          <div class="preview-label">Live Preview</div>
+          <div class="brand-preview-card">
+            <div class="bpc-header" id="bpc-header" style="background:#4338CA">
+              <div class="bpc-logo" id="bpc-logo">M</div>
+              <div>
+                <div class="bpc-name" id="bpc-name">My Awesome Store</div>
+                <div class="bpc-tagline">SellerTrackr Dashboard</div>
+              </div>
+            </div>
+            <div class="bpc-body">
+              <div class="bpc-stat"><div class="bpc-stat-val">₨24,500</div><div class="bpc-stat-label">Revenue</div></div>
+              <div class="bpc-stat"><div class="bpc-stat-val">38</div><div class="bpc-stat-label">Orders</div></div>
+              <div class="bpc-stat"><div class="bpc-stat-val" id="bpc-btn" style="font-size:.72rem;color:#4338CA;font-weight:800">View Analytics</div><div class="bpc-stat-label">Quick link</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn primary" id="save-btn" onclick="saveBranding()"><i data-lucide="save"></i>Save Branding</button>
+          <button class="btn ghost" onclick="history.back()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="tc" id="tc-wrap"></div>
+
+<script>
+const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+let sb,currentUser,userProfile={};
+
+function initSb(){try{sb=supabase.createClient(SURL,SKEY);return true;}catch(e){return false;}}
+async function requireAuth(){if(!initSb()){location.href='login.html';return null;}const{data:{session}}=await sb.auth.getSession();if(!session){location.href='login.html';return null;}currentUser=session.user;return currentUser;}
+async function fetchProfile(){try{const{data}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();userProfile=data||{};if(!userProfile.full_name)userProfile.full_name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'User';}catch(e){userProfile={full_name:currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'User',is_premium:false};}}
+
+function toast(msg,type){const ic={s:'check-circle',e:'x-circle',i:'info'};const c=document.getElementById('tc-wrap');if(!c)return;const el=document.createElement('div');el.className='tt '+(type||'i');el.innerHTML='<i data-lucide="'+(ic[type]||'info')+'"></i><span style="flex:1">'+msg+'</span>';c.appendChild(el);if(window.lucide)window.lucide.createIcons();setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .22s';setTimeout(()=>el.remove(),240);},3800);}
+function initSidebar(){const h=document.getElementById('hamburger'),s=document.getElementById('sidebar'),o=document.getElementById('sb-overlay');if(h)h.addEventListener('click',()=>{s?.classList.toggle('open');o?.classList.toggle('open');});if(o)o.addEventListener('click',()=>{s?.classList.remove('open');o?.classList.remove('open');});}
+function setupUserMenu(){const row=document.getElementById('logout-row'),popup=document.getElementById('user-menu-popup');if(!row||!popup)return;row.addEventListener('click',e=>{e.stopPropagation();popup.classList.toggle('open');if(window.lucide)window.lucide.createIcons();});document.addEventListener('click',()=>popup.classList.remove('open'));popup.addEventListener('click',e=>e.stopPropagation());const lb=document.getElementById('popup-logout');if(lb)lb.addEventListener('click',()=>{sb?.auth.signOut();location.href='login.html';});}
+function setupBell(){const btn=document.getElementById('bell-btn'),panel=document.getElementById('notif-panel');if(!btn||!panel)return;btn.addEventListener('click',e=>{e.stopPropagation();panel.classList.toggle('open');});document.addEventListener('click',()=>panel.classList.remove('open'));panel.addEventListener('click',e=>e.stopPropagation());}
+
+function setColor(hex){
+  document.getElementById('b-color').value=hex;
+  document.getElementById('b-color-hex').value=hex;
+  updatePreview();
+  // Mark selected preset
+  document.querySelectorAll('.preset-dot').forEach(d=>{d.classList.toggle('sel',d.style.background===hex||d.style.background===hexToRgb(hex));});
+}
+function hexToRgb(hex){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgb(${r}, ${g}, ${b})`;}
+function onColorPick(hex){document.getElementById('b-color-hex').value=hex;updatePreview();}
+function syncColorHex(val){if(/^#[0-9a-fA-F]{6}$/.test(val)){document.getElementById('b-color').value=val;updatePreview();}}
+
+function updatePreview(){
+  const color=document.getElementById('b-color').value||'#4338CA';
+  const name=document.getElementById('b-name').value||'My Awesome Store';
+  document.getElementById('bpc-header').style.background=color;
+  document.getElementById('bpc-name').textContent=name;
+  document.getElementById('bpc-logo').textContent=name[0]?.toUpperCase()||'S';
+  document.getElementById('bpc-btn').style.color=color;
+}
+
+async function saveBranding(){
+  const name=document.getElementById('b-name').value.trim();
+  const color=document.getElementById('b-color').value;
+  if(!name){toast('Store name is required','e');return;}
+  const btn=document.getElementById('save-btn');btn.textContent='Saving…';btn.disabled=true;
+  const{error}=await sb.from('profiles').update({brand_name:name,brand_color:color}).eq('id',currentUser.id);
+  btn.innerHTML='<i data-lucide="save"></i>Save Branding';btn.disabled=false;
+  if(window.lucide)window.lucide.createIcons();
+  if(error){toast('Error: '+error.message,'e');return;}
+  toast('Branding saved!','s');
+}
+
+window.addEventListener('load',async()=>{
+  if(window.lucide)window.lucide.createIcons();
+  initSidebar();setupUserMenu();setupBell();
+  const user=await requireAuth();if(!user)return;
+  await fetchProfile();
+  const name=userProfile.full_name||'User';
+  document.getElementById('sidebar-user-name').textContent=name;
+  const av=document.getElementById('user-avatar');const url=userProfile.avatar_url||user.user_metadata?.avatar_url||'';if(url){av.src=url;av.style.display='block';}
+  const isPrem=userProfile.is_premium||false;
+  document.getElementById('plan-name-sb').textContent=isPrem?'Premium Plan':'Free Plan';
+  document.getElementById('plan-sub-sb').textContent=isPrem?'All features unlocked':'50 sales/month';
+  if(isPrem){const pi=document.getElementById('plan-icon-sb');pi.className='plan-icon-sb premium';pi.innerHTML='<svg class="prem-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>';}
+
+  if(!isPrem){
+    document.getElementById('branding-locked').style.display='flex';
+    document.getElementById('branding-form').style.display='none';
+  } else {
+    // Fill saved branding
+    const bn=document.getElementById('b-name');if(bn)bn.value=userProfile.brand_name||'';
+    const bc=document.getElementById('b-color');if(bc)bc.value=userProfile.brand_color||'#4338CA';
+    const bch=document.getElementById('b-color-hex');if(bch)bch.value=userProfile.brand_color||'#4338CA';
+    updatePreview();
+  }
+  if(window.lucide)window.lucide.createIcons();
+});
+</script>
+</body>
+</html>
