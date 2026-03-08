@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Zeno AI — SellerTrackr</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png">
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4338CA;--brand-l:#6366F1;--brand-bg:#EEF2FF;--brand-bg2:#E0E7FF;
+  --ink:#0F172A;--ink-2:#334155;--ink-3:#64748B;--ink-4:#94A3B8;--ink-5:#CBD5E1;
+  --surface:#FFFFFF;--base:#F8F9FC;--muted:#F1F4F9;
+  --border:rgba(15,23,42,.07);--border-2:rgba(15,23,42,.12);
+  --green:#10B981;--red:#EF4444;--red-bg:#FEF2F2;
+  --r-md:10px;--r-lg:14px;--r-xl:18px;--r-2xl:24px;--r-full:9999px;
+  --sh-md:0 4px 14px rgba(15,23,42,.08);--sh-lg:0 10px 32px rgba(15,23,42,.1);
+  --sidebar-w:240px;--topbar-h:60px;
+  --fd:'Fraunces',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);background:var(--base);color:var(--ink);
+  height:100vh;height:100dvh;overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.app{display:flex;height:100vh;height:100dvh;overflow:hidden}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  height:100vh;height:100dvh;overflow:hidden;transition:transform .28s ease;z-index:200}
+.sb-brand{display:flex;align-items:center;gap:6px;padding:0 1.25rem;
+  height:var(--topbar-h);border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-brand img{width:28px;height:28px;border-radius:7px}
+.sb-brand span{font-weight:800;font-size:.93rem;color:var(--ink);letter-spacing:-.02em}
+.sb-scroll{flex:1;overflow-y:auto;padding:1rem 0}
+.sb-section{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--ink-4);padding:.15rem 1.25rem .45rem;margin-top:.5rem}
+/* Zeno AI nav SVG icon */
+.nav-link{display:flex;align-items:center;gap:.65rem;padding:.58rem 1.25rem;margin:0 .5rem;
+  border-radius:var(--r-md);font-size:.84rem;font-weight:500;color:var(--ink-3);
+  transition:all .16s;cursor:pointer}
+.nav-link svg.ni{width:17px;height:17px;flex-shrink:0;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-link .nb{margin-left:auto;font-size:.64rem;font-weight:800;padding:1px 7px;
+  border-radius:var(--r-full);background:var(--brand-bg);color:var(--brand)}
+.nav-link:hover{background:var(--muted);color:var(--ink)}
+.nav-link.active{background:linear-gradient(135deg,#eef2ff,#e0e7ff);color:var(--brand);font-weight:700}
+.nav-link.active svg.ni{stroke:var(--brand)}
+/* Zeno icon in sidebar — custom neural/AI icon */
+.zeno-nav-icon{width:17px;height:17px;flex-shrink:0}
+.sb-footer{padding:.75rem 1rem;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface)}
+.plan-badge-sb{display:flex;align-items:center;gap:.55rem;padding:.62rem .75rem;
+  background:var(--muted);border-radius:var(--r-lg);margin-bottom:.55rem}
+.plan-icon-sb{width:26px;height:26px;background:var(--brand-bg);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plan-icon-sb svg{width:13px;height:13px;fill:none;stroke:var(--brand);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.plan-icon-sb.premium{background:linear-gradient(135deg,#38bdf8,#0ea5e9);box-shadow:0 2px 8px rgba(14,165,233,.35)}
+.plan-icon-sb.premium svg{stroke:#fff}
+.plan-name-sb{font-size:.74rem;font-weight:700;color:var(--ink)}
+.plan-sub-sb{font-size:.65rem;color:var(--ink-4)}
+.user-menu-wrap{position:relative}
+.user-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .25rem;
+  cursor:pointer;border-radius:var(--r-md);transition:background .15s}
+.user-row:hover{background:var(--muted)}
+.user-name{font-size:.8rem;font-weight:700;color:var(--ink);flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-row svg{width:15px;height:15px;fill:none;stroke:var(--ink-4);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);
+  z-index:190;backdrop-filter:blur(2px)}
+.user-menu-popup{position:absolute;bottom:calc(100% + 8px);left:0;background:var(--surface);
+  border:1px solid var(--border-2);border-radius:var(--r-lg);box-shadow:var(--sh-lg);
+  z-index:9999;display:none;min-width:175px;padding:4px 0}
+.user-menu-popup.open{display:block;animation:umpIn .15s ease}
+@keyframes umpIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ump-item{display:flex;align-items:center;gap:.6rem;padding:.56rem .9rem;font-size:.81rem;
+  font-weight:600;color:var(--ink-2);background:none;border:none;width:100%;text-align:left;
+  text-decoration:none;cursor:pointer;font-family:var(--fb);transition:background .12s}
+.ump-item:hover{background:var(--muted);color:var(--ink)}
+.ump-item svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ump-item.danger{color:var(--red)}.ump-item.danger:hover{background:var(--red-bg)}
+.ump-divider{height:1px;background:var(--border);margin:3px 0}
+
+/* ── TOPBAR ── */
+.topbar{height:var(--topbar-h);flex-shrink:0;display:flex;align-items:center;gap:.75rem;
+  padding:0 1.25rem;background:var(--surface);border-bottom:1px solid var(--border);z-index:100}
+.hamburger{display:none;width:34px;height:34px;border-radius:var(--r-md);
+  align-items:center;justify-content:center;color:var(--ink-3);transition:background .15s}
+.hamburger:hover{background:var(--muted)}
+.hamburger svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.zeno-header{display:flex;align-items:center;gap:10px}
+.zeno-av-top{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#4338ca);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(99,102,241,.35);
+  flex-shrink:0;position:relative}
+/* Zeno custom icon — neural network / AI brain */
+.zeno-av-top svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.online-dot{position:absolute;bottom:1px;right:1px;width:9px;height:9px;
+  border-radius:50%;background:#10b981;border:2px solid var(--surface)}
+.zeno-hd-title{font-weight:800;font-size:1rem;color:var(--ink);letter-spacing:-.02em}
+.zeno-hd-sub{font-size:.67rem;color:var(--ink-4);margin-top:.05rem}
+.ai-pill{display:inline-flex;padding:.1rem .48rem;background:linear-gradient(135deg,#6366f1,#4338ca);
+  color:#fff;border-radius:var(--r-full);font-size:.6rem;font-weight:800;letter-spacing:.06em;
+  margin-left:5px;vertical-align:middle}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:.4rem}
+.icon-btn{width:34px;height:34px;border-radius:var(--r-md);display:flex;align-items:center;
+  justify-content:center;color:var(--ink-3);transition:all .15s;flex-shrink:0}
+.icon-btn:hover{background:var(--muted);color:var(--ink)}
+.icon-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+/* Ghost mode button */
+.ghost-btn{display:flex;align-items:center;gap:5px;padding:.3rem .7rem;
+  border-radius:var(--r-full);font-size:.72rem;font-weight:700;color:var(--ink-3);
+  border:1.5px solid var(--border-2);transition:all .16s;background:var(--surface);font-family:var(--fb)}
+.ghost-btn:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-bg)}
+.ghost-btn.active{background:var(--muted);color:var(--ink);border-color:var(--border-2)}
+.ghost-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* Notification bell */
+.notif-wrap{position:relative}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;
+  background:var(--red);border:1.5px solid var(--surface)}
+.notif-panel{position:absolute;top:calc(100% + 8px);right:0;width:270px;background:var(--surface);
+  border:1px solid var(--border-2);border-radius:var(--r-xl);box-shadow:var(--sh-lg);
+  z-index:9999;display:none;overflow:hidden}
+.notif-panel.open{display:block}
+.notif-head{display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 1rem;border-bottom:1px solid var(--border);background:var(--base)}
+.notif-head-title{font-size:.78rem;font-weight:700;color:var(--ink)}
+.notif-mark{font-size:.7rem;font-weight:600;color:var(--brand);background:none;border:none;cursor:pointer;font-family:var(--fb)}
+.notif-list{max-height:260px;overflow-y:auto}
+.notif-empty{padding:1.2rem;text-align:center;font-size:.78rem;color:var(--ink-4)}
+.notif-item{display:flex;align-items:flex-start;gap:.6rem;padding:.62rem .9rem;border-bottom:1px solid var(--border);transition:background .12s;cursor:default}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:var(--base)}
+.ni-ic{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ni-ic svg{width:13px;height:13px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ni-ic.brand{background:var(--brand-bg)}.ni-ic.brand svg{stroke:var(--brand)}
+.ni-ic.green{background:#ecfdf5}.ni-ic.green svg{stroke:var(--green)}
+.ni-ic.amber{background:#fffbeb}.ni-ic.amber svg{stroke:#f59e0b}
+.ni-ic.red{background:var(--red-bg)}.ni-ic.red svg{stroke:var(--red)}
+.ni-txt{font-size:.77rem;color:var(--ink-2);line-height:1.4}
+.ni-sub{font-size:.68rem;color:var(--ink-4);margin-top:.1rem}
+
+/* ── CHAT AREA ── */
+.chat-outer{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.chat-msgs{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;
+  display:flex;flex-direction:column;gap:.75rem;scroll-behavior:smooth;min-height:0}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px}
+
+/* Messages */
+.msg{display:flex;gap:.55rem;animation:mIn .16s ease}
+@keyframes mIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.msg.umsg{flex-direction:row-reverse}
+.mav{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;
+  align-items:center;justify-content:center;font-size:.75rem;font-weight:800;margin-top:3px}
+.mav.zav{background:linear-gradient(135deg,#6366f1,#4338ca);box-shadow:0 2px 8px rgba(99,102,241,.28)}
+.mav.zav svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.mav.uav{background:var(--brand-bg);color:var(--brand);font-size:.8rem}
+.mbody{max-width:73%;display:flex;flex-direction:column;gap:3px}
+.msg.umsg .mbody{align-items:flex-end}
+.mname{font-size:.65rem;font-weight:700;color:var(--ink-4);padding:0 2px}
+.mbubble{padding:.7rem .95rem;border-radius:var(--r-xl);font-size:.84rem;line-height:1.7;
+  color:var(--ink-2);word-break:break-word}
+.msg.zmsg .mbubble{background:var(--surface);border:1px solid var(--border);
+  border-top-left-radius:4px;box-shadow:0 2px 10px rgba(15,23,42,.06)}
+.msg.umsg .mbubble{background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border-top-right-radius:4px}
+.mbubble strong{font-weight:700}
+.mbubble ul{padding-left:1.1rem;margin:.2rem 0}
+.mbubble li{margin:.12rem 0}
+.mtime{font-size:.61rem;color:var(--ink-4);padding:0 2px}
+.msg.umsg .mtime{text-align:right}
+/* Message action buttons (copy/delete) */
+.msg-actions{display:flex;align-items:center;gap:.25rem;padding:0 2px;opacity:1}
+.ma-btn{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;
+  justify-content:center;background:none;border:1px solid var(--border-2);
+  color:var(--ink-4);cursor:pointer;transition:all .13s}
+.ma-btn:hover{background:var(--muted);color:var(--ink);border-color:var(--border)}
+.ma-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.ma-btn.del:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+
+/* Typing indicator */
+.typing-bubble{padding:.62rem .85rem;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);border-top-left-radius:4px;
+  box-shadow:0 2px 10px rgba(15,23,42,.06);display:inline-flex}
+.tdots{display:flex;align-items:center;gap:4px}
+.tdots span{width:7px;height:7px;background:var(--ink-4);border-radius:50%;animation:td 1.2s infinite}
+.tdots span:nth-child(2){animation-delay:.16s}
+.tdots span:nth-child(3){animation-delay:.32s}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.45}28%{transform:translateY(-5px);opacity:1}}
+
+/* Suggestions */
+.sugs-bar{padding:.5rem 1.5rem .4rem;display:flex;flex-wrap:wrap;gap:.4rem;
+  border-top:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.sug{padding:.3rem .75rem;background:var(--base);border:1.5px solid var(--border-2);
+  border-radius:var(--r-full);font-size:.72rem;font-weight:600;color:var(--ink-3);
+  cursor:pointer;transition:all .13s;white-space:nowrap}
+.sug:hover{background:var(--brand-bg);border-color:var(--brand-bg);color:var(--brand)}
+
+/* Input area — KEY FIX: flex-shrink:0 + padding-bottom safe area */
+.input-area{
+  padding:.8rem 1.5rem .95rem;
+  padding-bottom:calc(.95rem + env(safe-area-inset-bottom, 0px));
+  background:var(--surface);border-top:1px solid var(--border);
+  flex-shrink:0;position:relative;z-index:10}
+.input-row{display:flex;align-items:flex-end;gap:.5rem;background:var(--base);
+  border:1.5px solid var(--border-2);border-radius:var(--r-xl);
+  padding:.55rem .6rem .55rem .88rem;transition:border-color .14s,box-shadow .14s}
+.input-row:focus-within{border-color:rgba(99,102,241,.45);box-shadow:0 0 0 3px rgba(99,102,241,.08)}
+.chat-ta{flex:1;background:none;border:none;outline:none;font-family:var(--fb);
+  font-size:.85rem;color:var(--ink);resize:none;max-height:110px;line-height:1.6;padding:.1rem 0}
+.chat-ta::placeholder{color:var(--ink-4)}
+.send-btn{width:34px;height:34px;background:linear-gradient(135deg,#4338ca,#6366f1);
+  border:none;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;flex-shrink:0}
+.send-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 14px rgba(67,56,202,.38)}
+.send-btn:disabled{opacity:.32;cursor:not-allowed}
+.send-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round}
+.input-hint{text-align:center;font-size:.65rem;color:var(--ink-4);margin-top:.38rem}
+/* Ghost mode hint */
+.ghost-hint{text-align:center;font-size:.65rem;color:#6366f1;margin-top:.38rem;display:none}
+
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;padding:2rem;text-align:center;gap:.9rem}
+.es-av{width:76px;height:76px;background:linear-gradient(135deg,#6366f1,#4338ca);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 36px rgba(67,56,202,.28);animation:float 3.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.es-av svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.es-title{font-family:var(--fd);font-size:1.35rem;font-weight:700;color:var(--ink)}
+.es-title em{font-style:italic;color:var(--brand)}
+.es-sub{font-size:.81rem;color:var(--ink-3);max-width:270px;line-height:1.65}
+.es-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem;margin-top:.2rem;max-width:360px}
+.es-chip{padding:.3rem .76rem;background:var(--surface);border:1.5px solid var(--border-2);
+  border-radius:var(--r-full);font-size:.72rem;font-weight:600;color:var(--ink-3);
+  cursor:pointer;transition:all .13s}
+.es-chip:hover{background:var(--brand-bg);border-color:var(--brand-bg);color:var(--brand)}
+
+/* Premium wall */
+.pwall{display:none;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;padding:2rem;text-align:center;gap:1rem}
+.pw-av{width:72px;height:72px;background:linear-gradient(135deg,#6366f1,#4338ca);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 28px rgba(67,56,202,.3)}
+.pw-av svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.pw-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink)}
+.pw-sub{font-size:.82rem;color:var(--ink-3);max-width:290px;line-height:1.65}
+.pw-btn{display:inline-flex;align-items:center;gap:7px;padding:.72rem 1.7rem;
+  background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border:none;
+  border-radius:var(--r-lg);font-size:.87rem;font-weight:700;font-family:var(--fb);
+  cursor:pointer;box-shadow:0 4px 18px rgba(67,56,202,.3);transition:all .16s}
+.pw-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(67,56,202,.4)}
+.pw-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .sidebar{position:fixed;top:0;left:0;bottom:0;height:100dvh!important;
+    transform:translateX(-100%);z-index:500}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex}
+  .topbar{padding:0 1rem}
+  .chat-msgs{padding:.85rem 1rem}
+  .input-area{padding:.65rem 1rem;
+    padding-bottom:calc(.75rem + env(safe-area-inset-bottom, 0px))}
+  .sugs-bar{padding:.4rem .85rem}
+  .mbody{max-width:86%}
+  .zeno-hd-sub{display:none}
+  .ghost-btn span{display:none}
+}
+@media(max-width:480px){
+  .mbody{max-width:91%}
+  .mbubble{font-size:.8rem}
+}
+</style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sb-overlay"></div>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="Logo">
+    <span>SellerTrackr</span>
+  </div>
+  <div class="sb-scroll">
+    <div class="sb-section">Main</div>
+    <a class="nav-link" href="user-dashboard.html">
+      <svg class="ni" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a class="nav-link" href="user-analytics.html">
+      <svg class="ni" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Analytics</span><span class="nb">Pro</span>
+    </a>
+    <a class="nav-link" href="user-reports.html">
+      <svg class="ni" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Reports</span>
+    </a>
+    <!-- Zeno AI — custom AI/neural icon (NOT Gemini) -->
+    <a class="nav-link active" href="user-ai.html">
+      <svg class="ni zeno-nav-icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+        <path d="M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
+        <circle cx="12" cy="12" r="7" stroke-dasharray="2 2"/>
+      </svg>
+      <span>Zeno AI</span>
+    </a>
+    <div class="sb-section">Account</div>
+    <a class="nav-link" href="user-pricing.html">
+      <svg class="ni" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>Pricing</span>
+    </a>
+  </div>
+  <div class="sb-footer">
+    <div class="plan-badge-sb">
+      <div class="plan-icon-sb" id="plan-icon-sb">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div>
+        <div class="plan-name-sb" id="plan-name-sb">Free Plan</div>
+        <div class="plan-sub-sb" id="plan-sub-sb">50 sales/month</div>
+      </div>
+    </div>
+    <div class="user-menu-wrap" id="user-menu-wrap">
+      <div class="user-row" id="logout-row">
+        <img src="" alt="" id="user-avatar" style="display:none;width:28px;height:28px;border-radius:50%;object-fit:cover">
+        <span class="user-name" id="sidebar-user-name">Loading...</span>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div class="user-menu-popup" id="user-menu-popup">
+        <a class="ump-item" href="user-settings.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
+        <a class="ump-item" href="user-support.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Support</a>
+        <div class="ump-divider"></div>
+        <button class="ump-item danger" id="popup-logout"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <button class="hamburger" id="hamburger">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="zeno-header">
+      <div class="zeno-av-top">
+        <!-- Zeno custom icon — NOT Gemini -->
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 5v2M12 17v2M5 12h2M17 12h2"/>
+          <path d="M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+        </svg>
+        <div class="online-dot"></div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center">
+          <span class="zeno-hd-title">Zeno</span>
+          <span class="ai-pill">AI</span>
+        </div>
+        <div class="zeno-hd-sub">by SellerTrackr &middot; Sales advisor</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <!-- Ghost Mode — opens new page -->
+      <a class="ghost-btn" href="user-ghost.html" title="Ghost mode — private chat, nothing saved">
+        <svg viewBox="0 0 24 24"><path d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg>
+        <span>Ghost</span>
+      </a>
+      <!-- Bell -->
+      <div class="notif-wrap">
+        <button class="icon-btn" id="bell-btn">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot" id="notif-dot" style="display:none"></span>
+        </button>
+        <div class="notif-panel" id="notif-panel">
+          <div class="notif-head">
+            <span class="notif-head-title">Notifications</span>
+            <button class="notif-mark">Mark read</button>
+          </div>
+          <div class="notif-list"><div class="notif-empty">No notifications</div></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CHAT -->
+  <div class="chat-outer" id="chat-outer">
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="empty-state" id="empty-state">
+        <div class="es-av">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 5v2M12 17v2M5 12h2M17 12h2"/>
+            <path d="M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+          </svg>
+        </div>
+        <div class="es-title">Hello! I am <em>Zeno</em></div>
+        <div class="es-sub">Your AI sales advisor. Ask me anything about your business.</div>
+        <div class="es-chips" id="es-chips">
+          <div class="es-chip" onclick="qa(this)">This month sales?</div>
+          <div class="es-chip" onclick="qa(this)">Best selling product?</div>
+          <div class="es-chip" onclick="qa(this)">Total revenue?</div>
+          <div class="es-chip" onclick="qa(this)">Best sales channel?</div>
+          <div class="es-chip" onclick="qa(this)">Analyze my sales</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sugs-bar" id="sugs-bar" style="display:none">
+      <div class="sug" onclick="qa(this)">This month sales?</div>
+      <div class="sug" onclick="qa(this)">Best product?</div>
+      <div class="sug" onclick="qa(this)">Total revenue?</div>
+      <div class="sug" onclick="qa(this)">Best channel?</div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-row">
+        <textarea class="chat-ta" id="chat-ta" placeholder="Ask Zeno anything about your sales..."
+          rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMsg()">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="input-hint" id="input-hint">Zeno reads your real sales data to answer &middot; Premium feature</div>
+    </div>
+  </div>
+
+  <!-- PREMIUM WALL -->
+  <div class="pwall" id="pwall">
+    <div class="pw-av">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="pw-title">Unlock Zeno AI</div>
+    <div class="pw-sub">Zeno reads your sales data and gives real business insights. Available on Premium plan.</div>
+    <button class="pw-btn" onclick="location.href='user-pricing.html'">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Upgrade to Premium — &#8360;1,500/mo
+    </button>
+  </div>
+</div>
+</div>
+
+<script>
+const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+const ZENO_API='https://bipoos-api-1.onrender.com/chat';
+const HKEY='zeno_history_v3';
+
+let sb,currentUser,userProfile={},salesData=[],isPremium=false;
+let msgs=[],busy=false,ghostMode=false;
+
+// ── Supabase ──
+function initSb(){try{sb=supabase.createClient(SURL,SKEY);return true;}catch(e){return false;}}
+async function requireAuth(){
+  if(!initSb()){location.href='login.html';return null;}
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){location.href='login.html';return null;}
+  currentUser=session.user;return currentUser;
+}
+async function fetchProfile(){
+  try{
+    const{data,error}=await sb.from('profiles').select('full_name,is_premium,avatar_url').eq('id',currentUser.id).single();
+    if(error){userProfile={full_name:currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Seller',is_premium:false};}
+    else{userProfile=data||{};if(!userProfile.full_name)userProfile.full_name=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'Seller';}
+  }catch(e){userProfile={full_name:currentUser.email?.split('@')[0]||'Seller',is_premium:false};}
+}
+async function fetchSales(){
+  try{const{data}=await sb.from('sales').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});salesData=data||[];}
+  catch(e){salesData=[];}
+}
+
+// ── Save chat to Supabase ──
+async function saveChatToDb(role, content){
+  if(ghostMode) return; // ghost mode — don't save
+  try{
+    await sb.from('chat_history').insert({
+      user_id: currentUser.id,
+      role: role,
+      content: content,
+      created_at: new Date().toISOString()
+    });
+  }catch(e){ /* non-critical */ }
+}
+
+async function loadChatFromDb(){
+  try{
+    const{data}=await sb.from('chat_history')
+      .select('role,content,created_at')
+      .eq('user_id',currentUser.id)
+      .order('created_at',{ascending:true})
+      .limit(40);
+    if(!data||!data.length) return;
+    const es=document.getElementById('empty-state');if(es)es.remove();
+    data.forEach(m=>renderMsg(m.role==='assistant'?'assistant':'user',m.content,false));
+    msgs=data.map(m=>({role:m.role,content:m.content}));
+    document.getElementById('sugs-bar').style.display='flex';
+  }catch(e){
+    // Fallback to localStorage if table doesn't exist yet
+    loadHistoryLocal();
+  }
+}
+
+// ── localStorage fallback ──
+function saveHistoryLocal(){
+  try{localStorage.setItem(HKEY,JSON.stringify(msgs.slice(-30)));}catch(e){}
+}
+function loadHistoryLocal(){
+  try{
+    const s=localStorage.getItem(HKEY);if(!s)return;
+    const h=JSON.parse(s);if(!h||!h.length)return;
+    msgs=h;
+    const es=document.getElementById('empty-state');if(es)es.remove();
+    h.forEach(m=>renderMsg(m.role==='assistant'?'assistant':'user',m.content,false));
+    document.getElementById('sugs-bar').style.display='flex';
+  }catch(e){msgs=[];}
+}
+
+// ── Sales context ──
+function buildCtx(){
+  if(!salesData.length) return 'User has no sales records yet.';
+  const now=new Date();
+  const tm=salesData.filter(s=>{const d=new Date(s.created_at);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
+  const tot=salesData.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  const mrev=tm.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  const prods={},chs={},sts={};
+  salesData.forEach(s=>{
+    const p=s.product_name||'Unknown';prods[p]=(prods[p]||0)+parseFloat(s.amount||0);
+    const c=s.channel||'Direct';chs[c]=(chs[c]||0)+parseFloat(s.amount||0);
+    const st=s.status||'completed';sts[st]=(sts[st]||0)+1;
+  });
+  const tp=Object.entries(prods).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,v])=>`${n}: Rs.${Math.round(v).toLocaleString()}`).join(', ');
+  const tc=Object.entries(chs).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`${n}: Rs.${Math.round(v).toLocaleString()}`).join(', ');
+  const ts=Object.entries(sts).map(([k,v])=>`${k}: ${v}`).join(', ');
+  return `Seller: ${userProfile.full_name}\nPlan: ${isPremium?'Premium':'Free'}\nTotal sales: ${salesData.length}\nAll-time revenue: Rs.${Math.round(tot).toLocaleString()}\nThis month: ${tm.length} orders, Rs.${Math.round(mrev).toLocaleString()}\nTop products: ${tp||'none'}\nSales channels: ${tc||'none'}\nOrder statuses: ${ts||'none'}\nRecent 5: ${salesData.slice(0,5).map(s=>`${s.product_name||'Sale'} Rs.${s.amount} (${s.channel||'Direct'}, ${s.status||'completed'}, ${(s.created_at||'').split('T')[0]})`).join(' | ')}`;
+}
+
+function fmtTime(){return new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});}
+
+// ── Render message ──
+function renderMsg(role, text, addActions=true){
+  const wrap=document.getElementById('chat-msgs');
+  const es=document.getElementById('empty-state');if(es)es.remove();
+
+  const div=document.createElement('div');
+  div.className=`msg ${role==='user'?'umsg':'zmsg'}`;
+
+  // Avatar
+  const av=document.createElement('div');
+  av.className=`mav ${role==='user'?'uav':'zav'}`;
+  if(role==='assistant'){
+    av.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 5v2M12 17v2M5 12h2M17 12h2"/>
+      <path d="M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+    </svg>`;
+  } else {
+    av.textContent=(userProfile.full_name||'U')[0].toUpperCase();
+  }
+
+  // Body
+  const body=document.createElement('div');body.className='mbody';
+  const name=document.createElement('div');name.className='mname';
+  name.textContent=role==='user'?(userProfile.full_name||'You'):'Zeno';
+  const bubble=document.createElement('div');bubble.className='mbubble';
+  let html=text
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^[*\-] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/\n/g,'<br>');
+  bubble.innerHTML=html;
+  const time=document.createElement('div');time.className='mtime';time.textContent=fmtTime();
+
+  body.appendChild(name);
+  body.appendChild(bubble);
+  body.appendChild(time);
+
+  // Action buttons (copy + delete) — below each message
+  if(addActions){
+    const actions=document.createElement('div');actions.className='msg-actions';
+    // Copy button
+    const copyBtn=document.createElement('button');copyBtn.className='ma-btn';
+    copyBtn.title='Copy';
+    copyBtn.innerHTML=`<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+    copyBtn.onclick=()=>{
+      navigator.clipboard.writeText(text).then(()=>{
+        copyBtn.innerHTML=`<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+        setTimeout(()=>{copyBtn.innerHTML=`<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;},1500);
+      });
+    };
+    // Delete button
+    const delBtn=document.createElement('button');delBtn.className='ma-btn del';
+    delBtn.title='Delete';
+    delBtn.innerHTML=`<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+    delBtn.onclick=()=>{ div.remove(); };
+    actions.appendChild(copyBtn);
+    actions.appendChild(delBtn);
+    body.appendChild(actions);
+  }
+
+  div.appendChild(av);div.appendChild(body);
+  wrap.appendChild(div);
+  wrap.scrollTop=wrap.scrollHeight;
+
+  if(role==='assistant'){
+    const sb2=document.getElementById('sugs-bar');if(sb2)sb2.style.display='flex';
+  }
+}
+
+function showTyping(){
+  busy=true;
+  const wrap=document.getElementById('chat-msgs');
+  const d=document.createElement('div');d.className='msg zmsg';d.id='tymsg';
+  d.innerHTML=`<div class="mav zav">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 5v2M12 17v2M5 12h2M17 12h2"/>
+    </svg></div>
+    <div class="mbody"><div class="mname">Zeno</div>
+    <div class="typing-bubble"><div class="tdots"><span></span><span></span><span></span></div></div>
+    </div>`;
+  wrap.appendChild(d);wrap.scrollTop=wrap.scrollHeight;
+}
+function hideTyping(){busy=false;const t=document.getElementById('tymsg');if(t)t.remove();}
+
+// ── Send message ──
+async function sendMsg(){
+  const ta=document.getElementById('chat-ta');
+  const text=ta.value.trim();
+  if(!text||busy)return;
+  ta.value='';ta.style.height='auto';
+  document.getElementById('send-btn').disabled=true;
+
+  renderMsg('user',text);
+  msgs.push({role:'user',content:text});
+  if(!ghostMode){ saveChatToDb('user',text); saveHistoryLocal(); }
+  showTyping();
+
+  try{
+    const sys=`You are Zeno — SellerTrackr's AI sales advisor for Pakistani sellers.
+
+YOUR IDENTITY:
+- Name: Zeno
+- Created by: SellerTrackr
+- Purpose: Analyze Pakistani seller data and give business advice
+- If asked your name: "I am Zeno, SellerTrackr's AI sales advisor!"
+
+RULES:
+- Only use provided data, never invent numbers
+- Pakistani context (Rs. currency)
+- Be concise and helpful
+- Use bullet points for lists
+- Do NOT use emojis in any response
+
+SELLER DATA:
+${buildCtx()}`;
+
+    const res=await fetch(ZENO_API,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:sys,messages:msgs.slice(-14)})
+    });
+    if(!res.ok) throw new Error('API error: '+res.status);
+    const data=await res.json();
+    const reply=data.reply||'No response received.';
+    hideTyping();
+    renderMsg('assistant',reply);
+    msgs.push({role:'assistant',content:reply});
+    if(!ghostMode){ saveChatToDb('assistant',reply); saveHistoryLocal(); }
+  }catch(e){
+    hideTyping();
+    renderMsg('assistant','Could not connect to Zeno. Please try again in a moment.\n\nError: '+e.message);
+    console.error('Zeno:',e);
+  }
+  document.getElementById('send-btn').disabled=false;
+  setTimeout(()=>{const ta=document.getElementById('chat-ta');if(ta)ta.focus();},80);
+}
+
+function qa(el){
+  document.getElementById('chat-ta').value=el.textContent.trim();
+  sendMsg();
+}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+
+function clearChat(){
+  msgs=[];
+  if(!ghostMode){
+    try{localStorage.removeItem(HKEY);}catch(e){}
+    // Clear from Supabase too
+    if(sb&&currentUser){
+      sb.from('chat_history').delete().eq('user_id',currentUser.id).then(()=>{}).catch(()=>{});
+    }
+  }
+  const wrap=document.getElementById('chat-msgs');
+  wrap.innerHTML=`<div class="empty-state" id="empty-state">
+    <div class="es-av">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 5v2M12 17v2M5 12h2M17 12h2"/>
+        <path d="M7.05 7.05l1.41 1.41M15.54 15.54l1.41 1.41M7.05 16.95l1.41-1.41M15.54 8.46l1.41-1.41"/>
+      </svg>
+    </div>
+    <div class="es-title">Hello! I am <em>Zeno</em></div>
+    <div class="es-sub">Your AI sales advisor. Ask me anything about your business.</div>
+    <div class="es-chips">
+      <div class="es-chip" onclick="qa(this)">This month sales?</div>
+      <div class="es-chip" onclick="qa(this)">Best selling product?</div>
+      <div class="es-chip" onclick="qa(this)">Total revenue?</div>
+      <div class="es-chip" onclick="qa(this)">Best sales channel?</div>
+    </div>
+  </div>`;
+  document.getElementById('sugs-bar').style.display='none';
+}
+
+// ── Bell ──
+function setupBell(){
+  const btn=document.getElementById('bell-btn'),panel=document.getElementById('notif-panel');
+  if(!btn||!panel)return;
+  btn.addEventListener('click',e=>{e.stopPropagation();panel.classList.toggle('open');});
+  document.addEventListener('click',()=>panel.classList.remove('open'));
+  panel.addEventListener('click',e=>e.stopPropagation());
+  const mark=panel.querySelector('.notif-mark');
+  if(mark)mark.addEventListener('click',()=>{
+    document.getElementById('notif-dot').style.display='none';
+    panel.querySelector('.notif-list').innerHTML='<div class="notif-empty">All caught up!</div>';
+  });
+}
+
+// ── Sidebar & UserMenu ──
+function setupSidebar(){
+  const h=document.getElementById('hamburger'),s=document.getElementById('sidebar'),o=document.getElementById('sb-overlay');
+  if(h)h.addEventListener('click',()=>{s?.classList.toggle('open');o?.classList.toggle('open');});
+  if(o)o.addEventListener('click',()=>{s?.classList.remove('open');o?.classList.remove('open');});
+}
+function setupUserMenu(){
+  const row=document.getElementById('logout-row'),popup=document.getElementById('user-menu-popup');
+  if(!row||!popup)return;
+  row.addEventListener('click',e=>{e.stopPropagation();popup.classList.toggle('open');});
+  document.addEventListener('click',()=>popup.classList.remove('open'));
+  popup.addEventListener('click',e=>e.stopPropagation());
+  const lb=document.getElementById('popup-logout');
+  if(lb)lb.addEventListener('click',async()=>{await sb?.auth.signOut();location.href='login.html';});
+}
+
+// ── Load ──
+window.addEventListener('load',async()=>{
+  setupSidebar();setupUserMenu();setupBell();
+  const user=await requireAuth();if(!user)return;
+  await fetchProfile();
+  isPremium=userProfile.is_premium||false;
+
+  const sn=document.getElementById('sidebar-user-name');if(sn)sn.textContent=userProfile.full_name;
+  const av=document.getElementById('user-avatar');
+  if(av){const url=userProfile.avatar_url||currentUser.user_metadata?.avatar_url||'';if(url){av.src=url;av.style.display='block';}}
+  const pn=document.getElementById('plan-name-sb');if(pn)pn.textContent=isPremium?'Premium Plan':'Free Plan';
+  const ps=document.getElementById('plan-sub-sb');if(ps)ps.textContent=isPremium?'All features unlocked':'50 sales/month';
+  if(isPremium){
+    const pi=document.getElementById('plan-icon-sb');
+    if(pi){
+      pi.className='plan-icon-sb premium';
+      pi.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>';
+    }
+  }
+
+  // Show notif dot
+  document.getElementById('notif-dot').style.display='block';
+
+  if(!isPremium){
+    document.getElementById('chat-outer').style.display='none';
+    document.getElementById('pwall').style.display='flex';
+    return;
+  }
+
+  await fetchSales();
+  await loadChatFromDb();
+  setTimeout(()=>{const ta=document.getElementById('chat-ta');if(ta)ta.focus();},150);
+});
+</script>
+</body>
+</html>
