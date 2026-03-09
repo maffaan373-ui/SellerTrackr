@@ -195,6 +195,20 @@
     .btab.active{background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;box-shadow:0 2px 10px rgba(67,56,202,.3)}
     .save-chip{position:absolute;top:-8px;right:-4px;background:#10b981;color:#fff;font-size:.57rem;font-weight:800;padding:1px 5px;border-radius:99px;white-space:nowrap;pointer-events:none}
     .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:900px;margin:0 auto}
+    .annual-grid{grid-template-columns:repeat(3,1fr);max-width:900px}
+
+    @media(max-width:1024px){
+        .pricing-grid{grid-template-columns:1fr 1fr}
+        .annual-grid{grid-template-columns:1fr 1fr}
+        .plan-card.biz{grid-column:1/-1}
+    }
+    @media(max-width:768px){
+        .pricing-grid{grid-template-columns:1fr !important;max-width:440px}
+        .annual-grid{grid-template-columns:1fr !important;max-width:440px}
+        .plan-card.biz{grid-column:auto !important}
+        .plan-card.pop{order:-1}
+        .plan-card.ent{grid-column:auto !important}
+    }
     .plan-card{background:var(--surface);border:1.5px solid var(--border-2);border-radius:20px;padding:1.5rem 1.25rem;display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s;position:relative}
     .plan-card:hover{box-shadow:var(--sh-lg);transform:translateY(-2px)}
     .plan-card.pop{border-color:var(--brand);box-shadow:0 0 0 3px rgba(67,56,202,.08)}
@@ -265,8 +279,6 @@
         .feat-card--wide{grid-column:span 2}
         .footer-top{grid-template-columns:1fr 1fr}
         .footer-brand{grid-column:span 2}
-        .pricing-grid{grid-template-columns:1fr 1fr}
-        .plan-card.biz{grid-column:1/-1}
     }
     @media(max-width:768px){
         section{padding:3rem 0}
@@ -281,9 +293,6 @@
         .steps-grid::before{display:none}
         .stats-grid{grid-template-columns:1fr 1fr;gap:1.5rem 1rem}
         .stats-bar{padding:1.75rem 0}
-        .pricing-grid{grid-template-columns:1fr;max-width:420px}
-        .plan-card.biz{grid-column:auto}
-        .plan-card.pop{order:-1}
         .footer-top{grid-template-columns:1fr 1fr}
         .footer-brand{grid-column:span 2}
         .chip--1,.chip--2{display:none}
@@ -536,9 +545,9 @@
       </div>
     </div>
 
-    <!-- ANNUAL — Pro + Business -->
+    <!-- ANNUAL — Pro + Business + Enterprise -->
     <div id="pg-annual">
-      <div class="pricing-grid" style="grid-template-columns:1fr 1fr;max-width:660px;margin:0 auto">
+      <div class="pricing-grid annual-grid">
 
         <!-- Pro Annual -->
         <div class="plan-card pop reveal d1">
@@ -601,6 +610,35 @@
             <a href="payment.html?plan=annual_business" class="pc-btn biz-btn-style">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
               Get Business Annual
+            </a>
+          </div>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="plan-card ent reveal d3" style="border-color:rgba(15,23,42,.12);background:linear-gradient(160deg,#f8fafc 0%,#fff 60%)">
+          <div class="pc-top">
+            <span class="pc-badge" style="background:#f1f5f9;color:#334155">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              ENTERPRISE
+            </span>
+          </div>
+          <div class="plan-price-val" style="font-size:1.6rem"><strong>Custom</strong></div>
+          <div class="plan-desc">Annual contract for large businesses</div>
+          <div class="pc-divider"></div>
+          <ul class="plan-features">
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Business</li>
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited team members</li>
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Custom integrations</li>
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> API access</li>
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> SLA guarantee</li>
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> White-label option</li>
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Onboarding support</li>
+            <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Custom reporting</li>
+          </ul>
+          <div class="pc-foot">
+            <a href="user-support.html" class="pc-btn" style="background:#0f172a;color:#fff">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Contact Sales
             </a>
           </div>
         </div>
