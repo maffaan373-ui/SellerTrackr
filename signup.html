@@ -220,8 +220,7 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
     margin-bottom:1.5rem;
     animation:heroIn .4s cubic-bezier(0,0,.2,1) .18s both;
   }
-  .mob-dot{width:22px;height:4px;border-radius:2px;background:var(--brand)}
-  .mob-dot.off{width:8px;background:var(--muted)}
+  .mob-dot{width:8px;height:4px;border-radius:2px;background:var(--muted);transition:width .3s cubic-bezier(0.4,0,0.2,1),background .3s ease}
 
   /* ── Box becomes transparent full-width container ── */
   .box{
@@ -415,8 +414,8 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
     <!-- Progress dots -->
     <div class="mob-dots" style="display:none">
       <div class="mob-dot"></div>
-      <div class="mob-dot off"></div>
-      <div class="mob-dot off"></div>
+      <div class="mob-dot"></div>
+      <div class="mob-dot"></div>
     </div>
 
     <div class="box">
@@ -583,23 +582,50 @@ function setupEye(eyeId,pwId,iconId){
 setupEye('ey','pw','eye-icon');
 setupEye('ey2','pw2','eye-icon2');
 
-// Password strength
+// ── Password strength (fixed logic) ──
 function setupStrength(pwId,strId,slId,s1,s2,s3,s4){
   document.getElementById(pwId).addEventListener('input',function(){
     var v=this.value,box=document.getElementById(strId);
     box.classList.toggle('on',v.length>0);
     if(!v.length)return;
     var s=0;
-    if(v.length>=8)s++;if(v.length>=12)s++;
-    if(/[A-Z]/.test(v)&&/[0-9]/.test(v))s++;
-    if(/[^A-Za-z0-9]/.test(v))s++;
-    var cls=s<=1?'w':s<=2?'f':'g',lbl=s<=1?'Weak':s<=2?'Fair':'Strong';
-    [s1,s2,s3,s4].forEach((id,i)=>{document.getElementById(id).className='sb-i'+(i<Math.max(s,1)?' '+cls:'');});
+    if(v.length>=6)s++;          // any reasonable length
+    if(v.length>=10)s++;          // longer = better
+    if(/[A-Z]/.test(v))s++;      // uppercase
+    if(/[0-9]/.test(v))s++;      // number
+    if(/[^A-Za-z0-9]/.test(v))s++; // special char
+    // 0-1 = Weak, 2-3 = Fair, 4-5 = Strong
+    var cls=s<=1?'w':s<=3?'f':'g';
+    var lbl=s<=1?'Weak':s<=3?'Fair':'Strong';
+    var bars=Math.ceil(s/5*4); // map 0-5 score to 1-4 bars
+    bars=Math.max(1,Math.min(4,bars));
+    [s1,s2,s3,s4].forEach((id,i)=>{document.getElementById(id).className='sb-i'+(i<bars?' '+cls:'');});
     var l=document.getElementById(slId);l.textContent=lbl;l.className='sl '+cls;
   });
 }
 setupStrength('pw','str','sl','s1','s2','s3','s4');
 setupStrength('pw2','str2','sl2','s12','s22','s32','s42');
+
+// ── Progress dots — fill as fields are completed ──
+var dotEls=document.querySelectorAll('.mob-dots .mob-dot');
+// 3 dots: dot0=name+username filled, dot1=email filled, dot2=password filled
+function updateDots(){
+  var fn=document.getElementById('fn').value.trim();
+  var un=document.getElementById('un').value.trim();
+  var em=document.getElementById('em').value.trim();
+  var pw=document.getElementById('pw').value;
+  var d0=fn.length>0&&un.length>0;
+  var d1=d0&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+  var d2=d1&&pw.length>=6;
+  if(dotEls[0]){dotEls[0].style.background=d0?'var(--brand)':'var(--muted)';dotEls[0].style.width=d0?'22px':'8px';}
+  if(dotEls[1]){dotEls[1].style.background=d1?'var(--brand)':'var(--muted)';dotEls[1].style.width=d1?'22px':'8px';}
+  if(dotEls[2]){dotEls[2].style.background=d2?'var(--brand)':'var(--muted)';dotEls[2].style.width=d2?'22px':'8px';}
+}
+['fn','un','em','pw'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el)el.addEventListener('input',updateDots);
+});
+updateDots();
 
 // Clear errors
 [['fn','ffn'],['un','fun'],['em','fem'],['pw','fpw'],
@@ -651,4 +677,4 @@ document.getElementById('sf2').addEventListener('submit',function(e){
 });
 </script>
 </body>
-  </html>
+</html>
