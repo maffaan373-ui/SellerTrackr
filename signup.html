@@ -135,13 +135,13 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
    Desktop: ZERO changes
    ═══════════════════════════════════════════════ */
 @media(max-width:900px){
-  body{overflow:hidden}
-  .wrap{display:block;height:100vh}
+  body{overflow:auto;height:auto}
+  .wrap{display:block;min-height:100vh;height:auto}
   .L{display:none!important}
 
   /* Full screen white — like a native app screen */
   .R{
-    height:100vh;
+    min-height:100svh;
     width:100%;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
@@ -187,9 +187,10 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
     display:flex!important;
     flex:1;
     flex-direction:column;
-    padding:1.6rem 1.5rem 2rem;
+    padding:1.6rem 1.5rem 6rem;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
+    height:100%;
   }
 
   /* ── Hero text with stagger animation ── */
@@ -314,6 +315,19 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
     transform:scale(.98)!important;
     box-shadow:0 2px 10px rgba(67,56,202,.28)!important;
   }
+
+  /* Sticky button wrapper — always visible above keyboard */
+  .mob-btn-sticky{
+    position:sticky;
+    bottom:0;
+    left:0;right:0;
+    padding:1rem 1.5rem 1.4rem;
+    background:linear-gradient(to bottom, transparent 0%, #fff 30%);
+    margin-top:.5rem;
+    z-index:10;
+  }
+  /* Hide the in-form button on mobile */
+  .mob-form-btn{display:none!important}
 }
 
 /* Small phones ≤ 420px — stack Name + Username */
@@ -466,12 +480,21 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
           <label for="tc">I agree to the <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a></label>
         </div>
 
-        <button type="submit" class="btn-s" id="sb">
+        <button type="submit" class="btn-s mob-form-btn" id="sb-hidden">
           <span class="bt">Create Account</span>
           <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           <div class="b-spin"></div>
         </button>
       </form>
+    </div>
+
+    <!-- Sticky CTA — always visible above keyboard -->
+    <div class="mob-btn-sticky">
+      <button type="button" class="btn-s" id="sb" onclick="document.getElementById('sf').requestSubmit()">
+        <span class="bt">Create Account</span>
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <div class="b-spin"></div>
+      </button>
     </div>
   </div>
 
@@ -669,12 +692,31 @@ async function handleSubmit(fnId,unId,emId,pwId,tcId,ffnId,funId,femId,fpwId,btn
 
 document.getElementById('sf').addEventListener('submit',function(e){
   e.preventDefault();
+  var isMob=window.innerWidth<=900;
+  var btnId=isMob?'sb':'sb';
+  // sync loading state to sticky btn on mobile
   handleSubmit('fn','un','em','pw','tc','ffn','fun','fem','fpw','sb');
 });
+
+// requestSubmit fallback for older Android browsers
+var stickyBtn=document.getElementById('sb');
+if(stickyBtn&&stickyBtn.type==='button'){
+  // already handled via onclick
+}
+// Keyboard scroll fix — scroll active input into view
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',function(){
+    var active=document.activeElement;
+    if(active&&(active.tagName==='INPUT')){
+      setTimeout(function(){active.scrollIntoView({behavior:'smooth',block:'center'});},100);
+    }
+  });
+}
+
 document.getElementById('sf2').addEventListener('submit',function(e){
   e.preventDefault();
   handleSubmit('fn2','un2','em2','pw2','tc2','ffn2','fun2','fem2','fpw2','sb2');
 });
 </script>
 </body>
-</html>
+  </html>
