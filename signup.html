@@ -22,7 +22,7 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
 
 .wrap{display:grid;grid-template-columns:1.15fr 1fr;height:100vh}
 
-/* ══ LEFT ══ */
+/* ══ LEFT — Desktop only, ALL ANIMATIONS PRESERVED ══ */
 .L{
   position:relative;overflow:hidden;
   background:linear-gradient(145deg,#2D2B8F 0%,#3730A3 30%,#4338CA 65%,#5B5FCF 100%);
@@ -46,7 +46,6 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
 .L-h em{font-style:italic;font-weight:300;color:rgba(255,255,255,.72)}
 .L-p{font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.65;max-width:290px;margin-bottom:2rem}
 
-/* Floating cards */
 .cards{position:relative;height:210px;flex-shrink:0}
 .fc{position:absolute;background:rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.17);border-radius:var(--r-xl);padding:.9rem 1.1rem;color:#fff}
 .fc-a{left:0;top:0;width:240px;animation:c1 6s ease-in-out infinite}
@@ -66,13 +65,11 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
 .ni{width:28px;height:28px;background:rgba(74,222,128,.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ni svg{width:14px;height:14px;stroke:#4ade80;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-/* ══ RIGHT ══ */
+/* ══ RIGHT — Desktop ══ */
 .R{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2rem 3rem;background:var(--surface);overflow-y:auto}
 .box{width:100%;max-width:360px}
 
-.mob-logo{display:none;align-items:center;gap:9px;margin-bottom:1.5rem}
-.mob-logo img{width:30px;height:30px;border-radius:50%;object-fit:cover}
-.mob-logo span{font-weight:800;font-size:.95rem;color:var(--ink)}
+.mob-logo{display:none}
 
 .fh{font-family:var(--fd);font-size:1.9rem;font-weight:700;color:var(--ink);letter-spacing:-.03em;margin-bottom:.3rem;line-height:1.15}
 .fs{font-size:.82rem;color:var(--ink-3);margin-bottom:1.4rem}
@@ -118,6 +115,7 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
 .btn-s.ld .b-spin{display:block}
 @keyframes sp{to{transform:rotate(360deg)}}
 
+/* ── Desktop entry animation — PRESERVED ── */
 .box>*{opacity:0;transform:translateY(8px);animation:ef .4s cubic-bezier(0,0,.2,1) both}
 .box>*:nth-child(1){animation-delay:.04s}.box>*:nth-child(2){animation-delay:.08s}
 .box>*:nth-child(3){animation-delay:.12s}.box>*:nth-child(4){animation-delay:.16s}
@@ -130,60 +128,236 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
 .tt svg{width:15px;height:15px;flex-shrink:0;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tt.s svg{stroke:var(--green)}.tt.e svg{stroke:var(--red)}.tt.w svg{stroke:var(--amber)}.tt.i svg{stroke:var(--brand)}
 
+/* ═══════════════════════════════════════════════
+   MOBILE — Full screen professional layout
+   No card, no popup, no heavy background
+   Subtle top brand bar + clean full-page form
+   Desktop: ZERO changes
+   ═══════════════════════════════════════════════ */
 @media(max-width:900px){
-  .wrap{grid-template-columns:1fr;height:100vh;overflow:hidden}
+  body{overflow:hidden}
+  .wrap{display:block;height:100vh}
   .L{display:none!important}
+
+  /* Full screen white — like a native app screen */
   .R{
-    height:100vh;width:100%;overflow:hidden;
-    display:flex;flex-direction:column;
-    justify-content:center;align-items:center;
-    padding:0 1.5rem;
+    height:100vh;
+    width:100%;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    padding:0;
+    background:#fff;
   }
-  .box{width:100%;max-width:340px}
-  .box>*{animation:none!important;opacity:1!important;transform:none!important}
-  .mob-logo{display:flex!important;margin-bottom:.5rem}
-  .mob-logo img{width:24px;height:24px}
-  .mob-logo span{font-size:.8rem}
-  .fh{font-size:1.28rem!important;margin-bottom:.1rem!important}
-  .fs{font-size:.73rem!important;margin-bottom:.6rem!important}
-  .row2{gap:.42rem!important;margin-bottom:.5rem!important}
-  .fi{margin-bottom:.48rem!important}
-  .fi label{font-size:.65rem!important;margin-bottom:.13rem!important}
-  .fi input{padding:.4rem .65rem!important;font-size:.77rem!important}
-  .pw-r input{padding:.4rem .65rem!important;padding-right:2.1rem!important;font-size:.77rem!important}
-  .str{margin-top:.12rem!important}
-  .sl{font-size:.59rem!important}
-  .tr-row{margin-bottom:.55rem!important}
-  .tr-row label{font-size:.67rem!important}
-  .btn-s{padding:.58rem!important;font-size:.83rem!important}
+
+  /* ── Top brand header strip with animation ── */
+  .mob-header{
+    display:flex!important;
+    align-items:center;
+    justify-content:space-between;
+    padding:1rem 1.5rem .95rem;
+    background:#fff;
+    border-bottom:1px solid rgba(15,23,42,.07);
+    flex-shrink:0;
+    animation:hdrIn .35s cubic-bezier(0,0,.2,1) both;
+  }
+  @keyframes hdrIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+  .mob-header-brand{display:flex;align-items:center;gap:9px}
+  .mob-header-brand img{
+    width:32px;height:32px;border-radius:50%;
+    border:2px solid var(--brand-bg);
+  }
+  .mob-header-brand span{font-weight:800;font-size:.95rem;color:var(--ink);letter-spacing:-.02em}
+
+  .mob-header-step{
+    font-size:.72rem;font-weight:700;
+    color:var(--brand);
+    background:var(--brand-bg);
+    padding:.28rem .7rem;
+    border-radius:99px;
+    letter-spacing:.02em;
+  }
+
+  /* ── Scrollable content area ── */
+  .mob-scroll{
+    display:flex!important;
+    flex:1;
+    flex-direction:column;
+    padding:1.6rem 1.5rem 2rem;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* ── Hero text with stagger animation ── */
+  .mob-hero{
+    display:block!important;
+    margin-bottom:1.5rem;
+    animation:heroIn .4s cubic-bezier(0,0,.2,1) .1s both;
+  }
+  @keyframes heroIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  .mob-hero-title{
+    font-family:var(--fd);
+    font-size:1.75rem;
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:-.03em;
+    line-height:1.15;
+    margin-bottom:.3rem;
+  }
+  .mob-hero-title em{font-style:italic;font-weight:300;color:var(--brand)}
+  .mob-hero-sub{font-size:.84rem;color:var(--ink-3);line-height:1.5}
+  .mob-hero-sub a{color:var(--brand);font-weight:700;text-decoration:none}
+
+  /* ── Progress dots ── */
+  .mob-dots{
+    display:flex!important;
+    gap:5px;
+    margin-bottom:1.5rem;
+    animation:heroIn .4s cubic-bezier(0,0,.2,1) .18s both;
+  }
+  .mob-dot{width:22px;height:4px;border-radius:2px;background:var(--brand)}
+  .mob-dot.off{width:8px;background:var(--muted)}
+
+  /* ── Box becomes transparent full-width container ── */
+  .box{
+    width:100%;
+    max-width:100%;
+    background:transparent;
+    border-radius:0;
+    padding:0;
+    box-shadow:none;
+    animation:formIn .45s cubic-bezier(0,0,.2,1) .22s both;
+  }
+  @keyframes formIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Hide desktop logo from box (we have mob-header now) */
+  .mob-logo{display:none!important}
+  .fh{display:none!important}
+  .fs{display:none!important}
+
+  /* ── Form fields ── */
+  .row2{
+    grid-template-columns:1fr 1fr!important;
+    gap:.7rem!important;
+    margin-bottom:.78rem!important;
+  }
+
+  .fi{margin-bottom:.78rem!important}
+  .fi label{
+    font-size:.76rem!important;
+    margin-bottom:.3rem!important;
+    font-weight:700;
+    color:var(--ink-2);
+    display:flex;align-items:center;gap:.3rem;
+  }
+  .fi input{
+    padding:.8rem 1rem!important;
+    font-size:.93rem!important;
+    border-radius:13px!important;
+    background:#F8F9FC;
+    border:1.5px solid rgba(15,23,42,.1)!important;
+    transition:all .2s!important;
+  }
+  .fi input:focus{
+    background:#fff!important;
+    border-color:var(--brand)!important;
+    box-shadow:0 0 0 4px rgba(67,56,202,.09)!important;
+    transform:translateY(-1px);
+  }
+  .pw-r input{
+    padding:.8rem 1rem!important;
+    padding-right:3rem!important;
+    font-size:.93rem!important;
+    border-radius:13px!important;
+    background:#F8F9FC;
+    border:1.5px solid rgba(15,23,42,.1)!important;
+    transition:all .2s!important;
+  }
+  .pw-r input:focus{
+    background:#fff!important;
+    border-color:var(--brand)!important;
+    box-shadow:0 0 0 4px rgba(67,56,202,.09)!important;
+    transform:translateY(-1px);
+  }
+  .eye{right:.9rem!important}
+  .eye svg{width:18px;height:18px}
+
+  .str{margin-top:.3rem!important}
+  .sb-i{height:4px!important;border-radius:3px!important}
+  .sl{font-size:.71rem!important}
+
+  .tr-row{
+    margin-bottom:1rem!important;
+    align-items:center;
+    gap:.65rem;
+  }
+  .tr-row input[type=checkbox]{
+    width:17px!important;height:17px!important;
+    margin-top:0!important;
+    border-radius:5px;
+  }
+  .tr-row label{font-size:.83rem!important;line-height:1.45;color:var(--ink-3)}
+
+  /* ── CTA button — full brand, big tap target ── */
+  .btn-s{
+    padding:.92rem!important;
+    font-size:1rem!important;
+    border-radius:14px!important;
+    box-shadow:0 4px 22px rgba(67,56,202,.38)!important;
+    letter-spacing:.01em;
+  }
+  .btn-s:active:not(:disabled){
+    transform:scale(.98)!important;
+    box-shadow:0 2px 10px rgba(67,56,202,.28)!important;
+  }
 }
-@media(max-width:380px){
-  .fh{font-size:1.12rem!important}
-  .row2{grid-template-columns:1fr!important;gap:.38rem!important;margin-bottom:.4rem!important}
-  .fi input,.pw-r input{padding:.36rem .58rem!important;font-size:.73rem!important}
-  .fi{margin-bottom:.38rem!important}
-  .fs{margin-bottom:.48rem!important}
-  .tr-row{margin-bottom:.45rem!important}
-  .btn-s{padding:.52rem!important}
+
+/* Small phones ≤ 420px — stack Name + Username */
+@media(max-width:420px){
+  .mob-header{padding:.9rem 1.25rem}
+  .mob-scroll{padding:1.4rem 1.25rem 2rem}
+  .mob-hero-title{font-size:1.55rem}
+  .row2{
+    grid-template-columns:1fr!important;
+    gap:.65rem!important;
+    margin-bottom:.65rem!important;
+  }
+  .fi{margin-bottom:.65rem!important}
+  .fi input,.pw-r input{padding:.74rem .92rem!important;font-size:.9rem!important}
+  .btn-s{padding:.86rem!important;font-size:.95rem!important}
+}
+
+/* Very small ≤ 360px */
+@media(max-width:360px){
+  .mob-header{padding:.8rem 1.1rem}
+  .mob-scroll{padding:1.2rem 1.1rem 1.8rem}
+  .mob-hero-title{font-size:1.38rem}
+  .mob-hero-sub{font-size:.8rem}
+  .fi input,.pw-r input{padding:.68rem .85rem!important;font-size:.86rem!important}
+  .fi{margin-bottom:.58rem!important}
+  .tr-row label{font-size:.78rem!important}
+  .btn-s{padding:.8rem!important;font-size:.9rem!important}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<!-- ═══ LEFT ═══ -->
+<!-- ═══ LEFT — Desktop only. ALL ANIMATIONS PRESERVED. UNTOUCHED. ═══ -->
 <div class="L">
   <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
-
   <div class="L-brand">
     <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="">
     <span class="L-brand-name">SellerTrackr</span>
   </div>
-
   <div class="L-mid">
     <div class="L-h">Grow your<br>business with<br><em>real data</em></div>
     <div class="L-p">Track your sales, predict trends, and make smarter decisions every day.</div>
-
     <div class="cards">
       <div class="fc fc-a">
         <div class="lbl">Monthly Revenue</div>
@@ -219,65 +393,142 @@ body{font-family:var(--fb);background:var(--surface);color:var(--ink);overflow:h
 
 <!-- ═══ RIGHT ═══ -->
 <div class="R">
-  <div class="box">
-    <div class="mob-logo">
+
+  <!-- Mobile header (hidden on desktop) -->
+  <div class="mob-header" style="display:none">
+    <div class="mob-header-brand">
       <img src="https://i.ibb.co/JFsSzs9N/cropped-circle-image.png" alt="">
       <span>SellerTrackr</span>
     </div>
+    <div class="mob-header-step">Step 1 of 1</div>
+  </div>
 
+  <!-- Mobile scrollable content (hidden on desktop) -->
+  <div class="mob-scroll" style="display:none">
+
+    <!-- Hero text block -->
+    <div class="mob-hero" style="display:none">
+      <div class="mob-hero-title">Create your<br><em>account</em></div>
+      <div class="mob-hero-sub">Already have one? <a href="login.html">Sign in</a></div>
+    </div>
+
+    <!-- Progress dots -->
+    <div class="mob-dots" style="display:none">
+      <div class="mob-dot"></div>
+      <div class="mob-dot off"></div>
+      <div class="mob-dot off"></div>
+    </div>
+
+    <div class="box">
+      <div class="mob-logo"></div>
+      <div class="fh">Create account</div>
+      <div class="fs">Already have one? <a href="login.html">Sign in</a></div>
+
+      <form id="sf" novalidate>
+        <div class="row2">
+          <div class="fi" id="ffn">
+            <label for="fn">Full Name</label>
+            <input id="fn" type="text" placeholder="Your name" autocomplete="name">
+            <div class="em">Required</div>
+          </div>
+          <div class="fi" id="fun">
+            <label for="un">Username</label>
+            <input id="un" type="text" placeholder="username" autocomplete="username">
+            <div class="em">Required</div>
+          </div>
+        </div>
+
+        <div class="fi" id="fem">
+          <label for="em">Email address</label>
+          <input id="em" type="email" placeholder="name@company.com" autocomplete="email">
+          <div class="em">Valid email required</div>
+        </div>
+
+        <div class="fi" id="fpw">
+          <label for="pw">Password</label>
+          <div class="pw-r">
+            <input id="pw" type="password" placeholder="Min. 8 characters" autocomplete="new-password">
+            <button class="eye" type="button" id="ey">
+              <svg id="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="str" id="str">
+            <div class="sb-w">
+              <div class="sb-i" id="s1"></div><div class="sb-i" id="s2"></div>
+              <div class="sb-i" id="s3"></div><div class="sb-i" id="s4"></div>
+            </div>
+            <div class="sl" id="sl">Weak</div>
+          </div>
+          <div class="em">Min. 8 characters required</div>
+        </div>
+
+        <div class="tr-row">
+          <input type="checkbox" id="tc">
+          <label for="tc">I agree to the <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a></label>
+        </div>
+
+        <button type="submit" class="btn-s" id="sb">
+          <span class="bt">Create Account</span>
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div class="b-spin"></div>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Desktop box (shown only on desktop) -->
+  <div class="box" id="desktop-box" style="">
+    <div class="mob-logo"></div>
     <div class="fh">Create account</div>
     <div class="fs">Already have one? <a href="login.html">Sign in</a></div>
 
-    <form id="sf" novalidate>
+    <form id="sf2" novalidate>
       <div class="row2">
-        <div class="fi" id="ffn">
-          <label for="fn">Full Name</label>
-          <input id="fn" type="text" placeholder="Name" autocomplete="name">
+        <div class="fi" id="ffn2">
+          <label for="fn2">Full Name</label>
+          <input id="fn2" type="text" placeholder="Name" autocomplete="name">
           <div class="em">Required</div>
         </div>
-        <div class="fi" id="fun">
-          <label for="un">Username</label>
-          <input id="un" type="text" placeholder="Username" autocomplete="username">
+        <div class="fi" id="fun2">
+          <label for="un2">Username</label>
+          <input id="un2" type="text" placeholder="Username" autocomplete="username">
           <div class="em">Required</div>
         </div>
       </div>
-
-      <div class="fi" id="fem">
-        <label for="em">Email address</label>
-        <input id="em" type="email" placeholder="name@company.com" autocomplete="email">
+      <div class="fi" id="fem2">
+        <label for="em2">Email address</label>
+        <input id="em2" type="email" placeholder="name@company.com" autocomplete="email">
         <div class="em">Valid email required</div>
       </div>
-
-      <div class="fi" id="fpw">
-        <label for="pw">Password</label>
+      <div class="fi" id="fpw2">
+        <label for="pw2">Password</label>
         <div class="pw-r">
-          <input id="pw" type="password" placeholder="Min. 8 characters" autocomplete="new-password">
-          <button class="eye" type="button" id="ey">
-            <svg id="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <input id="pw2" type="password" placeholder="Min. 8 characters" autocomplete="new-password">
+          <button class="eye" type="button" id="ey2">
+            <svg id="eye-icon2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
-        <div class="str" id="str">
+        <div class="str" id="str2">
           <div class="sb-w">
-            <div class="sb-i" id="s1"></div><div class="sb-i" id="s2"></div>
-            <div class="sb-i" id="s3"></div><div class="sb-i" id="s4"></div>
+            <div class="sb-i" id="s12"></div><div class="sb-i" id="s22"></div>
+            <div class="sb-i" id="s32"></div><div class="sb-i" id="s42"></div>
           </div>
-          <div class="sl" id="sl">Weak</div>
+          <div class="sl" id="sl2">Weak</div>
         </div>
         <div class="em">Min. 8 characters required</div>
       </div>
-
       <div class="tr-row">
-        <input type="checkbox" id="tc">
-        <label for="tc">I agree to the <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a></label>
+        <input type="checkbox" id="tc2">
+        <label for="tc2">I agree to the <a href="terms.html">Terms</a> &amp; <a href="privacy.html">Privacy Policy</a></label>
       </div>
-
-      <button type="submit" class="btn-s" id="sb">
+      <button type="submit" class="btn-s" id="sb2">
         <span class="bt">Create Account</span>
         <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         <div class="b-spin"></div>
       </button>
     </form>
   </div>
+
 </div>
 </div>
 <div class="tc" id="tc-wrap"></div>
@@ -289,6 +540,27 @@ const APP_URL='https://sellertrackr.com';
 const ADMIN_EMAIL='maffaan373@gmail.com';
 let sb;try{sb=supabase.createClient(SURL,SKEY);}catch(e){}
 
+// Show correct layout based on screen size
+function applyLayout(){
+  var mob=window.innerWidth<=900;
+  var dbox=document.getElementById('desktop-box');
+  var mscroll=document.querySelector('.mob-scroll');
+  var mhdr=document.querySelector('.mob-header');
+  if(mob){
+    dbox.style.display='none';
+    mscroll.style.display='flex';
+    mhdr.style.display='flex';
+    document.querySelector('.mob-hero').style.display='block';
+    document.querySelector('.mob-dots').style.display='flex';
+  } else {
+    dbox.style.display='';
+    mscroll.style.display='none';
+    mhdr.style.display='none';
+  }
+}
+applyLayout();
+window.addEventListener('resize',applyLayout);
+
 function toast(msg,type){
   const ic={s:'<polyline points="20 6 9 17 4 12"/>',e:'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',w:'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',i:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'};
   const c=document.getElementById('tc-wrap'),el=document.createElement('div');
@@ -298,52 +570,60 @@ function toast(msg,type){
   setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .22s';setTimeout(()=>el.remove(),240);},3800);
 }
 
-// Eye toggle
-document.getElementById('ey').addEventListener('click',function(){
-  var show=document.getElementById('pw').type==='password';
-  document.getElementById('pw').type=show?'text':'password';
-  document.getElementById('eye-icon').innerHTML=show
-    ?'<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
-    :'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-});
+// Eye toggle — both forms
+function setupEye(eyeId,pwId,iconId){
+  document.getElementById(eyeId).addEventListener('click',function(){
+    var show=document.getElementById(pwId).type==='password';
+    document.getElementById(pwId).type=show?'text':'password';
+    document.getElementById(iconId).innerHTML=show
+      ?'<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+      :'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  });
+}
+setupEye('ey','pw','eye-icon');
+setupEye('ey2','pw2','eye-icon2');
 
 // Password strength
-document.getElementById('pw').addEventListener('input',function(){
-  var v=this.value,box=document.getElementById('str');
-  box.classList.toggle('on',v.length>0);
-  if(!v.length)return;
-  var s=0;
-  if(v.length>=8)s++;if(v.length>=12)s++;
-  if(/[A-Z]/.test(v)&&/[0-9]/.test(v))s++;
-  if(/[^A-Za-z0-9]/.test(v))s++;
-  var cls=s<=1?'w':s<=2?'f':'g',lbl=s<=1?'Weak':s<=2?'Fair':'Strong';
-  ['s1','s2','s3','s4'].forEach((id,i)=>{document.getElementById(id).className='sb-i'+(i<Math.max(s,1)?' '+cls:'');});
-  var l=document.getElementById('sl');l.textContent=lbl;l.className='sl '+cls;
-});
+function setupStrength(pwId,strId,slId,s1,s2,s3,s4){
+  document.getElementById(pwId).addEventListener('input',function(){
+    var v=this.value,box=document.getElementById(strId);
+    box.classList.toggle('on',v.length>0);
+    if(!v.length)return;
+    var s=0;
+    if(v.length>=8)s++;if(v.length>=12)s++;
+    if(/[A-Z]/.test(v)&&/[0-9]/.test(v))s++;
+    if(/[^A-Za-z0-9]/.test(v))s++;
+    var cls=s<=1?'w':s<=2?'f':'g',lbl=s<=1?'Weak':s<=2?'Fair':'Strong';
+    [s1,s2,s3,s4].forEach((id,i)=>{document.getElementById(id).className='sb-i'+(i<Math.max(s,1)?' '+cls:'');});
+    var l=document.getElementById(slId);l.textContent=lbl;l.className='sl '+cls;
+  });
+}
+setupStrength('pw','str','sl','s1','s2','s3','s4');
+setupStrength('pw2','str2','sl2','s12','s22','s32','s42');
 
 // Clear errors
-[['fn','ffn'],['un','fun'],['em','fem'],['pw','fpw']].forEach(([inp,wrap])=>{
+[['fn','ffn'],['un','fun'],['em','fem'],['pw','fpw'],
+ ['fn2','ffn2'],['un2','fun2'],['em2','fem2'],['pw2','fpw2']].forEach(([inp,wrap])=>{
   var el=document.getElementById(inp);
   if(el)el.addEventListener('input',()=>document.getElementById(wrap).classList.remove('err'));
 });
 
-// Submit
-document.getElementById('sf').addEventListener('submit',async function(e){
-  e.preventDefault();
-  var fn=document.getElementById('fn').value.trim();
-  var un=document.getElementById('un').value.trim();
-  var em=document.getElementById('em').value.trim();
-  var pw=document.getElementById('pw').value;
-  var tc=document.getElementById('tc').checked;
+// Submit handler
+async function handleSubmit(fnId,unId,emId,pwId,tcId,ffnId,funId,femId,fpwId,btnId){
+  var fn=document.getElementById(fnId).value.trim();
+  var un=document.getElementById(unId).value.trim();
+  var em=document.getElementById(emId).value.trim();
+  var pw=document.getElementById(pwId).value;
+  var tc=document.getElementById(tcId).checked;
   var ok=true;
   function chk(id,cond){document.getElementById(id).classList.toggle('err',!cond);if(!cond)ok=false;}
-  chk('ffn',fn.length>0);chk('fun',un.length>0);
-  chk('fem',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
-  chk('fpw',pw.length>=8);
+  chk(ffnId,fn.length>0);chk(funId,un.length>0);
+  chk(femId,/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));
+  chk(fpwId,pw.length>=8);
   if(!ok){toast('Please fix the errors above','w');return;}
   if(!tc){toast('Terms & Privacy accept karein','w');return;}
   if(!sb){toast('Connection error','e');return;}
-  var btn=document.getElementById('sb');btn.classList.add('ld');btn.disabled=true;
+  var btn=document.getElementById(btnId);btn.classList.add('ld');btn.disabled=true;
   var result=await sb.auth.signUp({
     email:em,password:pw,
     options:{data:{full_name:fn,username:un,is_admin:em===ADMIN_EMAIL},emailRedirectTo:APP_URL+'/user-dashboard.html'}
@@ -359,7 +639,16 @@ document.getElementById('sf').addEventListener('submit',async function(e){
   if(em===ADMIN_EMAIL)await sb.from('profiles').upsert({id:result.data.user.id,email:em,role:'admin'});
   toast('Account ban gaya! Email check karein verification ke liye.','s');
   setTimeout(()=>window.location.href='verify-email.html',1600);
+}
+
+document.getElementById('sf').addEventListener('submit',function(e){
+  e.preventDefault();
+  handleSubmit('fn','un','em','pw','tc','ffn','fun','fem','fpw','sb');
+});
+document.getElementById('sf2').addEventListener('submit',function(e){
+  e.preventDefault();
+  handleSubmit('fn2','un2','em2','pw2','tc2','ffn2','fun2','fem2','fpw2','sb2');
 });
 </script>
 </body>
-</html>
+  </html>
