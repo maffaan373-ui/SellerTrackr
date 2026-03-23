@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Making — Nomino</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    .quality-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:60px; }
+    .quality-card {
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--r-lg);padding:24px;
+    }
+    .q-label {
+      font-family:var(--font-mono);font-size:10px;letter-spacing:1px;
+      text-transform:uppercase;color:var(--accent);margin-bottom:10px;
+    }
+    .q-title { font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:6px; }
+    .q-desc { font-size:13px;color:var(--text-3);line-height:1.6;margin-bottom:16px; }
+    .q-specs { display:flex;flex-wrap:wrap;gap:6px; }
+
+    .timeline {
+      background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-xl);
+      padding:32px;margin:48px 0;
+    }
+    .tl-label { font-size:10px;font-family:var(--font-mono);text-transform:uppercase;
+      letter-spacing:1px;color:var(--text-4);margin-bottom:20px; }
+    .tl-bar {
+      height:6px;background:var(--gray-800);border-radius:3px;margin-bottom:16px;
+      overflow:hidden;position:relative;
+    }
+    .tl-fill {
+      height:100%;border-radius:3px;background:var(--accent);
+      animation:fillBar 2.5s ease both;
+    }
+    @keyframes fillBar { from{width:0} to{width:var(--w)} }
+    .tl-step {
+      display:flex;justify-content:space-between;
+      font-size:12px;font-family:var(--font-mono);color:var(--text-4);
+    }
+    .tl-step span { color:var(--accent); }
+
+    .genre-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:60px; }
+    .genre-card {
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px 14px;transition:border-color 0.2s;
+    }
+    .genre-card:hover { border-color:var(--accent-border); }
+    .genre-name { font-size:13px;font-weight:600;margin-bottom:3px; }
+    .genre-eg { font-size:11px;color:var(--text-4); }
+  </style>
+</head>
+<body>
+<nav class="top-nav" id="top-nav"></nav>
+<div class="page-wrap page-body">
+
+  <div class="hero">
+    <div class="hero-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      AI Video Generation
+    </div>
+    <h1 class="hero-title">Type a scene.<br><span class="accent">Get a video.</span></h1>
+    <p class="hero-desc">Nomino generates studio-quality videos from text descriptions. Cinematic, realistic, animated — any genre, any style.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      <a href="signup.html" class="btn btn-primary btn-lg">Generate your first video</a>
+      <a href="pricing.html" class="btn btn-outline btn-lg">See pricing</a>
+    </div>
+  </div>
+
+  <!-- Generation progress mockup -->
+  <div class="timeline">
+    <div class="tl-label">Example — generating: "A samurai walking through cherry blossom rain at sunset"</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-3);margin-bottom:6px">
+          <span>Understanding prompt</span><span style="color:var(--accent)">Done</span>
+        </div>
+        <div class="tl-bar"><div class="tl-fill" style="--w:100%"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-3);margin-bottom:6px">
+          <span>Generating frames</span><span style="color:var(--accent)">Done</span>
+        </div>
+        <div class="tl-bar"><div class="tl-fill" style="--w:100%"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-3);margin-bottom:6px">
+          <span>Applying cinematic grade</span><span style="color:var(--accent)">Done</span>
+        </div>
+        <div class="tl-bar"><div class="tl-fill" style="--w:100%"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-3);margin-bottom:6px">
+          <span>Rendering 4K output</span><span style="color:var(--text-4)">8s remaining</span>
+        </div>
+        <div class="tl-bar"><div class="tl-fill" style="--w:72%"></div></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;font-size:13px;color:var(--text-3)">
+      Estimated time: <span style="color:var(--accent);font-family:var(--font-mono)">~18 seconds</span> for a 10-second 4K clip
+    </div>
+  </div>
+
+  <!-- Quality tiers -->
+  <div style="margin-bottom:28px">
+    <div class="section-label">Output Quality</div>
+    <h2 class="section-title" style="margin-bottom:28px">Three quality levels</h2>
+  </div>
+  <div class="quality-grid">
+    <div class="quality-card">
+      <div class="q-label">Standard</div>
+      <div class="q-title">1080p HD</div>
+      <div class="q-desc">Fast generation for drafts, previews, and social content. Full HD with realistic motion.</div>
+      <div class="q-specs">
+        <span class="tag">1080p</span><span class="tag">30fps</span><span class="tag">10s max</span><span class="tag">15s gen</span>
+      </div>
+    </div>
+    <div class="quality-card" style="border-color:var(--accent-border)">
+      <div class="q-label" style="color:var(--accent)">Professional</div>
+      <div class="q-title">4K Ultra HD</div>
+      <div class="q-desc">Full cinematic quality. True 4K with 60fps, HDR color, film grain, and depth of field.</div>
+      <div class="q-specs">
+        <span class="tag tag-accent">4K</span><span class="tag tag-accent">60fps</span><span class="tag">30s max</span><span class="tag">45s gen</span>
+      </div>
+    </div>
+    <div class="quality-card">
+      <div class="q-label">Cinematic</div>
+      <div class="q-title">8K Master</div>
+      <div class="q-desc">Studio-grade output. Suitable for commercial use, broadcast, and film production.</div>
+      <div class="q-specs">
+        <span class="tag">8K</span><span class="tag">60fps</span><span class="tag">60s max</span><span class="tag">~3 min gen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Genres -->
+  <div style="margin-bottom:72px">
+    <div class="section-label" style="margin-bottom:10px">Supported Styles</div>
+    <h2 class="section-title" style="margin-bottom:24px">Any genre, any style</h2>
+    <div class="genre-grid">
+      <div class="genre-card"><div class="genre-name">Photorealistic</div><div class="genre-eg">e.g. nature, cities, portraits</div></div>
+      <div class="genre-card"><div class="genre-name">Anime</div><div class="genre-eg">e.g. Ghibli, Shonen, Seinen</div></div>
+      <div class="genre-card"><div class="genre-name">Cinematic</div><div class="genre-eg">e.g. film noir, blockbuster</div></div>
+      <div class="genre-card"><div class="genre-name">3D Animation</div><div class="genre-eg">e.g. Pixar-style, cartoon</div></div>
+      <div class="genre-card"><div class="genre-name">Documentary</div><div class="genre-eg">e.g. wildlife, history</div></div>
+      <div class="genre-card"><div class="genre-name">Fantasy</div><div class="genre-eg">e.g. dragons, magic worlds</div></div>
+      <div class="genre-card"><div class="genre-name">Architecture</div><div class="genre-eg">e.g. buildings, interiors</div></div>
+      <div class="genre-card"><div class="genre-name">Abstract</div><div class="genre-eg">e.g. motion art, data viz</div></div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:80px">
+    <div class="card">
+      <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <div class="card-title">Prompt-to-Video</div>
+      <div class="card-desc">Describe any scene in plain text. Nomino handles camera angles, lighting, movement, and style automatically.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+      <div class="card-title">Image-to-Video</div>
+      <div class="card-desc">Upload any image and Nomino animates it — adding motion, depth, and life to still pictures.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="card-title">Motion Control</div>
+      <div class="card-desc">Specify camera movement — pan, zoom, dolly, orbit. Control the exact visual flow of your video.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+      <div class="card-title">Commercial License</div>
+      <div class="card-desc">All videos generated on Pro and above plans come with full commercial rights. Use in ads, films, and products.</div>
+    </div>
+  </div>
+
+</div>
+<footer style="border-top:1px solid var(--border);padding:32px 0">
+  <div class="page-wrap footer-inner">
+    <span class="footer-copy">Nomino &copy; 2025</span>
+    <div class="footer-links"><a href="pricing.html" class="footer-link">Pricing</a><a href="signup.html" class="footer-link">Sign up</a></div>
+  </div>
+</footer>
+<script type="module">import { initNav } from './js/nav.js'; initNav('video-making.html');</script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Changelog — Nomino</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    .cl-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .cl-sidebar { position: sticky; top: 80px; }
+    .cl-sidebar-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-4); font-family: var(--font-mono);
+      margin-bottom: 12px;
+    }
+    .cl-version-link {
+      display: block; padding: 6px 10px; border-radius: var(--r-sm);
+      font-size: 13px; color: var(--text-3); font-family: var(--font-mono);
+      margin-bottom: 2px; transition: all 0.12s;
+    }
+    .cl-version-link:hover { background: var(--surface-2); color: var(--text); }
+    .cl-version-link.latest { color: var(--accent); }
+
+    .cl-entry { margin-bottom: 64px; }
+    .cl-entry-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 24px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cl-version-badge {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      color: var(--accent); background: var(--accent-pale);
+      border: 1px solid var(--accent-border);
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .cl-date { font-size: 12px; color: var(--text-4); font-family: var(--font-mono); }
+    .cl-new-tag {
+      font-size: 10px; font-weight: 700; background: var(--accent); color: #000;
+      padding: 2px 8px; border-radius: 10px; font-family: var(--font-mono);
+    }
+
+    .cl-section { margin-bottom: 24px; }
+    .cl-section-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; margin-bottom: 12px;
+      font-family: var(--font-mono);
+    }
+    .cl-section-label.new { color: #7ec8a4; }
+    .cl-section-label.improved { color: var(--accent); }
+    .cl-section-label.fixed { color: #9db8e0; }
+
+    .cl-dot-new      { width:7px;height:7px;border-radius:50%;background:#7ec8a4;flex-shrink:0; }
+    .cl-dot-improved { width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0; }
+    .cl-dot-fixed    { width:7px;height:7px;border-radius:50%;background:#9db8e0;flex-shrink:0; }
+
+    .cl-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 14px; color: var(--text-2);
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      line-height: 1.5;
+    }
+    .cl-item:last-child { border-bottom: none; }
+    .cl-item-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--text-4); flex-shrink: 0; margin-top: 7px;
+    }
+
+    .subscribe-box {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--r-lg);
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    .subscribe-box-title { font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    .subscribe-box-desc { font-size: 13px; color: var(--text-3); margin-bottom: 14px; }
+    .subscribe-row { display: flex; gap: 8px; }
+    .subscribe-inp {
+      flex: 1; background: var(--gray-800); border: 1px solid var(--border-2);
+      border-radius: var(--r-sm); padding: 8px 12px; color: var(--text);
+      font-size: 13px; outline: none; font-family: var(--font-body);
+    }
+    .subscribe-inp:focus { border-color: var(--accent-border); }
+
+    @media (max-width: 768px) {
+      .cl-layout { grid-template-columns: 1fr; }
+      .cl-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+<nav class="top-nav" id="top-nav"></nav>
+<div class="page-wrap page-body">
+
+  <div class="hero" style="text-align:left;padding-bottom:40px">
+    <div class="hero-label" style="margin-bottom:16px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Changelog
+    </div>
+    <h1 class="hero-title" style="text-align:left;font-size:clamp(28px,4vw,48px)">What's new in Nomino</h1>
+    <p class="hero-desc" style="text-align:left;margin-left:0">Every release, every fix, every improvement — documented here.</p>
+  </div>
+
+  <div class="cl-layout">
+    <!-- Sidebar -->
+    <aside class="cl-sidebar">
+      <div class="subscribe-box">
+        <div class="subscribe-box-title">Get release notes</div>
+        <div class="subscribe-box-desc">Email updates when we ship something new.</div>
+        <div class="subscribe-row">
+          <input class="subscribe-inp" type="email" placeholder="you@email.com"/>
+          <button class="btn btn-primary btn-sm">Subscribe</button>
+        </div>
+      </div>
+      <div class="cl-sidebar-label">Versions</div>
+      <a href="#v0-1" class="cl-version-link latest">v0.1.0 <span style="font-size:10px;color:var(--accent)">latest</span></a>
+      <a href="#v0-0-9" class="cl-version-link">v0.0.9</a>
+      <a href="#v0-0-8" class="cl-version-link">v0.0.8</a>
+      <a href="#v0-0-7" class="cl-version-link">v0.0.7</a>
+    </aside>
+
+    <!-- Entries -->
+    <div>
+
+      <!-- v0.1.0 -->
+      <div class="cl-entry" id="v0-1">
+        <div class="cl-entry-header">
+          <span class="cl-version-badge">v0.1.0</span>
+          <span class="cl-date">March 2025</span>
+          <span class="cl-new-tag">Latest</span>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label new"><div class="cl-dot-new"></div> New Features</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Video Call AI Avatar</strong> — Real-time anime avatar with lip-sync now available in video calls. Supports 40+ languages.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>AI Video Generation</strong> — Generate up to 30-second videos from text prompts. HD and 4K quality tiers available.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Voice-to-Voice mode</strong> — Speak naturally, receive voice responses. Sub-500ms latency with streaming output.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Image Generation v2</strong> — 8 new styles added: Watercolor, Sketch, Cinematic, Fantasy, Architecture, Abstract, 3D Render, Anime.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Admin Panel</strong> — Full admin dashboard for managing users, analytics, and system settings.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Public API</strong> — REST API for Business plan users. Full docs at /docs.</div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label improved"><div class="cl-dot-improved"></div> Improvements</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Dashboard redesigned — faster navigation, better conversation sidebar, improved search.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Chat response streaming is now 2x faster on average across all plans.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div">Language detection now works on first word — no longer needs full sentence to detect language.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>OTP verification redesigned with step-by-step visual tracker.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Image generation queue — real-time progress indicator with estimated time.</div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label fixed"><div class="cl-dot-fixed"></div> Bug Fixes</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Fixed: Chat history not loading on slow connections.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Fixed: Voice input sometimes misidentifying Urdu as Hindi.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Fixed: Image generation failing silently when prompt contained Arabic characters.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Fixed: Session expiring too early on mobile browsers.</div>
+        </div>
+      </div>
+
+      <!-- v0.0.9 -->
+      <div class="cl-entry" id="v0-0-9">
+        <div class="cl-entry-header">
+          <span class="cl-version-badge" style="color:var(--text-3);background:var(--surface-2);border-color:var(--border-2)">v0.0.9</span>
+          <span class="cl-date">February 2025</span>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label new"><div class="cl-dot-new"></div> New Features</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Image Generation v1</strong> — Text to image with 4 initial styles. Up to 1080p resolution.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Conversation search</strong> — Full-text search across all chat history.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Export chat</strong> — Download any conversation as PDF or plain text.</div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label improved"><div class="cl-dot-improved"></div> Improvements</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Signup flow simplified — fewer steps, email OTP now faster.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Mobile web performance improved — first paint time reduced by 40%.</div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label fixed"><div class="cl-dot-fixed"></div> Bug Fixes</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Fixed: Long messages being cut off in the sidebar preview.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Fixed: Dark mode flicker on page load.</div>
+        </div>
+      </div>
+
+      <!-- v0.0.8 -->
+      <div class="cl-entry" id="v0-0-8">
+        <div class="cl-entry-header">
+          <span class="cl-version-badge" style="color:var(--text-3);background:var(--surface-2);border-color:var(--border-2)">v0.0.8</span>
+          <span class="cl-date">January 2025</span>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label new"><div class="cl-dot-new"></div> New Features</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Voice input (beta)</strong> — First version of voice-to-text input in chat.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Arabic language support</strong> — Full right-to-left layout for Arabic conversations.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Keyboard shortcuts</strong> — Enter to send, Ctrl+N new chat, Ctrl+/ focus search.</div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label improved"><div class="cl-dot-improved"></div> Improvements</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Markdown rendering in chat responses — code blocks, bold, lists now display properly.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div>Response quality significantly improved for Urdu and Hindi prompts.</div>
+        </div>
+      </div>
+
+      <!-- v0.0.7 -->
+      <div class="cl-entry" id="v0-0-7">
+        <div class="cl-entry-header">
+          <span class="cl-version-badge" style="color:var(--text-3);background:var(--surface-2);border-color:var(--border-2)">v0.0.7</span>
+          <span class="cl-date">December 2024</span>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-section-label new"><div class="cl-dot-new"></div> New Features</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Initial private beta launch</strong> — Chat, authentication, and basic conversation history.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Multilingual detection</strong> — Auto-detect language from first message.</div>
+          <div class="cl-item"><div class="cl-item-dot"></div><strong>Supabase integration</strong> — Persistent conversation storage with real-time sync.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<footer style="border-top:1px solid var(--border);padding:32px 0;margin-top:40px">
+  <div class="page-wrap footer-inner">
+    <span class="footer-copy">Nomino &copy; 2025</span>
+    <div class="footer-links"><a href="docs.html" class="footer-link">Docs</a><a href="pricing.html" class="footer-link">Pricing</a><a href="signup.html" class="footer-link">Sign up</a></div>
+  </div>
+</footer>
+<script type="module">import { initNav } from './js/nav.js'; initNav('changelog.html');</script>
+</body>
+</html>

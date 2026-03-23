@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voice AI — Nomino</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    /* Voice visualizer */
+    .voice-demo {
+      background: var(--gray-900);
+      border: 1px solid var(--border-2);
+      border-radius: var(--r-xl);
+      padding: 48px;
+      text-align: center;
+      margin: 48px 0;
+      position: relative;
+    }
+    .voice-ring {
+      width: 140px; height: 140px; border-radius: 50%;
+      background: var(--surface-2);
+      border: 2px solid var(--border-2);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      position: relative;
+    }
+    .voice-ring::before {
+      content: '';
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-border);
+      animation: ringPulse 2s ease-in-out infinite;
+    }
+    .voice-ring::after {
+      content: '';
+      position: absolute; inset: -20px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,169,110,0.1);
+      animation: ringPulse 2s ease-in-out infinite 0.4s;
+    }
+    @keyframes ringPulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.06); opacity: 0.5; }
+    }
+    .voice-icon { color: var(--accent); }
+    .wave-bars {
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      height: 48px; margin: 0 auto 20px;
+    }
+    .wave-bar {
+      width: 4px; background: var(--accent); border-radius: 3px;
+      animation: waveBounce 1s ease-in-out infinite alternate;
+      opacity: 0.7;
+    }
+    .wave-bar:nth-child(1)  { height: 12px; animation-delay: 0.0s; }
+    .wave-bar:nth-child(2)  { height: 22px; animation-delay: 0.08s; }
+    .wave-bar:nth-child(3)  { height: 36px; animation-delay: 0.16s; }
+    .wave-bar:nth-child(4)  { height: 44px; animation-delay: 0.24s; opacity: 1; }
+    .wave-bar:nth-child(5)  { height: 36px; animation-delay: 0.32s; }
+    .wave-bar:nth-child(6)  { height: 22px; animation-delay: 0.40s; }
+    .wave-bar:nth-child(7)  { height: 12px; animation-delay: 0.48s; }
+    @keyframes waveBounce {
+      from { transform: scaleY(0.3); }
+      to   { transform: scaleY(1); }
+    }
+    .voice-status {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--text-4); letter-spacing: 1px;
+    }
+    .voice-status .dot { color: var(--accent); }
+
+    /* Transcript box */
+    .transcript-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 24px;
+      margin: 20px 0 0;
+      text-align: left;
+    }
+    .transcript-label {
+      font-size: 10px; font-family: var(--font-mono);
+      color: var(--text-4); letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+    .transcript-line {
+      display: flex; gap: 10px; margin-bottom: 10px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .tr-role {
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--accent); font-weight: 600;
+      flex-shrink: 0; padding-top: 2px; width: 60px;
+    }
+    .tr-text { color: var(--text-2); }
+
+    /* Comparison table */
+    .compare-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .compare-head {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      font-size: 12px; font-weight: 600;
+      color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .compare-head .col-nom { color: var(--accent); }
+    .compare-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .compare-row:last-child { border-bottom: none; }
+    .compare-row:hover { background: var(--surface-2); }
+    .cr-feat { color: var(--text-2); }
+    .cr-nom  { color: var(--accent); font-weight: 500; }
+    .cr-old  { color: var(--text-4); }
+
+    /* Check / X icons */
+    .ic-check { color: var(--accent); }
+    .ic-x     { color: var(--text-4); }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav" id="top-nav"></nav>
+
+<div class="page-wrap page-body">
+
+  <div class="hero">
+    <div class="hero-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+      Voice to Voice AI
+    </div>
+    <h1 class="hero-title">Speak naturally.<br>AI <span class="accent">speaks back.</span></h1>
+    <p class="hero-desc">Send a voice message or speak live — Nomino listens, understands, and replies with a real voice. No text required.</p>
+    <a href="signup.html" class="btn btn-primary btn-lg">Start talking free</a>
+  </div>
+
+  <!-- Voice demo -->
+  <div class="voice-demo">
+    <div class="voice-ring">
+      <svg class="voice-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+    </div>
+
+    <div class="wave-bars">
+      <div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+    </div>
+
+    <div class="voice-status"><span class="dot">●</span>&nbsp; Nomino is listening...</div>
+
+    <div class="transcript-box">
+      <div class="transcript-label">Live transcript</div>
+      <div class="transcript-line">
+        <div class="tr-role">YOU</div>
+        <div class="tr-text">Mujhe Python mein ek sorting algorithm samjhao, simple language mein.</div>
+      </div>
+      <div class="transcript-line">
+        <div class="tr-role">NOMINO</div>
+        <div class="tr-text">Bilkul! Sorting ka matlab hai elements ko order mein arrange karna. Sabse simple hai Bubble Sort — do adjacent numbers compare karo, agar bada pehle ho to swap karo. Yeh repeat karo jab tak list sort na ho jaye...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature grid -->
+  <div style="margin-bottom:72px">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Built for natural conversation</h2>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></div>
+        <div class="card-title">Natural Voice Output</div>
+        <div class="card-desc">AI replies in a natural, expressive voice — not robotic TTS. Intonation matches the context of the answer.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="card-title">40+ Languages</div>
+        <div class="card-desc">Speak in Urdu, Arabic, Hindi, English, French, Japanese or any other language. AI detects it automatically.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="card-title">Full Context Memory</div>
+        <div class="card-desc">Every reply builds on the full conversation history. No need to repeat yourself — Nomino remembers.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="card-title">Live Streaming Reply</div>
+        <div class="card-desc">AI starts speaking before it finishes processing. The first word arrives in under 300ms.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="card-title">Auto Transcript</div>
+        <div class="card-desc">Every voice conversation is automatically transcribed and saved so you can read and search it later.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="card-title">Mobile Optimized</div>
+        <div class="card-desc">Works perfectly in the browser on any phone. No app install needed to start a voice conversation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison -->
+  <div style="margin-bottom:80px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div class="section-label">Comparison</div>
+      <h2 class="section-title">Nomino vs traditional voice bots</h2>
+    </div>
+    <div class="compare-table">
+      <div class="compare-head">
+        <div>Feature</div>
+        <div class="col-nom">Nomino AI</div>
+        <div>Traditional</div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-feat">Natural voice output</div>
+        <div class="cr-nom ic-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cr-old ic-x"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-feat">Any language auto-detect</div>
+        <div class="cr-nom ic-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cr-old ic-x"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-feat">Context memory across turns</div>
+        <div class="cr-nom ic-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cr-old ic-x"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-feat">Under 500ms first response</div>
+        <div class="cr-nom ic-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cr-old ic-x"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-feat">Auto transcription</div>
+        <div class="cr-nom ic-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cr-nom ic-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+      <div class="compare-row">
+        <div class="cr-feat">Open-ended conversation</div>
+        <div class="cr-nom ic-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cr-old ic-x"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:32px 0">
+  <div class="page-wrap footer-inner">
+    <span class="footer-copy">Nomino &copy; 2025</span>
+    <div class="footer-links">
+      <a href="pricing.html" class="footer-link">Pricing</a>
+      <a href="docs.html" class="footer-link">Docs</a>
+      <a href="signup.html" class="footer-link">Sign up</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { initNav } from './js/nav.js';
+  initNav('voice.html');
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pricing — Nomino</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    .billing-toggle {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 4px;
+      gap: 0;
+      margin: 28px auto 0;
+    }
+    .toggle-opt {
+      padding: 7px 20px;
+      border-radius: 20px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .toggle-opt.active { background: var(--accent); color: #000; }
+    .save-badge {
+      font-size: 10px; font-weight: 700;
+      background: var(--success, #27664a);
+      color: #fff;
+      padding: 2px 6px; border-radius: 10px;
+      font-family: var(--font-mono);
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 48px 0 60px;
+    }
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 28px;
+      display: flex; flex-direction: column;
+      transition: border-color 0.2s;
+    }
+    .plan-card:hover { border-color: var(--border-2); }
+    .plan-card.featured {
+      border-color: var(--accent-border);
+      background: linear-gradient(180deg, rgba(200,169,110,0.04) 0%, var(--surface) 60%);
+    }
+    .plan-badge {
+      display: inline-flex;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      background: var(--accent); color: #000;
+      font-family: var(--font-mono);
+      margin-bottom: 16px;
+      align-self: flex-start;
+    }
+    .plan-name {
+      font-family: var(--font-display);
+      font-size: 20px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .plan-desc { font-size: 13px; color: var(--text-3); margin-bottom: 20px; line-height: 1.5; }
+    .plan-price {
+      margin-bottom: 24px;
+    }
+    .price-amount {
+      font-family: var(--font-display);
+      font-size: 42px; font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--text);
+      line-height: 1;
+    }
+    .price-amount .cur { font-size: 20px; vertical-align: super; letter-spacing: 0; }
+    .price-period { font-size: 13px; color: var(--text-4); margin-top: 4px; }
+    .price-orig { font-size: 13px; color: var(--text-4); text-decoration: line-through; }
+
+    .plan-divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    .plan-feature {
+      display: flex; align-items: flex-start; gap: 9px;
+      font-size: 13px; color: var(--text-2);
+      margin-bottom: 9px; line-height: 1.4;
+    }
+    .pf-check { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .pf-dash  { color: var(--text-4); flex-shrink: 0; margin-top: 2px; }
+    .plan-cta { margin-top: auto; padding-top: 24px; }
+
+    /* FAQ */
+    .faq-list { display: flex; flex-direction: column; gap: 0; max-width: 680px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 18px 0;
+      font-size: 15px; font-weight: 500;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      user-select: none;
+    }
+    .faq-q:hover { color: var(--text); }
+    .faq-icon { flex-shrink: 0; color: var(--text-3); transition: transform 0.2s; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent); }
+    .faq-a {
+      font-size: 14px; color: var(--text-3); line-height: 1.7;
+      padding: 0 0 18px;
+      display: none;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* Compare table */
+    .cmp-section { margin: 80px 0; }
+    .cmp-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .cmp-head {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .cmp-head-cell {
+      padding: 14px 16px;
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-3);
+    }
+    .cmp-head-cell.featured { color: var(--accent); }
+    .cmp-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .cmp-row:last-child { border-bottom: none; }
+    .cmp-row:hover > div { background: var(--surface-2); }
+    .cmp-cell {
+      padding: 12px 16px;
+      font-size: 13px; color: var(--text-2);
+      display: flex; align-items: center;
+    }
+    .cmp-cell.feat-name { font-weight: 500; color: var(--text); }
+    .cmp-cell.featured { color: var(--accent); }
+    .cmp-check { color: var(--accent); }
+    .cmp-x     { color: var(--text-4); }
+
+    @media (max-width: 860px) {
+      .plans-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+      .cmp-head, .cmp-row { grid-template-columns: 2fr 1fr 1fr; }
+      .cmp-head > div:last-child, .cmp-row > div:last-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+<nav class="top-nav" id="top-nav"></nav>
+<div class="page-wrap page-body">
+
+  <div class="hero" style="padding-bottom:20px">
+    <div class="hero-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Pricing
+    </div>
+    <h1 class="hero-title">Simple, honest pricing</h1>
+    <p class="hero-desc" style="margin-bottom:0">Start free. Upgrade when you need more. No hidden fees, no contracts.</p>
+
+    <!-- Billing toggle -->
+    <div class="billing-toggle" id="billing-toggle">
+      <div class="toggle-opt active" data-period="monthly">Monthly</div>
+      <div class="toggle-opt" data-period="annual">Annual <span class="save-badge">Save 30%</span></div>
+    </div>
+  </div>
+
+  <!-- Plans -->
+  <div class="plans-grid">
+
+    <!-- Free -->
+    <div class="plan-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-desc">For individuals getting started with AI</div>
+      <div class="plan-price">
+        <div class="price-amount">$<span class="cur" style="font-size:inherit"></span>0</div>
+        <div class="price-period">Forever free</div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>50 AI chat messages / month</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>10 image generations / month</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Voice AI (5 min / month)</div>
+      <div class="plan-feature"><svg class="pf-dash" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="color:var(--text-4)">Video generation</span></div>
+      <div class="plan-feature"><svg class="pf-dash" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="color:var(--text-4)">Video call AI avatar</span></div>
+      <div class="plan-feature"><svg class="pf-dash" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="color:var(--text-4)">Commercial license</span></div>
+      <div class="plan-cta">
+        <a href="signup.html" class="btn btn-outline btn-full">Get started free</a>
+      </div>
+    </div>
+
+    <!-- Pro -->
+    <div class="plan-card featured">
+      <div class="plan-badge">Most popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-desc">For creators, freelancers, and power users</div>
+      <div class="plan-price">
+        <div class="price-amount"><span class="cur">$</span><span id="pro-price">19</span></div>
+        <div class="price-period" id="pro-period">per month</div>
+        <div class="price-orig" id="pro-orig" style="display:none">$228/year</div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited AI chat</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>500 image generations / month</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Voice AI — unlimited</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>50 video generations / month (HD)</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Video call AI avatar (anime)</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Commercial license included</div>
+      <div class="plan-cta">
+        <a href="signup.html" class="btn btn-primary btn-full">Start Pro</a>
+      </div>
+    </div>
+
+    <!-- Business -->
+    <div class="plan-card">
+      <div class="plan-name">Business</div>
+      <div class="plan-desc">For teams, agencies, and enterprises</div>
+      <div class="plan-price">
+        <div class="price-amount"><span class="cur">$</span><span id="biz-price">49</span></div>
+        <div class="price-period" id="biz-period">per month</div>
+        <div class="price-orig" id="biz-orig" style="display:none">$588/year</div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Pro</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited images and video</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>4K + 8K video output</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Custom AI avatar</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>API access</div>
+      <div class="plan-feature"><svg class="pf-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Priority support + SLA</div>
+      <div class="plan-cta">
+        <a href="signup.html" class="btn btn-outline btn-full">Start Business</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Compare table -->
+  <div class="cmp-section">
+    <div style="text-align:center;margin-bottom:32px">
+      <div class="section-label">Comparison</div>
+      <h2 class="section-title">What's included in each plan</h2>
+    </div>
+    <div class="cmp-table">
+      <div class="cmp-head">
+        <div class="cmp-head-cell">Feature</div>
+        <div class="cmp-head-cell">Free</div>
+        <div class="cmp-head-cell featured">Pro</div>
+        <div class="cmp-head-cell">Business</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">AI chat messages</div>
+        <div class="cmp-cell">50 / mo</div>
+        <div class="cmp-cell featured">Unlimited</div>
+        <div class="cmp-cell">Unlimited</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">Image generation</div>
+        <div class="cmp-cell">10 / mo</div>
+        <div class="cmp-cell featured">500 / mo</div>
+        <div class="cmp-cell">Unlimited</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">Image resolution</div>
+        <div class="cmp-cell">1080p</div>
+        <div class="cmp-cell featured">4K</div>
+        <div class="cmp-cell">8K</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">Voice AI</div>
+        <div class="cmp-cell">5 min / mo</div>
+        <div class="cmp-cell featured">Unlimited</div>
+        <div class="cmp-cell">Unlimited</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">Video generation</div>
+        <div class="cmp-cell cmp-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell featured">50 HD / mo</div>
+        <div class="cmp-cell">Unlimited 8K</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">Video call AI avatar</div>
+        <div class="cmp-cell cmp-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell featured cmp-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell cmp-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Custom</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">Commercial license</div>
+        <div class="cmp-cell cmp-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell featured cmp-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell cmp-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat-name">API access</div>
+        <div class="cmp-cell cmp-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell cmp-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell cmp-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="text-align:center;margin-bottom:32px">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Common questions</h2>
+  </div>
+  <div class="faq-list" style="margin-bottom:80px">
+    <div class="faq-item">
+      <div class="faq-q">Can I cancel anytime?<svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div class="faq-a">Yes. Cancel anytime with no penalty. You keep access until the end of your billing period.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What payment methods are accepted?<svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div class="faq-a">We accept all major credit cards (Visa, Mastercard, Amex) and PayPal. Crypto payments available for Business plans.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is there a student or NGO discount?<svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div class="faq-a">Yes. Students with a valid .edu email get 40% off Pro. NGOs contact support for special pricing.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do unused credits roll over?<svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div class="faq-a">Image and video generation credits do not roll over. Chat and voice usage is unlimited on Pro so there's nothing to roll over.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I upgrade or downgrade mid-cycle?<svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div class="faq-a">Yes. Upgrades take effect immediately and are prorated. Downgrades take effect at the next billing cycle.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:32px 0">
+  <div class="page-wrap footer-inner">
+    <span class="footer-copy">Nomino &copy; 2025</span>
+    <div class="footer-links"><a href="docs.html" class="footer-link">Docs</a><a href="signup.html" class="footer-link">Sign up</a></div>
+  </div>
+</footer>
+
+<script type="module">
+  import { initNav } from './js/nav.js'; initNav('pricing.html');
+
+  // Billing toggle
+  const toggle = document.getElementById('billing-toggle');
+  const opts = toggle.querySelectorAll('.toggle-opt');
+  const proPrice = document.getElementById('pro-price');
+  const proOrig  = document.getElementById('pro-orig');
+  const bizPrice = document.getElementById('biz-price');
+  const bizOrig  = document.getElementById('biz-orig');
+  const proPeriod = document.getElementById('pro-period');
+  const bizPeriod = document.getElementById('biz-period');
+
+  opts.forEach(opt => {
+    opt.addEventListener('click', () => {
+      opts.forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      const annual = opt.dataset.period === 'annual';
+      proPrice.textContent = annual ? '13' : '19';
+      bizPrice.textContent = annual ? '34' : '49';
+      proPeriod.textContent = annual ? 'per month, billed $159/year' : 'per month';
+      bizPeriod.textContent = annual ? 'per month, billed $409/year' : 'per month';
+      proOrig.style.display = annual ? 'block' : 'none';
+      bizOrig.style.display = annual ? 'block' : 'none';
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>

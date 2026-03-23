@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Call — Nomino</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    .vc-hero { padding: 80px 0 60px; }
+    .vc-demo {
+      background: var(--gray-900);
+      border: 1px solid var(--border-2);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      margin: 48px 0;
+    }
+    .vc-demo-bar {
+      background: var(--gray-800);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; color: var(--text-4); font-family: var(--font-mono);
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #ef4444;
+      margin-right: 4px;
+    }
+    .vc-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      height: 340px;
+    }
+    .vc-tile {
+      position: relative;
+      background: var(--gray-800);
+      display: flex; align-items: center; justify-content: center;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .vc-tile:last-child { border-right: none; }
+    .vc-tile-label {
+      position: absolute; bottom: 12px; left: 12px;
+      background: rgba(0,0,0,0.6);
+      padding: 4px 10px; border-radius: 4px;
+      font-size: 11px; color: var(--text-3);
+      font-family: var(--font-mono);
+      backdrop-filter: blur(4px);
+    }
+    .vc-avatar-ring {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: var(--surface-3);
+      border: 2px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+      position: relative;
+    }
+    .vc-soundwave {
+      display: flex; align-items: center; gap: 3px;
+      height: 24px;
+    }
+    .sw-bar {
+      width: 3px; background: var(--accent);
+      border-radius: 2px;
+      animation: sw 0.8s ease-in-out infinite alternate;
+    }
+    .sw-bar:nth-child(1) { height: 8px;  animation-delay: 0s;    opacity: 0.5; }
+    .sw-bar:nth-child(2) { height: 16px; animation-delay: 0.1s;  opacity: 0.7; }
+    .sw-bar:nth-child(3) { height: 22px; animation-delay: 0.15s; }
+    .sw-bar:nth-child(4) { height: 14px; animation-delay: 0.25s; opacity: 0.7; }
+    .sw-bar:nth-child(5) { height: 8px;  animation-delay: 0.35s; opacity: 0.5; }
+    @keyframes sw {
+      from { transform: scaleY(0.4); }
+      to   { transform: scaleY(1); }
+    }
+    .vc-controls {
+      background: var(--gray-800);
+      border-top: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .vc-ctrl-btn {
+      width: 38px; height: 38px;
+      background: var(--surface-3);
+      border: 1px solid var(--border-2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-2);
+    }
+    .vc-ctrl-btn.end {
+      background: #ef4444;
+      border-color: #ef4444;
+      width: 48px; height: 48px;
+      color: #fff;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-box {
+      background: var(--gray-900);
+      border: 1px solid var(--border-2);
+      border-radius: var(--r-xl);
+      padding: 40px;
+      max-width: 560px; width: 100%;
+      position: relative;
+      animation: scaleIn 0.25s ease;
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 30px; height: 30px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-3);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--surface-3); color: var(--text); }
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .modal-desc { font-size: 14px; color: var(--text-3); line-height: 1.7; margin-bottom: 24px; }
+    .modal-features { display: flex; flex-direction: column; gap: 0; }
+
+    /* How it works */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex; gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+      flex-shrink: 0;
+    }
+    .step-title { font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 14px; color: var(--text-3); line-height: 1.6; }
+
+    /* Click trigger */
+    .feature-trigger {
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .feature-trigger:hover { transform: translateX(3px); }
+    .feature-trigger:hover .card-title { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav" id="top-nav"></nav>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<div class="page-wrap page-body">
+
+  <!-- Hero -->
+  <section class="vc-hero">
+    <div class="hero-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      Video Call AI
+    </div>
+    <h1 class="hero-title">AI avatar joins<br>your video calls</h1>
+    <p class="hero-desc">A real-time anime AI avatar that speaks, listens, and responds in any language — right inside your video call.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="signup.html" class="btn btn-primary btn-lg">Try it free</a>
+      <a href="pricing.html" class="btn btn-outline btn-lg">See pricing</a>
+    </div>
+  </section>
+
+  <!-- Live demo mockup -->
+  <div class="vc-demo">
+    <div class="vc-demo-bar">
+      <div class="live-dot"></div>
+      <span style="color:#ef4444;font-weight:600">LIVE</span>
+      <span style="margin-left:8px">Nomino Video Call &nbsp;·&nbsp; 2 participants</span>
+      <span style="margin-left:auto">00:04:23</span>
+    </div>
+    <div class="vc-stage">
+      <div class="vc-tile">
+        <!-- User tile -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+          <div style="width:80px;height:80px;border-radius:50%;background:var(--surface-3);border:2px solid var(--border-2);display:flex;align-items:center;justify-content:center;color:var(--text-3)">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="vc-soundwave">
+            <div class="sw-bar"></div><div class="sw-bar"></div><div class="sw-bar"></div>
+            <div class="sw-bar"></div><div class="sw-bar"></div>
+          </div>
+        </div>
+        <div class="vc-tile-label">You</div>
+      </div>
+      <div class="vc-tile">
+        <!-- AI Avatar tile -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+          <div class="vc-avatar-ring">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 8s1 2 4 2 4-2 4-2"/></svg>
+          </div>
+          <div style="font-size:11px;color:var(--accent);font-family:var(--font-mono)">NOMINO AI</div>
+        </div>
+        <div class="vc-tile-label">Nomino Avatar</div>
+      </div>
+    </div>
+    <div class="vc-controls">
+      <div class="vc-ctrl-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+      </div>
+      <div class="vc-ctrl-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      </div>
+      <div class="vc-ctrl-btn end">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07C9.44 17.25 7.76 15.59 6.06 13.56A19.79 19.79 0 0 1 3 4.84 2 2 0 0 1 4.11 3a12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L3.09 9.19"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+      </div>
+      <div class="vc-ctrl-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clickable feature cards -->
+  <div style="margin-bottom:60px">
+    <div class="section-label" style="margin-bottom:10px">Click any feature to learn more</div>
+    <div class="grid-3" style="gap:16px">
+
+      <div class="card feature-trigger" data-modal="avatar">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M8 8s1 2 4 2 4-2 4-2"/></svg>
+        </div>
+        <div class="card-title">Anime AI Avatar</div>
+        <div class="card-desc">Your AI gets a real animated avatar with lip-sync, expressions, and eye contact.</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:12px;font-size:12px;color:var(--accent);font-weight:500">
+          Read more
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+
+      <div class="card feature-trigger" data-modal="multilang">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div class="card-title">Any Language</div>
+        <div class="card-desc">Speak or type in Urdu, English, Arabic, Hindi, Japanese — AI responds in the same language.</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:12px;font-size:12px;color:var(--accent);font-weight:500">
+          Read more
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+
+      <div class="card feature-trigger" data-modal="realtime">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="card-title">Real-time Response</div>
+        <div class="card-desc">Sub-second AI thinking. No lag, no waiting. The conversation flows like a real human call.</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:12px;font-size:12px;color:var(--accent);font-weight:500">
+          Read more
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-bottom:80px">
+    <div>
+      <div class="section-label">How it works</div>
+      <h2 class="section-title" style="margin-bottom:32px">Start a call in<br>30 seconds</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><div class="step-title">Open Nomino</div><div class="step-desc">Log in and go to Video Call from the dashboard.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><div class="step-title">Choose your AI avatar</div><div class="step-desc">Pick from multiple anime-style avatars or let Nomino assign one automatically.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><div class="step-title">Start talking</div><div class="step-desc">The AI avatar activates instantly. Talk about any topic in any language.</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div><div class="step-title">Get intelligent replies</div><div class="step-desc">Nomino listens, thinks, and responds through the animated avatar with voice and lip-sync.</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label" style="margin-bottom:16px">Use cases</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="padding:18px 20px">
+          <div style="font-weight:600;margin-bottom:4px;font-size:14px">Language Practice</div>
+          <div class="card-desc" style="font-size:13px">Practice any language with an AI tutor that corrects and guides you in real time.</div>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <div style="font-weight:600;margin-bottom:4px;font-size:14px">Interview Prep</div>
+          <div class="card-desc" style="font-size:13px">Simulate job interviews. Get feedback on your answers, body language, and tone.</div>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <div style="font-weight:600;margin-bottom:4px;font-size:14px">Customer Support</div>
+          <div class="card-desc" style="font-size:13px">Replace or assist human agents with an AI avatar that handles queries 24/7.</div>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <div style="font-weight:600;margin-bottom:4px;font-size:14px">Education</div>
+          <div class="card-desc" style="font-size:13px">AI teacher explains concepts, answers questions, and adapts to student level.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer style="border-top:1px solid var(--border);padding:32px 0">
+  <div class="page-wrap footer-inner">
+    <span class="footer-copy">Nomino &copy; 2025</span>
+    <div class="footer-links">
+      <a href="pricing.html" class="footer-link">Pricing</a>
+      <a href="docs.html" class="footer-link">Docs</a>
+      <a href="signup.html" class="footer-link">Sign up</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { initNav } from './js/nav.js';
+  initNav('video-call.html');
+
+  // Modal data
+  const modals = {
+    avatar: {
+      title: 'Anime AI Avatar — How it works',
+      desc: 'Nomino generates a real-time animated avatar powered by neural rendering. The avatar reacts to conversation with genuine facial expressions, eye movements, head nods, and synchronized lip movement.',
+      features: [
+        { t: 'Multiple avatar styles', d: 'Choose from a library of anime-style avatars — male, female, fantasy, futuristic.' },
+        { t: 'Lip-sync technology', d: 'The avatar mouth movement matches AI speech with sub-100ms accuracy.' },
+        { t: 'Emotional expressions', d: 'Happy, thinking, surprised — the avatar mirrors the emotional context of the conversation.' },
+        { t: 'Custom avatars (Pro)', d: 'Upload a photo and generate a personalized AI avatar that looks like you.' },
+      ]
+    },
+    multilang: {
+      title: 'Multi-language Support',
+      desc: 'Nomino understands and speaks over 40 languages natively. Simply start talking in your language and the AI responds in the same language automatically — no setup needed.',
+      features: [
+        { t: 'Automatic language detection', d: 'No need to select a language. Nomino detects it instantly.' },
+        { t: '40+ languages supported', d: 'Urdu, Arabic, Hindi, English, Japanese, Spanish, French, and many more.' },
+        { t: 'Mixed language support', d: 'Switch between languages mid-conversation and the AI follows seamlessly.' },
+        { t: 'Dialect awareness', d: 'Understands regional accents and dialects for natural conversation.' },
+      ]
+    },
+    realtime: {
+      title: 'Real-time AI Response',
+      desc: 'Nomino uses a highly optimized inference pipeline that processes speech and generates responses in under 500ms — making the conversation feel completely natural.',
+      features: [
+        { t: 'Under 500ms response time', d: 'AI processes your speech and generates a reply almost instantly.' },
+        { t: 'Streaming voice output', d: 'The AI starts speaking before it finishes "thinking" — no awkward pauses.' },
+        { t: 'Context memory', d: 'The AI remembers the full conversation and gives contextually accurate replies.' },
+        { t: 'Interruption handling', d: 'You can interrupt the AI mid-sentence and it responds naturally.' },
+      ]
+    }
+  };
+
+  const overlay = document.getElementById('modal');
+  const content = document.getElementById('modal-content');
+  const closeBtn = document.getElementById('modal-close');
+
+  document.querySelectorAll('.feature-trigger').forEach(card => {
+    card.addEventListener('click', () => {
+      const m = modals[card.dataset.modal];
+      if (!m) return;
+      content.innerHTML = `
+        <h3 class="modal-title">${m.title}</h3>
+        <p class="modal-desc">${m.desc}</p>
+        <div class="modal-features">
+          ${m.features.map(f => `
+            <div class="feature-row">
+              <div class="feature-check">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="feature-text"><strong>${f.t}</strong><br>${f.d}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      overlay.classList.add('open');
+    });
+  });
+
+  closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+</script>
+
+</body>
+</html>
