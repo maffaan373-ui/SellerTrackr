@@ -26,7 +26,7 @@
       user-select: none;
       display: flex; align-items: center; gap: 6px;
     }
-    .toggle-opt.active { background: var(--accent); color: #000; }
+    .toggle-opt.active { background: var(--gray-700); color: var(--text); border: 1px solid var(--gray-500); }
     .save-badge {
       font-size: 10px; font-weight: 700;
       background: var(--success, #27664a);
@@ -52,13 +52,15 @@
     .plan-card:hover { border-color: var(--border-2); }
     .plan-card.featured {
       border-color: var(--accent-border);
-      background: linear-gradient(180deg, rgba(200,169,110,0.04) 0%, var(--surface) 60%);
+      background: linear-gradient(180deg, rgba(106,158,194,0.1) 0%, var(--surface) 60%);
     }
     .plan-badge {
       display: inline-flex;
       padding: 3px 10px; border-radius: 20px;
       font-size: 11px; font-weight: 700;
-      background: var(--accent); color: #000;
+      background: var(--gray-700);
+      border: 1px solid var(--gray-500);
+      color: var(--text);
       font-family: var(--font-mono);
       margin-bottom: 16px;
       align-self: flex-start;
