@@ -42,14 +42,12 @@ export function initNav(currentPage) {
       <span class="nav-logo-name">Nomino</span>
     </a>
     <div class="nav-spacer"></div>
-    <a href="index.html" class="nav-btn nav-btn-ghost" style="display:none" id="nav-login">Sign in</a>
     <div class="nav-grid-btn" id="nav-grid-btn" title="All features">
       ${gridIcon}
       <div class="nav-dropdown" id="nav-dropdown">
         <div class="nav-dropdown-grid">${ddItems}</div>
       </div>
     </div>
-    <a href="/signup.html" class="nav-btn nav-btn-primary">Get started</a>
   `;
 
   const gridBtn = document.getElementById('nav-grid-btn');
