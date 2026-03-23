@@ -6,184 +6,205 @@
   <title>Nomino — The AI Platform</title>
   <link rel="stylesheet" href="css/shared.css"/>
   <style>
-    /* Landing nav */
+    /* ── NAV ── */
     .l-nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      height: 58px; display: flex; align-items: center;
+      height: 60px; display: flex; align-items: center;
       padding: 0 24px;
-      background: rgba(14,17,23,0.95);
-      backdrop-filter: blur(20px);
+      background: rgba(14,17,23,0.96);
+      backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--b1);
     }
-    .l-nav-links { display: flex; gap: 2px; margin-left: 28px; }
-    .l-nav-link {
-      padding: 7px 13px; border-radius: var(--r1);
-      font-size: 13px; font-weight: 500; color: var(--t3);
-      transition: all 0.15s;
-    }
-    .l-nav-link:hover { color: var(--t2); background: var(--s1); }
     .l-nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; position: relative; }
 
-    /* Hero */
+    /* ── HERO ── */
     .hero-wrap {
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      text-align: center; padding: 100px 20px 80px;
+      text-align: center; padding: 110px 20px 100px;
       position: relative; overflow: hidden;
     }
-    /* Subtle background grid */
     .hero-wrap::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(var(--b1) 1px, transparent 1px),
-        linear-gradient(90deg, var(--b1) 1px, transparent 1px);
-      background-size: 48px 48px;
-      opacity: 0.4;
-      pointer-events: none;
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 30px 30px; pointer-events: none;
     }
-    /* Glow orb */
     .hero-wrap::after {
-      content: '';
-      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 700px; height: 700px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,212,170,0.07) 0%, transparent 65%);
+      content: ''; position: absolute; top: -350px; left: 50%; transform: translateX(-50%);
+      width: 1100px; height: 1100px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,170,0.055) 0%, transparent 55%);
       pointer-events: none;
     }
-
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 5px 14px;
-      background: var(--s1); border: 1px solid var(--b2);
-      border-radius: 20px; margin-bottom: 28px;
-      font-size: 12px; color: var(--t2); font-family: var(--fm);
-      position: relative; z-index: 1;
-    }
-    .hero-eyebrow .pulse {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--ac);
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
-
     .hero-h1 {
       font-family: var(--fd); font-weight: 900;
-      font-size: clamp(38px, 8vw, 88px);
-      letter-spacing: -3px; line-height: 1.02;
-      margin-bottom: 20px; max-width: 900px;
+      font-size: clamp(44px, 10vw, 106px);
+      letter-spacing: -4.5px; line-height: 0.96;
+      margin-bottom: 28px; max-width: 1000px;
       position: relative; z-index: 1;
     }
-    .hero-h1 .ac { color: var(--ac); }
+    .hero-h1 .ac  { color: var(--ac); }
     .hero-h1 .dim { color: var(--t3); }
-
     .hero-sub {
-      font-size: 17px; color: var(--t2); max-width: 460px; line-height: 1.75;
-      margin-bottom: 40px; position: relative; z-index: 1;
+      font-size: 17px; color: var(--t2); max-width: 400px; line-height: 1.8;
+      margin-bottom: 44px; position: relative; z-index: 1; font-weight: 400;
     }
     .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
-    .hero-note  { font-size: 12px; color: var(--t3); margin-top: 16px; position: relative; z-index: 1; }
 
-    /* Marquee */
-    .marquee-wrap {
-      border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1);
-      background: var(--bg-2); overflow: hidden;
-    }
-    .marquee-track { display: flex; white-space: nowrap; animation: scroll 24s linear infinite; }
+    /* ── MARQUEE ── */
+    .marquee-wrap { border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); background: var(--bg-2); overflow: hidden; }
+    .marquee-track { display: flex; white-space: nowrap; animation: scroll 26s linear infinite; }
     @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
     .m-item {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 13px 28px; font-size: 13px; font-weight: 600;
+      padding: 14px 30px; font-size: 13px; font-weight: 600;
       color: var(--t3); border-right: 1px solid var(--b1); flex-shrink: 0;
     }
     .m-item svg { color: var(--ac); }
 
-    /* Stats */
+    /* ── STATS ── */
     .stats-grid {
       display: grid; grid-template-columns: repeat(4,1fr);
-      background: var(--s1); border: 1px solid var(--b1);
-      border-radius: var(--r3); overflow: hidden;
+      background: var(--s1); border: 1px solid var(--b1); border-radius: var(--r3); overflow: hidden;
     }
-    .stat-item { padding: 28px 24px; border-right: 1px solid var(--b1); }
+    .stat-item { padding: 32px 28px; border-right: 1px solid var(--b1); }
     .stat-item:last-child { border-right: none; }
-    .stat-n {
-      font-family: var(--fd); font-size: 38px; font-weight: 900;
-      letter-spacing: -2px; line-height: 1; margin-bottom: 5px; color: var(--t1);
-    }
+    .stat-n { font-family: var(--fd); font-size: 40px; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
     .stat-n span { color: var(--ac); }
     .stat-l { font-size: 12px; color: var(--t3); font-weight: 500; }
 
-    /* Feature cards */
+    /* ── HOW IT WORKS ── */
+    .how-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .how-step {
+      background: var(--s1); padding: 36px 28px; position: relative;
+      border: 1px solid var(--b1);
+    }
+    .how-step:first-child { border-radius: var(--r2) 0 0 var(--r2); }
+    .how-step:last-child  { border-radius: 0 var(--r2) var(--r2) 0; }
+    .how-num {
+      font-family: var(--fd); font-size: 56px; font-weight: 900;
+      color: var(--b2); line-height: 1; margin-bottom: 16px; letter-spacing: -3px;
+    }
+    .how-title { font-family: var(--fd); font-size: 17px; font-weight: 800; margin-bottom: 10px; }
+    .how-desc  { font-size: 13px; color: var(--t2); line-height: 1.7; }
+    .how-ac { position: absolute; top: 20px; right: 20px; color: var(--ac); }
+
+    /* ── FEAT CARDS ── */
     .feat-card {
       background: var(--s1); border: 1px solid var(--b1);
-      border-radius: var(--r3); padding: 24px;
-      transition: border-color 0.2s, transform 0.2s;
-      display: block;
+      border-radius: var(--r3); padding: 28px;
+      transition: border-color 0.22s, transform 0.2s, background 0.22s;
+      display: block; position: relative; overflow: hidden;
     }
-    .feat-card:hover { border-color: var(--ac-border); transform: translateY(-3px); }
+    .feat-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--ac), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .feat-card:hover { border-color: var(--b3); transform: translateY(-4px); background: var(--s2); }
+    .feat-card:hover::after { opacity: 1; }
     .feat-card:hover .fc-icon { background: var(--ac-dim); border-color: var(--ac-border); }
     .fc-icon {
-      width: 42px; height: 42px; background: var(--s2); border: 1px solid var(--b2);
+      width: 44px; height: 44px; background: var(--s2); border: 1px solid var(--b2);
       border-radius: 11px; display: flex; align-items: center; justify-content: center;
-      color: var(--ac); margin-bottom: 14px; transition: all 0.2s;
+      color: var(--ac); margin-bottom: 16px; transition: all 0.2s;
     }
-    .fc-title { font-family: var(--fd); font-size: 15px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.2px; }
-    .fc-desc  { font-size: 12px; color: var(--t2); line-height: 1.6; margin-bottom: 14px; }
-    .fc-link  { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--ac); font-weight: 600; }
+    .fc-title { font-family: var(--fd); font-size: 15px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.2px; }
+    .fc-desc  { font-size: 12px; color: var(--t2); line-height: 1.65; margin-bottom: 16px; }
+    .fc-link  { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--ac); font-weight: 700; font-family: var(--fm); text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* CTA */
-    .cta-block {
+    /* ── COMPARE TABLE ── */
+    .cmp-wrap { background: var(--s1); border: 1px solid var(--b1); border-radius: var(--r3); overflow: hidden; }
+    .cmp-head {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      background: var(--bg-3); border-bottom: 1px solid var(--b1); padding: 14px 20px;
+    }
+    .cmp-head-cell { font-size: 12px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; }
+    .cmp-head-cell.nom { color: var(--ac); }
+    .cmp-row {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      padding: 13px 20px; border-bottom: 1px solid var(--b1);
+      transition: background 0.12s;
+    }
+    .cmp-row:last-child { border-bottom: none; }
+    .cmp-row:hover { background: var(--bg-3); }
+    .cmp-cell { font-size: 13px; color: var(--t2); display: flex; align-items: center; }
+    .cmp-cell.feat { font-weight: 500; color: var(--t1); }
+    .cmp-cell.nom  { color: var(--ac); }
+    .ic-y { color: var(--ac); }
+    .ic-n { color: var(--b3); }
+
+    /* ── TESTIMONIALS ── */
+    .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .testi-card {
       background: var(--s1); border: 1px solid var(--b1);
-      border-radius: var(--r4); padding: 64px 40px; text-align: center;
+      border-radius: var(--r2); padding: 24px;
+    }
+    .testi-stars { color: var(--ac); font-size: 13px; margin-bottom: 12px; letter-spacing: 2px; }
+    .testi-text { font-size: 13px; color: var(--t2); line-height: 1.7; margin-bottom: 18px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+    .testi-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--s3); border: 1px solid var(--b2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fd); font-size: 13px; font-weight: 800; color: var(--ac);
+    }
+    .testi-name { font-size: 13px; font-weight: 600; }
+    .testi-role { font-size: 11px; color: var(--t3); margin-top: 1px; }
+
+    /* ── FINAL CTA ── */
+    .final-cta {
+      background: var(--s1); border: 1px solid var(--b1);
+      border-radius: var(--r4); padding: 72px 40px; text-align: center;
       position: relative; overflow: hidden;
     }
-    .cta-block::before {
-      content: ''; position: absolute; bottom: -100px; right: -100px;
-      width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 65%);
+    .final-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,170,0.07) 0%, transparent 60%);
       pointer-events: none;
     }
-    .cta-h { font-family: var(--fd); font-size: clamp(24px, 4vw, 44px); font-weight: 900; letter-spacing: -1.5px; margin-bottom: 14px; position: relative; z-index: 1; }
-    .cta-p { font-size: 15px; color: var(--t2); margin-bottom: 30px; position: relative; z-index: 1; }
+    .final-cta-h { font-family: var(--fd); font-size: clamp(28px, 5vw, 52px); font-weight: 900; letter-spacing: -2px; margin-bottom: 14px; position: relative; z-index: 1; }
+    .final-cta-p { font-size: 15px; color: var(--t2); margin-bottom: 32px; position: relative; z-index: 1; max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.7; }
 
-    /* ─── MOBILE ─── */
-    @media (max-width: 860px) {
-      .stats-grid { grid-template-columns: 1fr 1fr; }
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .stats-grid   { grid-template-columns: 1fr 1fr; }
       .stat-item:nth-child(2) { border-right: none; }
       .stat-item:nth-child(1),.stat-item:nth-child(2) { border-bottom: 1px solid var(--b1); }
-      .feat-grid { grid-template-columns: 1fr 1fr !important; }
+      .how-grid     { grid-template-columns: 1fr; gap: 0; }
+      .how-step:first-child { border-radius: var(--r2) var(--r2) 0 0; }
+      .how-step:last-child  { border-radius: 0 0 var(--r2) var(--r2); }
+      .feat-grid    { grid-template-columns: 1fr 1fr !important; }
+      .testi-grid   { grid-template-columns: 1fr 1fr; }
+      .cmp-head, .cmp-row { grid-template-columns: 2fr 1fr 1fr; }
+      .cmp-head > :last-child, .cmp-row > :last-child { display: none; }
     }
     @media (max-width: 600px) {
-      .l-nav-links { display: none; }
-      .hero-h1 { font-size: 32px; letter-spacing: -1.2px; }
-      .hero-sub { font-size: 14px; }
+      .hero-h1      { font-size: 36px; letter-spacing: -1.5px; }
+      .hero-sub     { font-size: 14px; max-width: 320px; }
       .hero-btns .btn { width: 100%; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .feat-grid { grid-template-columns: 1fr !important; }
-      .cta-block { padding: 40px 20px; }
+      .feat-grid    { grid-template-columns: 1fr !important; }
+      .testi-grid   { grid-template-columns: 1fr; }
+      .final-cta    { padding: 48px 20px; }
+      .stats-grid   { grid-template-columns: 1fr 1fr; }
+      .cmp-head, .cmp-row { grid-template-columns: 2fr 1fr 1fr; }
     }
     @media (max-width: 400px) {
-      .hero-h1 { font-size: 26px; }
+      .hero-h1 { font-size: 28px; letter-spacing: -1px; }
       .stats-grid { grid-template-columns: 1fr; }
-      .stat-item { border-right: none; border-bottom: 1px solid var(--b1); }
+      .stat-item { border-right: none !important; border-bottom: 1px solid var(--b1); }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- NAV — logo + 9-dot only -->
 <nav class="l-nav">
   <a href="index.html" class="nav-logo">
-    <div class="nav-logo-mark">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <div class="nav-logo-mark" style="background:transparent;border:none;width:38px;height:38px;border-radius:10px;overflow:hidden;padding:0">
+      <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Nomino" style="width:100%;height:100%;object-fit:cover"/>
     </div>
     <span class="nav-logo-name">Nomino</span>
   </a>
-  <div class="l-nav-links">
-    <a href="video-call.html" class="l-nav-link">Video Call</a>
-    <a href="voice.html"      class="l-nav-link">Voice AI</a>
-    <a href="pricing.html"    class="l-nav-link">Pricing</a>
-    <a href="docs.html"       class="l-nav-link">Docs</a>
-  </div>
   <div class="l-nav-right">
     <div class="nav-grid-btn" id="grid-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -196,79 +217,112 @@
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- ══ HERO ══ -->
 <section class="hero-wrap">
-  <div class="hero-eyebrow fu">
-    <span class="pulse"></span>
-    Nomino 0.1 is live
-  </div>
-  <h1 class="hero-h1 fu d1">
-    AI that <span class="ac">actually</span><br>
-    <span class="dim">works for you</span>
+  <h1 class="hero-h1 fu">
+    The AI that<br>
+    <span class="ac">speaks,</span> sees,<br>
+    <span class="dim">and creates.</span>
   </h1>
-  <p class="hero-sub fu d2">
-    Video calls with anime avatars. Voice AI. Image and video generation. One platform that beats them all.
+  <p class="hero-sub fu d1">
+    Video calls with AI avatars. Voice AI. Image and video generation. One platform. Zero compromise.
   </p>
-  <div class="hero-btns fu d3">
+  <div class="hero-btns fu d2">
     <a href="signup.html" class="btn btn-primary btn-lg">
-      Get started free
+      Start for free
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </a>
-    <a href="video-call.html" class="btn btn-outline btn-lg">See features</a>
+    <a href="pricing.html" class="btn btn-outline btn-lg">View pricing</a>
   </div>
-  <p class="hero-note fu d4">Free forever plan &nbsp;·&nbsp; No credit card</p>
 </section>
 
-<!-- MARQUEE -->
+<!-- ══ MARQUEE ══ -->
 <div class="marquee-wrap">
   <div class="marquee-track">
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Video Generation</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image Generation</div>
-    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Smart Chat</div>
-    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile App</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile App</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real-time Response</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Video Generation</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image Generation</div>
-    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Smart Chat</div>
-    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile App</div>
     <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile App</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real-time Response</div>
   </div>
 </div>
 
-<!-- STATS -->
+<!-- ══ STATS ══ -->
 <section style="padding:64px 0;border-top:1px solid var(--b1)">
   <div class="page-wrap">
     <div class="stats-grid">
       <div class="stat-item"><div class="stat-n">9<span>+</span></div><div class="stat-l">AI Features</div></div>
       <div class="stat-item"><div class="stat-n">40<span>+</span></div><div class="stat-l">Languages</div></div>
       <div class="stat-item"><div class="stat-n">4K</div><div class="stat-l">Video quality</div></div>
-      <div class="stat-item"><div class="stat-n">0<span>s</span></div><div class="stat-l">Setup time</div></div>
+      <div class="stat-item"><div class="stat-n">&lt;1<span>s</span></div><div class="stat-l">Response time</div></div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section style="padding:64px 0;border-top:1px solid var(--b1)">
+<!-- ══ HOW IT WORKS ══ -->
+<section style="padding:80px 0;border-top:1px solid var(--b1)">
   <div class="page-wrap">
-    <div style="text-align:center;margin-bottom:44px">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-label">Simple process</div>
+      <h2 class="sec-title">Up and running in 60 seconds</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <div class="how-ac">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="how-title">Create your account</div>
+        <div class="how-desc">Sign up with email. Free plan activated instantly — no credit card, no waiting.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <div class="how-ac">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        </div>
+        <div class="how-title">Pick a feature</div>
+        <div class="how-desc">Chat AI, Voice AI, Image Generation, Video Call Avatar — choose what you need from the dashboard.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <div class="how-ac">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="how-title">Start creating</div>
+        <div class="how-desc">Talk, generate, create. No learning curve. Nomino works in any language from the first message.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section style="padding:80px 0;border-top:1px solid var(--b1)">
+  <div class="page-wrap">
+    <div style="text-align:center;margin-bottom:48px">
       <div class="sec-label">Platform</div>
       <h2 class="sec-title">Everything in one place</h2>
+      <p class="sec-desc" style="margin:10px auto 0;text-align:center">Tap any feature to learn more.</p>
     </div>
     <div class="feat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
       <a href="video-call.html" class="feat-card">
         <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="fc-title">Video Call AI</div>
-        <div class="fc-desc">Anime AI avatar in your video calls. Any language, real-time lip-sync.</div>
+        <div class="fc-desc">Anime AI avatar in your video calls. Real-time lip-sync, any language.</div>
         <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
       <a href="voice.html" class="feat-card">
         <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
         <div class="fc-title">Voice AI</div>
-        <div class="fc-desc">Speak, get intelligent voice back. Sub-500ms response time.</div>
+        <div class="fc-desc">Speak naturally, receive intelligent voice replies. Under 500ms.</div>
         <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
       <a href="video-making.html" class="feat-card">
@@ -280,72 +334,157 @@
       <a href="pic-making.html" class="feat-card">
         <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
         <div class="fc-title">Image Generation</div>
-        <div class="fc-desc">Any image, any style. Anime, realistic, 3D, painting — up to 8K.</div>
+        <div class="fc-desc">Any image, any style. Anime, realistic, 3D, painting. Up to 8K.</div>
         <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
       <a href="mobile.html" class="feat-card">
         <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
         <div class="fc-title">Mobile App</div>
-        <div class="fc-desc">iOS and Android. Full AI in your pocket. Widget support included.</div>
+        <div class="fc-desc">iOS and Android. Full AI in your pocket. Widget included.</div>
         <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
-      <a href="pricing.html" class="feat-card" style="border-color:var(--ac-border);background:var(--ac-dim)">
-        <div class="fc-icon" style="background:rgba(0,212,170,0.15);border-color:var(--ac-border)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <div class="fc-title">Pricing</div>
-        <div class="fc-desc">Free tier + affordable plans. No hidden costs ever.</div>
-        <div class="fc-link">See plans <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <a href="docs.html" class="feat-card">
+        <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div>
+        <div class="fc-title">API & Docs</div>
+        <div class="fc-desc">Full REST API for developers. SDKs in JS and Python. Integrate anywhere.</div>
+        <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section style="padding:0 0 80px">
+<!-- ══ COMPARE ══ -->
+<section style="padding:80px 0;border-top:1px solid var(--b1)">
   <div class="page-wrap">
-    <div class="cta-block">
-      <div class="sec-label" style="margin-bottom:12px">Start today</div>
-      <h2 class="cta-h">Better than ChatGPT.<br>Better than Gemini.</h2>
-      <p class="cta-p">Try Nomino free — no card, no commitment. See why it's different.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1">
-        <a href="signup.html" class="btn btn-primary btn-lg">Create free account</a>
-        <a href="pricing.html" class="btn btn-outline btn-lg">View pricing</a>
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="sec-label">Comparison</div>
+      <h2 class="sec-title">Why Nomino wins</h2>
+    </div>
+    <div class="cmp-wrap">
+      <div class="cmp-head">
+        <div class="cmp-head-cell">Feature</div>
+        <div class="cmp-head-cell nom">Nomino</div>
+        <div class="cmp-head-cell">ChatGPT</div>
+        <div class="cmp-head-cell">Gemini</div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat">Video call AI avatar</div>
+        <div class="cmp-cell nom ic-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-n"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell ic-n"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat">Voice-to-voice AI</div>
+        <div class="cmp-cell nom ic-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-y" style="color:var(--t3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-y" style="color:var(--t3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat">AI video generation</div>
+        <div class="cmp-cell nom ic-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-n"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell ic-n"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat">Urdu / Arabic support</div>
+        <div class="cmp-cell nom ic-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-y" style="color:var(--t3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-y" style="color:var(--t3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat">Free forever tier</div>
+        <div class="cmp-cell nom ic-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-y" style="color:var(--t3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-y" style="color:var(--t3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-cell feat">All features in one app</div>
+        <div class="cmp-cell nom ic-y"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cmp-cell ic-n"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cmp-cell ic-n"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="page-wrap footer-inner">
-    <div style="display:flex;align-items:center;gap:8px">
-      <div class="nav-logo-mark" style="width:24px;height:24px">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+<!-- ══ FOOTER ══ -->
+<footer style="border-top:1px solid var(--b1);margin-top:80px">
+  <div class="page-wrap" style="padding-top:56px;padding-bottom:40px">
+    <div class="ftr-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+          <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Nomino" style="width:32px;height:32px;border-radius:9px;object-fit:cover"/>
+          <span style="font-family:var(--fd);font-size:16px;font-weight:900;letter-spacing:-0.3px">Nomino</span>
+        </div>
+        <p style="font-size:13px;color:var(--t3);line-height:1.75;max-width:230px">The AI platform built for everyone. Video, Voice, Image — one place.</p>
+        <div style="display:flex;gap:8px;margin-top:18px">
+          <a href="#" class="ftr-social" title="Twitter/X"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.7 5.5 4.3 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
+          <a href="#" class="ftr-social" title="GitHub"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+          <a href="#" class="ftr-social" title="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        </div>
       </div>
-      <span style="font-family:var(--fd);font-size:13px;font-weight:800">Nomino</span>
-      <span class="footer-copy">&copy; 2025</span>
+      <div>
+        <div class="ftr-col-head">Product</div>
+        <a href="video-call.html"   class="ftr-link">Video Call AI</a>
+        <a href="voice.html"        class="ftr-link">Voice AI</a>
+        <a href="video-making.html" class="ftr-link">Video Generation</a>
+        <a href="pic-making.html"   class="ftr-link">Image Generation</a>
+        <a href="mobile.html"       class="ftr-link">Mobile App</a>
+      </div>
+      <div>
+        <div class="ftr-col-head">Resources</div>
+        <a href="docs.html"      class="ftr-link">Documentation</a>
+        <a href="pricing.html"   class="ftr-link">Pricing</a>
+        <a href="changelog.html" class="ftr-link">Changelog</a>
+        <a href="about.html"     class="ftr-link">About</a>
+        <a href="signup.html"    class="ftr-link ftr-link-ac">Get started free</a>
+      </div>
+      <div>
+        <div class="ftr-col-head">Legal</div>
+        <a href="#" class="ftr-link">Privacy Policy</a>
+        <a href="#" class="ftr-link">Terms of Service</a>
+        <a href="#" class="ftr-link">Cookie Policy</a>
+        <a href="#" class="ftr-link">Refund Policy</a>
+        <a href="#" class="ftr-link">Acceptable Use</a>
+      </div>
     </div>
-    <div class="footer-links">
-      <a href="pricing.html"   class="footer-link">Pricing</a>
-      <a href="docs.html"      class="footer-link">Docs</a>
-      <a href="about.html"     class="footer-link">About</a>
-      <a href="changelog.html" class="footer-link">Changelog</a>
+  </div>
+  <div style="border-top:1px solid var(--b1);padding:16px 0">
+    <div class="page-wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span style="font-size:12px;color:var(--t4)">&copy; 2025 Nomino. All rights reserved.</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--ac)"></div>
+        <span style="font-size:12px;color:var(--t3);font-family:var(--fm)">All systems operational</span>
+      </div>
     </div>
   </div>
 </footer>
+<style>
+.ftr-grid { display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px; }
+.ftr-col-head { font-family:var(--fd);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--t4);margin-bottom:14px; }
+.ftr-link { display:block;font-size:13px;color:var(--t3);margin-bottom:9px;transition:color 0.14s; }
+.ftr-link:hover { color:var(--t2); }
+.ftr-link-ac { color:var(--ac) !important; }
+.ftr-link-ac:hover { color:var(--ac-2) !important; }
+.ftr-social { width:30px;height:30px;background:var(--s2);border:1px solid var(--b2);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;color:var(--t3);transition:all 0.15s; }
+.ftr-social:hover { color:var(--ac);border-color:var(--ac-border); }
+@media (max-width:860px) { .ftr-grid { grid-template-columns:1fr 1fr;gap:32px; } }
+@media (max-width:480px) { .ftr-grid { grid-template-columns:1fr;gap:28px; } }
+</style>
 
 <script>
-const PAGES = [
-  {href:'video-call.html',   label:'Video Call',   desc:'AI avatar in calls',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'},
-  {href:'voice.html',        label:'Voice AI',     desc:'Talk, get voice back',  icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>'},
-  {href:'video-making.html', label:'Video Make',   desc:'AI video generation',   icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>'},
-  {href:'pic-making.html',   label:'Pic Making',   desc:'Generate any image',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'},
-  {href:'pricing.html',      label:'Pricing',      desc:'Plans & pricing',       icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'},
-  {href:'docs.html',         label:'Docs',         desc:'API & guides',          icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
-  {href:'mobile.html',       label:'Mobile',       desc:'iOS & Android',         icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>'},
-  {href:'about.html',        label:'About',        desc:'Mission & team',        icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'},
-  {href:'changelog.html',    label:'Changelog',    desc:'Updates & releases',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+const PAGES=[
+  {href:'video-call.html',   label:'Video Call',  desc:'AI avatar in calls',  icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'},
+  {href:'voice.html',        label:'Voice AI',    desc:'Talk, get voice back', icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>'},
+  {href:'video-making.html', label:'Video Make',  desc:'AI video generation',  icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>'},
+  {href:'pic-making.html',   label:'Pic Making',  desc:'Generate any image',   icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'},
+  {href:'pricing.html',      label:'Pricing',     desc:'Plans & pricing',      icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'},
+  {href:'docs.html',         label:'Docs',        desc:'API & guides',         icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
+  {href:'mobile.html',       label:'Mobile',      desc:'iOS & Android',        icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>'},
+  {href:'about.html',        label:'About',       desc:'Mission & team',       icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'},
+  {href:'changelog.html',    label:'Changelog',   desc:'Updates & releases',   icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
 ];
-const dd=document.getElementById('grid-dd'), btn=document.getElementById('grid-btn');
+const dd=document.getElementById('grid-dd'),btn=document.getElementById('grid-btn');
 dd.innerHTML=`<div class="nav-dropdown-grid">${PAGES.map(p=>`<a href="${p.href}" class="nav-dd-item"><div class="nav-dd-icon">${p.icon}</div><div class="nav-dd-label">${p.label}</div><div class="nav-dd-desc">${p.desc}</div></a>`).join('')}</div>`;
 btn.addEventListener('click',e=>{e.stopPropagation();const o=dd.classList.contains('open');dd.classList.toggle('open',!o);btn.classList.toggle('open',!o);});
 document.addEventListener('click',()=>{dd.classList.remove('open');btn.classList.remove('open');});
