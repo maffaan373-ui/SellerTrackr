@@ -7,274 +7,306 @@
   <link rel="stylesheet" href="css/shared.css"/>
   <style>
     /* Landing nav */
-    .landing-nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 56px; display: flex; align-items: center;
+    .l-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 58px; display: flex; align-items: center;
       padding: 0 24px;
-      background: rgba(38,41,48,0.96);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(14,17,23,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--b1);
     }
-    .landing-nav-links { display: flex; gap: 2px; margin-left: 24px; }
-    .landing-nav-link {
-      padding: 6px 12px; border-radius: var(--r-sm);
-      font-size: 13px; color: var(--text-2);
-      transition: color 0.15s, background 0.15s;
+    .l-nav-links { display: flex; gap: 2px; margin-left: 28px; }
+    .l-nav-link {
+      padding: 7px 13px; border-radius: var(--r1);
+      font-size: 13px; font-weight: 500; color: var(--t3);
+      transition: all 0.15s;
     }
-    .landing-nav-link:hover { color: var(--text); background: var(--c-s2); }
-    .landing-nav-right {
-      margin-left: auto; display: flex; align-items: center; gap: 10px;
-      position: relative;
-    }
+    .l-nav-link:hover { color: var(--t2); background: var(--s1); }
+    .l-nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; position: relative; }
 
     /* Hero */
-    .l-hero {
+    .hero-wrap {
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      text-align: center; padding: 100px 24px 80px;
+      text-align: center; padding: 100px 20px 80px;
+      position: relative; overflow: hidden;
     }
-    .l-hero-badge {
-      display: inline-flex; align-items: center; gap: 8px; padding: 5px 13px;
-      background: var(--c-s1); border: 1px solid var(--border-2);
-      border-radius: 20px; font-size: 12px; font-weight: 500;
-      color: var(--text-2); font-family: var(--font-mono); margin-bottom: 28px;
+    /* Subtle background grid */
+    .hero-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--b1) 1px, transparent 1px),
+        linear-gradient(90deg, var(--b1) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.4;
+      pointer-events: none;
     }
-    .l-hero-badge .dot { color: var(--accent); }
-    .l-hero-badge .hi  { color: var(--accent); font-weight: 600; }
-    .l-hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(36px, 7vw, 80px); font-weight: 800;
-      letter-spacing: -2.5px; line-height: 1.04; margin-bottom: 22px; max-width: 860px;
+    /* Glow orb */
+    .hero-wrap::after {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,170,0.07) 0%, transparent 65%);
+      pointer-events: none;
     }
-    .l-hero-title em { font-style: normal; color: var(--accent); }
-    .l-hero-sub {
-      font-size: 17px; color: var(--text-2);
-      max-width: 480px; line-height: 1.7; margin-bottom: 40px;
-    }
-    .l-hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .l-hero-note { font-size: 12px; color: var(--text-3); margin-top: 14px; }
 
-    /* Marquee strip */
-    .caps-strip {
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      background: var(--c-s1); overflow: hidden;
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px;
+      background: var(--s1); border: 1px solid var(--b2);
+      border-radius: 20px; margin-bottom: 28px;
+      font-size: 12px; color: var(--t2); font-family: var(--fm);
+      position: relative; z-index: 1;
     }
-    .caps-inner { display: flex; white-space: nowrap; animation: marquee 22s linear infinite; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .cap-item {
-      display: inline-flex; align-items: center; gap: 9px;
-      padding: 14px 28px; font-size: 13px; font-weight: 500; color: var(--text-2);
-      border-right: 1px solid var(--border); flex-shrink: 0;
+    .hero-eyebrow .pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--ac);
+      animation: pulse 2s ease-in-out infinite;
     }
-    .cap-item svg { color: var(--accent); }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+
+    .hero-h1 {
+      font-family: var(--fd); font-weight: 900;
+      font-size: clamp(38px, 8vw, 88px);
+      letter-spacing: -3px; line-height: 1.02;
+      margin-bottom: 20px; max-width: 900px;
+      position: relative; z-index: 1;
+    }
+    .hero-h1 .ac { color: var(--ac); }
+    .hero-h1 .dim { color: var(--t3); }
+
+    .hero-sub {
+      font-size: 17px; color: var(--t2); max-width: 460px; line-height: 1.75;
+      margin-bottom: 40px; position: relative; z-index: 1;
+    }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+    .hero-note  { font-size: 12px; color: var(--t3); margin-top: 16px; position: relative; z-index: 1; }
+
+    /* Marquee */
+    .marquee-wrap {
+      border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1);
+      background: var(--bg-2); overflow: hidden;
+    }
+    .marquee-track { display: flex; white-space: nowrap; animation: scroll 24s linear infinite; }
+    @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .m-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px; font-size: 13px; font-weight: 600;
+      color: var(--t3); border-right: 1px solid var(--b1); flex-shrink: 0;
+    }
+    .m-item svg { color: var(--ac); }
 
     /* Stats */
-    .stats-row {
+    .stats-grid {
       display: grid; grid-template-columns: repeat(4,1fr);
-      border: 1px solid var(--border); border-radius: var(--r-lg);
-      overflow: hidden; background: var(--c-s1);
+      background: var(--s1); border: 1px solid var(--b1);
+      border-radius: var(--r3); overflow: hidden;
     }
-    .stat-col { padding: 28px 24px; border-right: 1px solid var(--border); }
-    .stat-col:last-child { border-right: none; }
-    .stat-num {
-      font-family: var(--font-display); font-size: 36px; font-weight: 800;
-      letter-spacing: -1.5px; color: var(--text); line-height: 1; margin-bottom: 6px;
+    .stat-item { padding: 28px 24px; border-right: 1px solid var(--b1); }
+    .stat-item:last-child { border-right: none; }
+    .stat-n {
+      font-family: var(--fd); font-size: 38px; font-weight: 900;
+      letter-spacing: -2px; line-height: 1; margin-bottom: 5px; color: var(--t1);
     }
-    .stat-num span { color: var(--accent); }
-    .stat-lbl { font-size: 12px; color: var(--text-3); }
+    .stat-n span { color: var(--ac); }
+    .stat-l { font-size: 12px; color: var(--t3); font-weight: 500; }
 
-    /* Cap cards */
-    .l-cap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
-    .l-cap-card {
-      background: var(--c-s1); border: 1px solid var(--border); border-radius: var(--r-lg);
-      padding: 22px; transition: border-color 0.2s, transform 0.2s; display: block;
+    /* Feature cards */
+    .feat-card {
+      background: var(--s1); border: 1px solid var(--b1);
+      border-radius: var(--r3); padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+      display: block;
     }
-    .l-cap-card:hover { border-color: var(--border-2); transform: translateY(-2px); }
-    .l-cap-icon {
-      width: 38px; height: 38px; background: var(--c-s2); border: 1px solid var(--border-2);
-      border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center;
-      color: var(--accent); margin-bottom: 13px;
+    .feat-card:hover { border-color: var(--ac-border); transform: translateY(-3px); }
+    .feat-card:hover .fc-icon { background: var(--ac-dim); border-color: var(--ac-border); }
+    .fc-icon {
+      width: 42px; height: 42px; background: var(--s2); border: 1px solid var(--b2);
+      border-radius: 11px; display: flex; align-items: center; justify-content: center;
+      color: var(--ac); margin-bottom: 14px; transition: all 0.2s;
     }
-    .l-cap-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; margin-bottom: 5px; }
-    .l-cap-desc  { font-size: 12px; color: var(--text-3); line-height: 1.55; }
-    .l-cap-arrow { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--accent); margin-top: 12px; font-weight: 500; }
+    .fc-title { font-family: var(--fd); font-size: 15px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.2px; }
+    .fc-desc  { font-size: 12px; color: var(--t2); line-height: 1.6; margin-bottom: 14px; }
+    .fc-link  { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--ac); font-weight: 600; }
 
-    /* CTA banner */
-    .l-cta-banner {
-      background: var(--c-s1); border: 1px solid var(--border-2);
-      border-radius: var(--r-xl); padding: 56px 40px; text-align: center;
+    /* CTA */
+    .cta-block {
+      background: var(--s1); border: 1px solid var(--b1);
+      border-radius: var(--r4); padding: 64px 40px; text-align: center;
+      position: relative; overflow: hidden;
     }
-    .l-cta-title {
-      font-family: var(--font-display); font-size: clamp(24px, 4vw, 42px);
-      font-weight: 800; letter-spacing: -1.2px; margin-bottom: 14px;
+    .cta-block::before {
+      content: ''; position: absolute; bottom: -100px; right: -100px;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 65%);
+      pointer-events: none;
     }
-    .l-cta-desc { font-size: 15px; color: var(--text-2); margin-bottom: 28px; }
+    .cta-h { font-family: var(--fd); font-size: clamp(24px, 4vw, 44px); font-weight: 900; letter-spacing: -1.5px; margin-bottom: 14px; position: relative; z-index: 1; }
+    .cta-p { font-size: 15px; color: var(--t2); margin-bottom: 30px; position: relative; z-index: 1; }
 
-    /* Section spacing */
-    .l-section-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
-
-    /* Mobile */
-    @media (max-width: 900px) {
-      .l-cap-grid  { grid-template-columns: 1fr 1fr; }
-      .stats-row   { grid-template-columns: 1fr 1fr; }
-      .stat-col:nth-child(2n) { border-right: none; }
-      .stat-col:nth-child(1), .stat-col:nth-child(2) { border-bottom: 1px solid var(--border); }
+    /* ─── MOBILE ─── */
+    @media (max-width: 860px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(1),.stat-item:nth-child(2) { border-bottom: 1px solid var(--b1); }
+      .feat-grid { grid-template-columns: 1fr 1fr !important; }
     }
-    @media (max-width: 640px) {
-      .landing-nav-links { display: none; }
-      .l-cap-grid  { grid-template-columns: 1fr; }
-      .stats-row   { grid-template-columns: 1fr 1fr; }
-      .l-cta-banner { padding: 36px 20px; }
-      .l-hero-title { font-size: 30px; letter-spacing: -1px; }
-      .l-hero-sub   { font-size: 14px; }
-      .l-hero-cta .btn { width: 100%; }
+    @media (max-width: 600px) {
+      .l-nav-links { display: none; }
+      .hero-h1 { font-size: 32px; letter-spacing: -1.2px; }
+      .hero-sub { font-size: 14px; }
+      .hero-btns .btn { width: 100%; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .feat-grid { grid-template-columns: 1fr !important; }
+      .cta-block { padding: 40px 20px; }
     }
     @media (max-width: 400px) {
-      .stats-row { grid-template-columns: 1fr; }
-      .stat-col  { border-right: none; border-bottom: 1px solid var(--border); }
+      .hero-h1 { font-size: 26px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--b1); }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV — only logo + page links + 9-dot (no auth buttons) -->
-<nav class="landing-nav">
+<!-- NAV -->
+<nav class="l-nav">
   <a href="index.html" class="nav-logo">
     <div class="nav-logo-mark">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     </div>
     <span class="nav-logo-name">Nomino</span>
   </a>
-
-  <div class="landing-nav-links">
-    <a href="video-call.html" class="landing-nav-link">Video Call</a>
-    <a href="voice.html"      class="landing-nav-link">Voice AI</a>
-    <a href="pricing.html"    class="landing-nav-link">Pricing</a>
-    <a href="docs.html"       class="landing-nav-link">Docs</a>
+  <div class="l-nav-links">
+    <a href="video-call.html" class="l-nav-link">Video Call</a>
+    <a href="voice.html"      class="l-nav-link">Voice AI</a>
+    <a href="pricing.html"    class="l-nav-link">Pricing</a>
+    <a href="docs.html"       class="l-nav-link">Docs</a>
   </div>
-
-  <div class="landing-nav-right">
-    <div class="nav-grid-btn" id="landing-grid-btn" title="All pages">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="10" y="3" width="5" height="5" rx="1"/>
-        <rect x="17" y="3" width="5" height="5" rx="1"/><rect x="3" y="10" width="5" height="5" rx="1"/>
-        <rect x="10" y="10" width="5" height="5" rx="1"/><rect x="17" y="10" width="5" height="5" rx="1"/>
-        <rect x="3" y="17" width="5" height="5" rx="1"/><rect x="10" y="17" width="5" height="5" rx="1"/>
-        <rect x="17" y="17" width="5" height="5" rx="1"/>
+  <div class="l-nav-right">
+    <div class="nav-grid-btn" id="grid-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="10" y="3" width="5" height="5" rx="1"/><rect x="17" y="3" width="5" height="5" rx="1"/>
+        <rect x="3" y="10" width="5" height="5" rx="1"/><rect x="10" y="10" width="5" height="5" rx="1"/><rect x="17" y="10" width="5" height="5" rx="1"/>
+        <rect x="3" y="17" width="5" height="5" rx="1"/><rect x="10" y="17" width="5" height="5" rx="1"/><rect x="17" y="17" width="5" height="5" rx="1"/>
       </svg>
-      <div class="nav-dropdown" id="landing-dropdown"></div>
+      <div class="nav-dropdown" id="grid-dd"></div>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="l-hero">
-  <div class="l-hero-badge">
-    <span class="dot">●</span>
-    <span class="hi">Now live</span> — Nomino 0.1 is here
+<section class="hero-wrap">
+  <div class="hero-eyebrow fu">
+    <span class="pulse"></span>
+    Nomino 0.1 is live
   </div>
-  <h1 class="l-hero-title fade-up">
-    The AI Platform<br>Built for <em>Everything</em>
+  <h1 class="hero-h1 fu d1">
+    AI that <span class="ac">actually</span><br>
+    <span class="dim">works for you</span>
   </h1>
-  <p class="l-hero-sub fade-up delay-1">
-    Video calls with anime avatars. Voice conversations. AI-generated images and videos. One platform, unlimited capability.
+  <p class="hero-sub fu d2">
+    Video calls with anime avatars. Voice AI. Image and video generation. One platform that beats them all.
   </p>
-  <div class="l-hero-cta fade-up delay-2">
+  <div class="hero-btns fu d3">
     <a href="signup.html" class="btn btn-primary btn-lg">
-      Start for free
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      Get started free
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </a>
-    <a href="video-call.html" class="btn btn-outline btn-lg">See how it works</a>
+    <a href="video-call.html" class="btn btn-outline btn-lg">See features</a>
   </div>
-  <p class="l-hero-note fade-up delay-3">No credit card required &nbsp;·&nbsp; Free tier available</p>
+  <p class="hero-note fu d4">Free forever plan &nbsp;·&nbsp; No credit card</p>
 </section>
 
-<!-- MARQUEE STRIP -->
-<div class="caps-strip">
-  <div class="caps-inner">
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Video Generation</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image Generation</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat Intelligence</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile Apps</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Video Generation</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image Generation</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat Intelligence</div>
-    <div class="cap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile Apps</div>
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Video Generation</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image Generation</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Smart Chat</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile App</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Video Generation</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image Generation</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Smart Chat</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Mobile App</div>
+    <div class="m-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
   </div>
 </div>
 
 <!-- STATS -->
-<section style="padding:72px 0;border-top:1px solid var(--border)">
-  <div class="l-section-inner">
-    <div class="stats-row">
-      <div class="stat-col"><div class="stat-num">9<span>+</span></div><div class="stat-lbl">AI Capabilities</div></div>
-      <div class="stat-col"><div class="stat-num">40<span>+</span></div><div class="stat-lbl">Languages</div></div>
-      <div class="stat-col"><div class="stat-num">4K</div><div class="stat-lbl">Video resolution</div></div>
-      <div class="stat-col"><div class="stat-num">0<span>ms</span></div><div class="stat-lbl">Setup required</div></div>
+<section style="padding:64px 0;border-top:1px solid var(--b1)">
+  <div class="page-wrap">
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-n">9<span>+</span></div><div class="stat-l">AI Features</div></div>
+      <div class="stat-item"><div class="stat-n">40<span>+</span></div><div class="stat-l">Languages</div></div>
+      <div class="stat-item"><div class="stat-n">4K</div><div class="stat-l">Video quality</div></div>
+      <div class="stat-item"><div class="stat-n">0<span>s</span></div><div class="stat-l">Setup time</div></div>
     </div>
   </div>
 </section>
 
-<!-- CAPABILITIES GRID -->
-<section style="padding:72px 0;border-top:1px solid var(--border)">
-  <div class="l-section-inner">
-    <div style="text-align:center;margin-bottom:48px">
-      <div class="section-label">What Nomino can do</div>
-      <h2 class="section-title">Every AI capability, one platform</h2>
+<!-- FEATURES -->
+<section style="padding:64px 0;border-top:1px solid var(--b1)">
+  <div class="page-wrap">
+    <div style="text-align:center;margin-bottom:44px">
+      <div class="sec-label">Platform</div>
+      <h2 class="sec-title">Everything in one place</h2>
     </div>
-    <div class="l-cap-grid">
-      <a href="video-call.html" class="l-cap-card">
-        <div class="l-cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="l-cap-title">Video Call AI Avatar</div>
-        <div class="l-cap-desc">Anime AI avatar joins your video calls. Any language, real-time.</div>
-        <div class="l-cap-arrow">Learn more <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+    <div class="feat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <a href="video-call.html" class="feat-card">
+        <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="fc-title">Video Call AI</div>
+        <div class="fc-desc">Anime AI avatar in your video calls. Any language, real-time lip-sync.</div>
+        <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
-      <a href="voice.html" class="l-cap-card">
-        <div class="l-cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
-        <div class="l-cap-title">Voice to Voice AI</div>
-        <div class="l-cap-desc">Speak naturally, get intelligent voice replies in real time.</div>
-        <div class="l-cap-arrow">Learn more <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <a href="voice.html" class="feat-card">
+        <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+        <div class="fc-title">Voice AI</div>
+        <div class="fc-desc">Speak, get intelligent voice back. Sub-500ms response time.</div>
+        <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
-      <a href="video-making.html" class="l-cap-card">
-        <div class="l-cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-        <div class="l-cap-title">AI Video Generation</div>
-        <div class="l-cap-desc">Describe any scene. Get a cinematic quality video in seconds.</div>
-        <div class="l-cap-arrow">Learn more <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <a href="video-making.html" class="feat-card">
+        <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        <div class="fc-title">Video Generation</div>
+        <div class="fc-desc">Text to cinematic video. HD, 4K, 8K. Any style, any genre.</div>
+        <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
-      <a href="pic-making.html" class="l-cap-card">
-        <div class="l-cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-        <div class="l-cap-title">Image Generation</div>
-        <div class="l-cap-desc">Text to image in any style — realistic, anime, painting and more.</div>
-        <div class="l-cap-arrow">Learn more <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <a href="pic-making.html" class="feat-card">
+        <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div class="fc-title">Image Generation</div>
+        <div class="fc-desc">Any image, any style. Anime, realistic, 3D, painting — up to 8K.</div>
+        <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
-      <a href="mobile.html" class="l-cap-card">
-        <div class="l-cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
-        <div class="l-cap-title">Mobile App</div>
-        <div class="l-cap-desc">Full Nomino experience on iOS and Android. AI in your pocket.</div>
-        <div class="l-cap-arrow">Learn more <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <a href="mobile.html" class="feat-card">
+        <div class="fc-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="fc-title">Mobile App</div>
+        <div class="fc-desc">iOS and Android. Full AI in your pocket. Widget support included.</div>
+        <div class="fc-link">Explore <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
-      <a href="pricing.html" class="l-cap-card" style="border-color:var(--accent-border);background:var(--accent-pale)">
-        <div class="l-cap-icon" style="background:rgba(106,158,194,0.15);border-color:var(--accent-border)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <div class="l-cap-title">Simple Pricing</div>
-        <div class="l-cap-desc">Free tier plus affordable monthly and annual plans.</div>
-        <div class="l-cap-arrow">See plans <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      <a href="pricing.html" class="feat-card" style="border-color:var(--ac-border);background:var(--ac-dim)">
+        <div class="fc-icon" style="background:rgba(0,212,170,0.15);border-color:var(--ac-border)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="fc-title">Pricing</div>
+        <div class="fc-desc">Free tier + affordable plans. No hidden costs ever.</div>
+        <div class="fc-link">See plans <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </a>
     </div>
   </div>
 </section>
 
-<!-- CTA BANNER -->
+<!-- CTA -->
 <section style="padding:0 0 80px">
-  <div class="l-section-inner">
-    <div class="l-cta-banner">
-      <div class="section-label" style="margin-bottom:14px">Get started today</div>
-      <h2 class="l-cta-title">Ready to experience<br>Nomino 0.1?</h2>
-      <p class="l-cta-desc">Join thousands using AI the right way. Free to start, no card required.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+  <div class="page-wrap">
+    <div class="cta-block">
+      <div class="sec-label" style="margin-bottom:12px">Start today</div>
+      <h2 class="cta-h">Better than ChatGPT.<br>Better than Gemini.</h2>
+      <p class="cta-p">Try Nomino free — no card, no commitment. See why it's different.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1">
         <a href="signup.html" class="btn btn-primary btn-lg">Create free account</a>
         <a href="pricing.html" class="btn btn-outline btn-lg">View pricing</a>
       </div>
@@ -283,60 +315,41 @@
 </section>
 
 <!-- FOOTER -->
-<footer style="border-top:1px solid var(--border);padding:36px 0">
-  <div class="l-section-inner">
-    <div class="footer-inner">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="nav-logo-mark" style="width:24px;height:24px">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <span style="font-family:var(--font-display);font-size:13px;font-weight:700">Nomino</span>
-        <span class="footer-copy">&copy; 2025</span>
+<footer class="footer">
+  <div class="page-wrap footer-inner">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="nav-logo-mark" style="width:24px;height:24px">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
-      <div class="footer-links">
-        <a href="pricing.html" class="footer-link">Pricing</a>
-        <a href="docs.html"    class="footer-link">Docs</a>
-        <a href="about.html"   class="footer-link">About</a>
-        <a href="changelog.html" class="footer-link">Changelog</a>
-      </div>
+      <span style="font-family:var(--fd);font-size:13px;font-weight:800">Nomino</span>
+      <span class="footer-copy">&copy; 2025</span>
+    </div>
+    <div class="footer-links">
+      <a href="pricing.html"   class="footer-link">Pricing</a>
+      <a href="docs.html"      class="footer-link">Docs</a>
+      <a href="about.html"     class="footer-link">About</a>
+      <a href="changelog.html" class="footer-link">Changelog</a>
     </div>
   </div>
 </footer>
 
 <script>
-const NAV_PAGES = [
-  { href:'video-call.html',   label:'Video Call',   desc:'AI avatar in live calls',  icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>` },
-  { href:'voice.html',        label:'Voice AI',     desc:'Talk, get voice replies',  icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>` },
-  { href:'video-making.html', label:'Video Making', desc:'AI-generated video',       icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>` },
-  { href:'pic-making.html',   label:'Pic Making',   desc:'Generate any image',       icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>` },
-  { href:'pricing.html',      label:'Pricing',      desc:'Plans & pricing',          icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>` },
-  { href:'docs.html',         label:'Docs',         desc:'API & documentation',      icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>` },
-  { href:'mobile.html',       label:'Mobile App',   desc:'iOS & Android',            icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>` },
-  { href:'about.html',        label:'About',        desc:'Our mission & team',       icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>` },
-  { href:'changelog.html',    label:'Changelog',    desc:'Updates & releases',       icon:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>` },
+const PAGES = [
+  {href:'video-call.html',   label:'Video Call',   desc:'AI avatar in calls',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'},
+  {href:'voice.html',        label:'Voice AI',     desc:'Talk, get voice back',  icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>'},
+  {href:'video-making.html', label:'Video Make',   desc:'AI video generation',   icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>'},
+  {href:'pic-making.html',   label:'Pic Making',   desc:'Generate any image',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'},
+  {href:'pricing.html',      label:'Pricing',      desc:'Plans & pricing',       icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'},
+  {href:'docs.html',         label:'Docs',         desc:'API & guides',          icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
+  {href:'mobile.html',       label:'Mobile',       desc:'iOS & Android',         icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>'},
+  {href:'about.html',        label:'About',        desc:'Mission & team',        icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'},
+  {href:'changelog.html',    label:'Changelog',    desc:'Updates & releases',    icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
 ];
-
-const dd  = document.getElementById('landing-dropdown');
-const btn = document.getElementById('landing-grid-btn');
-
-dd.innerHTML = `<div class="nav-dropdown-grid">${NAV_PAGES.map(p=>`
-  <a href="${p.href}" class="nav-dd-item">
-    <div class="nav-dd-icon">${p.icon}</div>
-    <div class="nav-dd-label">${p.label}</div>
-    <div class="nav-dd-desc">${p.desc}</div>
-  </a>`).join('')}</div>`;
-
-btn.addEventListener('click', e => {
-  e.stopPropagation();
-  const open = dd.classList.contains('open');
-  dd.classList.toggle('open', !open);
-  btn.classList.toggle('open', !open);
-});
-document.addEventListener('click', () => {
-  dd.classList.remove('open');
-  btn.classList.remove('open');
-});
-dd.addEventListener('click', e => e.stopPropagation());
+const dd=document.getElementById('grid-dd'), btn=document.getElementById('grid-btn');
+dd.innerHTML=`<div class="nav-dropdown-grid">${PAGES.map(p=>`<a href="${p.href}" class="nav-dd-item"><div class="nav-dd-icon">${p.icon}</div><div class="nav-dd-label">${p.label}</div><div class="nav-dd-desc">${p.desc}</div></a>`).join('')}</div>`;
+btn.addEventListener('click',e=>{e.stopPropagation();const o=dd.classList.contains('open');dd.classList.toggle('open',!o);btn.classList.toggle('open',!o);});
+document.addEventListener('click',()=>{dd.classList.remove('open');btn.classList.remove('open');});
+dd.addEventListener('click',e=>e.stopPropagation());
 </script>
 </body>
 </html>
