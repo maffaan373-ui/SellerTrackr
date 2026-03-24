@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nomino — The AI Platform</title>
+  <title>Fluxwith — The AI Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -82,12 +82,12 @@
       color: var(--gray); border-radius: 6px; transition: background 0.15s;
     }
     .drawer-close:hover { background: var(--light); }
-    .drawer-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+    .drawer-nav { flex: 1; overflow-y: auto; padding: 8px 0; }
     .drawer-link {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 20px; font-size: 16px; font-weight: 400;
+      padding: 20px 24px; font-size: 18px; font-weight: 400;
       color: var(--black); border-bottom: 1px solid var(--border);
-      transition: background 0.12s;
+      transition: background 0.12s; text-decoration: none;
     }
     .drawer-link:hover { background: var(--light); }
     .drawer-link svg { color: var(--gray); }
@@ -96,15 +96,15 @@
       display: flex; flex-direction: column; gap: 10px;
     }
     .drawer-btn-ghost {
-      width: 100%; padding: 14px; border-radius: 50px;
-      font-size: 15px; font-weight: 500; color: var(--black);
+      width: 100%; padding: 15px; border-radius: 50px;
+      font-size: 16px; font-weight: 400; color: var(--black);
       background: transparent; border: 1.5px solid var(--border);
       transition: border-color 0.15s;
     }
-    .drawer-btn-ghost:hover { border-color: #aaa; }
+    .drawer-btn-ghost:hover { border-color: #999; }
     .drawer-btn-solid {
-      width: 100%; padding: 14px; border-radius: 50px;
-      font-size: 15px; font-weight: 600; color: #fff;
+      width: 100%; padding: 15px; border-radius: 50px;
+      font-size: 16px; font-weight: 600; color: #fff;
       background: var(--black); border: none;
       transition: opacity 0.15s;
     }
@@ -115,20 +115,58 @@
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       text-align: center; padding: 100px 24px 60px;
+      position: relative; overflow: hidden;
     }
+    .hero > * { position: relative; z-index: 1; }
+
     .hero-h1 {
       font-family: 'Instrument Serif', serif;
       font-style: italic; font-weight: 400;
       font-size: clamp(44px, 12vw, 88px);
-      line-height: 1.05; letter-spacing: -1px;
+      line-height: 1.08; letter-spacing: -1px;
       color: var(--black); margin-bottom: 24px;
     }
+    /* Each word animates in separately */
+    .hero-h1 .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: wordIn 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .hero-h1 .word:nth-child(1) { animation-delay: 0.05s; }
+    .hero-h1 .word:nth-child(2) { animation-delay: 0.18s; }
+    .hero-h1 .word:nth-child(3) { animation-delay: 0.31s; }
+    .hero-h1 .word:nth-child(4) { animation-delay: 0.44s; }
+    /* Each word has a trailing dot that pulses */
+    .hero-h1 .dot {
+      color: var(--black);
+      opacity: 0;
+      animation: dotIn 0.3s ease forwards;
+    }
+    .hero-h1 .word:nth-child(1) .dot { animation-delay: 0.28s; }
+    .hero-h1 .word:nth-child(2) .dot { animation-delay: 0.41s; }
+    .hero-h1 .word:nth-child(3) .dot { animation-delay: 0.54s; }
+    .hero-h1 .word:nth-child(4) .dot { animation-delay: 0.67s; }
+
+    @keyframes wordIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes dotIn {
+      from { opacity: 0; transform: scale(0.4); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
     .hero-sub {
       font-size: clamp(15px, 3.5vw, 18px); color: var(--gray);
       max-width: 480px; line-height: 1.75; margin-bottom: 36px;
       font-weight: 400;
+      opacity: 0; animation: wordIn 0.55s 0.75s cubic-bezier(0.22,1,0.36,1) forwards;
     }
-    .hero-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 400px; }
+    .hero-btns {
+      display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 400px;
+      opacity: 0; animation: wordIn 0.55s 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
     .h-btn-ghost {
       width: 100%; padding: 16px; border-radius: 50px;
       font-size: 16px; font-weight: 400; color: var(--black);
@@ -249,6 +287,46 @@
     .fu  { animation: fadeUp 0.5s ease both; }
     .d1  { animation-delay: 0.1s; }
     .d2  { animation-delay: 0.2s; }
+
+    /* ── DRAWER ACCORDION ── */
+    .drawer-acc-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 20px 24px; font-size: 18px; font-weight: 400;
+      color: var(--black); background: none; border: none;
+      border-bottom: 1px solid var(--border); cursor: pointer;
+      transition: background 0.12s; text-align: left;
+    }
+    .drawer-acc-btn:hover { background: var(--light); }
+    .drawer-acc-btn .acc-arrow {
+      transition: transform 0.22s ease;
+      color: var(--gray); flex-shrink: 0;
+    }
+    .drawer-acc-btn.open .acc-arrow { transform: rotate(180deg); }
+
+    .drawer-acc-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1);
+      background: var(--light);
+      border-bottom: 1px solid var(--border);
+    }
+    .drawer-acc-body.open { max-height: 500px; }
+
+    .acc-sub-btn {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 12px 20px 12px 28px;
+      font-size: 14px; font-weight: 400; color: var(--black);
+      background: none; border: none; border-bottom: 1px solid rgba(0,0,0,0.05);
+      cursor: pointer; text-align: left; text-decoration: none;
+      transition: background 0.12s;
+    }
+    .acc-sub-btn:last-child { border-bottom: none; }
+    .acc-sub-btn:hover { background: #ececec; }
+    .acc-sub-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: #fff; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--black); flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -256,8 +334,8 @@
 <!-- NAV -->
 <nav class="nav">
   <a href="index.html" class="nav-logo">
-    <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Nomino"/>
-    <span class="nav-logo-name">Nomino</span>
+    <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Fluxwith"/>
+    <span class="nav-logo-name">Fluxwith</span>
   </a>
   <button class="nav-hamburger" id="ham-btn" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -271,50 +349,89 @@
 <div class="drawer" id="drawer">
   <div class="drawer-head">
     <div class="drawer-head-logo">
-      <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Nomino"/>
-      <span>Nomino</span>
+      <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Fluxwith"/>
+      <span>Fluxwith</span>
     </div>
     <button class="drawer-close" id="drawer-close">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
   <nav class="drawer-nav">
-    <a href="video-call.html" class="drawer-link">
-      Video Call AI
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="voice.html" class="drawer-link">
-      Voice AI
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="video-making.html" class="drawer-link">
-      Video Generation
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="pic-making.html" class="drawer-link">
-      Image Generation
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="pricing.html" class="drawer-link">
-      Pricing
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="docs.html" class="drawer-link">
-      Docs
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="mobile.html" class="drawer-link">
-      Mobile App
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="about.html" class="drawer-link">
-      About
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-    <a href="changelog.html" class="drawer-link">
-      Changelog
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+
+    <!-- Features accordion -->
+    <button class="drawer-acc-btn" id="acc-feat-btn">
+      Features
+      <svg class="acc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="drawer-acc-body" id="acc-feat-body">
+      <a href="video-call.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        Video Call AI
+      </a>
+      <a href="voice.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
+        Voice AI
+      </a>
+      <a href="video-making.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        Video Generation
+      </a>
+      <a href="pic-making.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        Image Generation
+      </a>
+      <a href="mobile.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        Mobile App
+      </a>
+    </div>
+
+    <!-- Pricing — outside, direct link -->
+    <a href="pricing.html" class="drawer-link">Pricing</a>
+
+    <!-- Resources accordion -->
+    <button class="drawer-acc-btn" id="acc-res-btn">
+      Resources
+      <svg class="acc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="drawer-acc-body" id="acc-res-body">
+      <a href="docs.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        Documentation
+      </a>
+      <a href="changelog.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        Changelog
+      </a>
+      <a href="about.html" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+        About
+      </a>
+    </div>
+
+    <!-- Community accordion -->
+    <button class="drawer-acc-btn" id="acc-com-btn">
+      Community
+      <svg class="acc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="drawer-acc-body" id="acc-com-body">
+      <a href="#" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        Discord
+      </a>
+      <a href="#" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.7 5.5 4.3 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></div>
+        Twitter / X
+      </a>
+      <a href="#" class="acc-sub-btn">
+        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div>
+        GitHub
+      </a>
+    </div>
+
+    <!-- Career — direct link -->
+    <a href="#" class="drawer-link">Career</a>
+
   </nav>
   <div class="drawer-footer">
     <button class="drawer-btn-ghost" onclick="location.href='login.html'">Sign in</button>
@@ -324,13 +441,16 @@
 
 <!-- HERO -->
 <section class="hero">
-  <h1 class="hero-h1 fu">
-    speak. see.<br>create. now.
+  <h1 class="hero-h1">
+    <span class="word">speak<span class="dot">.</span></span>
+    <span class="word"> see<span class="dot">.</span></span><br>
+    <span class="word">create<span class="dot">.</span></span>
+    <span class="word"> now<span class="dot">.</span></span>
   </h1>
-  <p class="hero-sub fu d1">
+  <p class="hero-sub">
     An AI platform that connects your voice, vision, and creativity in a single flow.
   </p>
-  <div class="hero-btns fu d2">
+  <div class="hero-btns">
     <button class="h-btn-ghost" onclick="location.href='login.html'">Sign in</button>
     <button class="h-btn-solid" onclick="location.href='signup.html'">Sign up free</button>
   </div>
@@ -429,10 +549,10 @@
 <footer class="footer">
   <div class="footer-top">
     <div class="footer-brand">
-      <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Nomino"/>
-      <span>Nomino</span>
+      <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Fluxwith"/>
+      <span>Fluxwith</span>
     </div>
-    <p class="footer-tagline">The AI platform built for everyone. Video, voice, image — one place.</p>
+    <p class="footer-tagline">The AI platform built for everyone. Video, voice, image — one flow.</p>
     <div class="footer-cols">
       <div class="footer-col">
         <div class="footer-col-head">Product</div>
@@ -452,13 +572,9 @@
         <a href="#">Terms of Service</a>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <button class="drawer-btn-ghost" onclick="location.href='login.html'">Sign in</button>
-      <button class="drawer-btn-solid" onclick="location.href='signup.html'">Get started free</button>
-    </div>
   </div>
   <div class="footer-bottom">
-    <span class="footer-copy">&copy; 2025 Nomino. All rights reserved.</span>
+    <span class="footer-copy">&copy; 2025 Fluxwith. All rights reserved.</span>
     <div class="footer-status">
       <div class="footer-status-dot"></div>
       All systems operational
@@ -486,6 +602,26 @@ function closeDrawer() {
 ham.addEventListener('click', openDrawer);
 closeBtn.addEventListener('click', closeDrawer);
 overlay.addEventListener('click', closeDrawer);
+
+// Accordion
+function initAcc(btnId, bodyId) {
+  const btn  = document.getElementById(btnId);
+  const body = document.getElementById(bodyId);
+  btn.addEventListener('click', () => {
+    const isOpen = body.classList.contains('open');
+    // close all first
+    document.querySelectorAll('.drawer-acc-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.drawer-acc-btn').forEach(b => b.classList.remove('open'));
+    // open this one if it was closed
+    if (!isOpen) {
+      body.classList.add('open');
+      btn.classList.add('open');
+    }
+  });
+}
+initAcc('acc-feat-btn', 'acc-feat-body');
+initAcc('acc-res-btn',  'acc-res-body');
+initAcc('acc-com-btn',  'acc-com-body');
 </script>
 </body>
 </html>
