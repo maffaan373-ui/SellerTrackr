@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fluxwith</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+  --border:#252525;--border2:#2e2e2e;
+  --text:#e0e0e0;--muted:#666;--muted2:#444;
+  --green:#22c55e;--blue:#3b82f6;--teal:#14b8a6;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;overflow-x:hidden}
+
+/* ── OVERLAY ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50}
+.overlay.show{display:block}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;top:0;right:-320px;width:300px;height:100%;background:#141414;border-left:1px solid var(--border);z-index:100;transition:right .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.sidebar.open{right:0}
+.sidebar-top{padding:16px}
+.sb-btn{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#1e1e1e;border:1px solid var(--border2);border-radius:12px;font-size:14px;font-weight:600;color:#fff;cursor:pointer;margin-bottom:8px;transition:.2s;width:100%}
+.sb-btn:hover{background:#252525}
+.sb-btn svg{width:18px;height:18px;color:var(--muted)}
+.sb-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between}
+.sb-label button{width:26px;height:26px;background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:.2s}
+.sb-label button:hover{background:var(--bg3);color:#fff}
+.sb-label button svg{width:14px;height:14px}
+.project-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;color:#aaa;cursor:pointer;transition:.2s;border-radius:8px;margin:0 8px}
+.project-item:hover{background:#1e1e1e;color:#fff}
+.project-item svg{width:14px;height:14px;color:var(--muted);flex-shrink:0}
+.sb-spacer{flex:1}
+.sb-bottom{padding:12px}
+.sb-user{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#1a1a1a;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:.2s;position:relative}
+.sb-user:hover{background:#222}
+.sb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden}
+.sb-avatar img{width:100%;height:100%;object-fit:cover}
+.sb-user-info{flex:1;min-width:0}
+.sb-user-name{font-size:13px;font-weight:600;color:#fff}
+.sb-user-sub{font-size:11px;color:var(--muted)}
+.trial-badge{background:var(--green);color:#000;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:.04em}
+.sb-nano{padding:10px 0;margin-bottom:6px}
+.sb-nano-btn{width:100%;padding:12px 14px;background:#1a2035;border:1px solid #1e3a8a;border-radius:10px;font-size:13px;font-weight:600;color:#60a5fa;text-align:center;cursor:pointer;transition:.2s}
+.sb-nano-btn:hover{background:#1e2d4f}
+
+/* ── USER MENU ── */
+.user-menu{display:none;position:absolute;bottom:calc(100% + 8px);left:0;right:0;background:#1e1e1e;border:1px solid var(--border2);border-radius:14px;overflow:hidden;z-index:200}
+.user-menu.show{display:block}
+.um-header{padding:14px 16px;font-size:13px;font-weight:700;color:#fff;border-bottom:1px solid var(--border)}
+.um-item{display:flex;align-items:center;gap:12px;padding:12px 16px;font-size:13px;color:#ccc;cursor:pointer;transition:.2s;background:none;border:none;width:100%;text-align:left;font-family:inherit}
+.um-item:hover{background:#252525;color:#fff}
+.um-item svg{width:16px;height:16px;color:var(--muted);flex-shrink:0}
+.um-item .badge-new{background:#6366f1;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:auto}
+.um-item.red{color:#ef4444}
+.um-item.red svg{color:#ef4444}
+.um-sep{height:1px;background:var(--border);margin:4px 0}
+.um-toggle{margin-left:auto;width:36px;height:20px;background:#333;border-radius:10px;position:relative;transition:.2s;flex-shrink:0}
+.um-toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#666;border-radius:50%;transition:.2s}
+.um-arrow{margin-left:auto;color:var(--muted)}
+.um-arrow svg{width:14px;height:14px}
+
+/* ── NAVBAR ── */
+nav{position:sticky;top:0;z-index:40;width:100%;display:flex;justify-content:center;background:var(--bg)}
+.nav-inner{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;padding:16px 20px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-mark{font-size:22px;font-weight:900;color:#fff;font-style:italic;letter-spacing:-2px;line-height:1}
+.logo-name{font-size:18px;color:#bbb;font-weight:400}
+.hamburger{background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px}
+.hamburger span{display:block;width:22px;height:1.5px;background:#777;border-radius:2px}
+
+/* ── MAIN ── */
+main{display:flex;flex-direction:column;align-items:center;padding:28px 20px 40px;min-height:calc(100vh - 56px)}
+.content{width:100%;max-width:480px}
+
+/* ── HERO ── */
+.hero{margin-bottom:24px}
+.hero h1{font-size:30px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px;letter-spacing:-.4px}
+.hero p{font-size:15px;color:var(--muted)}
+
+/* ── CHAT ── */
+.chat-area{display:flex;flex-direction:column;gap:14px;margin-bottom:18px;max-height:45vh;overflow-y:auto}
+.chat-area::-webkit-scrollbar{width:2px}
+.chat-area::-webkit-scrollbar-thumb{background:#222;border-radius:4px}
+.msg-u{align-self:flex-end;background:#1e1e1e;border:1px solid var(--border);border-radius:14px;padding:10px 14px;max-width:85%;font-size:14px;white-space:pre-wrap;line-height:1.55}
+.msg-a{align-self:flex-start;font-size:14px;color:#aaa;max-width:90%;white-space:pre-wrap;line-height:1.6}
+.msg-a img{width:100%;border-radius:12px;border:1px solid var(--border);display:block;margin-top:4px}
+
+/* ── CARD ── */
+.card{background:#141414;border:1px solid #222;border-radius:20px;overflow:visible;margin-bottom:12px;position:relative}
+.card-body{padding:16px 16px 10px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+#prompt{flex:1;background:transparent;border:none;outline:none;color:#ddd;font-size:15px;font-family:inherit;resize:none;min-height:80px;line-height:1.55;padding-top:2px}
+#prompt::placeholder{color:#3a3a3a}
+.agent-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:#1c1c1c;border:1px solid var(--border2);border-radius:10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit;transition:.2s}
+.agent-btn:hover{border-color:#444;color:#ccc}
+.agent-icon{width:16px;height:16px;border:1.5px solid #555;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px}
+
+/* card bottom row */
+.card-row{display:flex;justify-content:flex-end;align-items:center;gap:7px;padding:8px 14px 14px}
+.cb-btn{display:flex;align-items:center;gap:5px;padding:0 14px;height:40px;background:#1c1c1c;border:1px solid var(--border2);border-radius:11px;font-size:13px;font-weight:600;color:#bbb;cursor:pointer;font-family:inherit;transition:.2s;white-space:nowrap;position:relative}
+.cb-btn:hover{border-color:#444;color:#fff}
+.cb-btn svg{width:16px;height:16px}
+.cb-btn.icon-only{width:40px;padding:0;justify-content:center}
+.start-btn{background:#e8e8e8;color:#111;border:none;font-weight:700}
+.start-btn:hover{background:#fff}
+.start-btn:active{transform:scale(.97)}
+.start-btn.off{background:#1e1e1e;color:#444;cursor:not-allowed}
+.start-btn svg{opacity:.5}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+
+/* ── TOOLTIP ── */
+.tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#e8e8e8;color:#111;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s}
+.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#e8e8e8}
+.cb-btn:hover .tooltip{opacity:1}
+
+/* ── BOTTOM PILLS ── */
+.pills{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+.pills::-webkit-scrollbar{display:none}
+.pill{display:flex;align-items:center;gap:7px;padding:9px 14px;background:#141414;border:1px solid #222;border-radius:11px;font-size:13px;color:#888;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.2s;font-family:inherit;position:relative}
+.pill:hover{border-color:var(--border2);color:#ccc}
+.pill svg{width:14px;height:14px}
+.pill .chev{width:11px;height:11px;opacity:.4}
+
+/* ── DROPDOWNS ── */
+.dropdown{display:none;position:absolute;background:#1a1a1a;border:1px solid var(--border2);border-radius:14px;z-index:200;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.7)}
+.dropdown.show{display:block}
+
+/* mode dropdown */
+.mode-dd{width:310px;bottom:calc(100% + 8px);left:0}
+.mode-opt{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;transition:.2s;border-bottom:1px solid #1e1e1e}
+.mode-opt:last-child{border-bottom:none}
+.mode-opt:hover{background:#222}
+.mode-opt.active{background:#1f1f1f}
+.mode-icon{width:36px;height:36px;background:#222;border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mode-icon svg{width:16px;height:16px;color:#aaa}
+.mode-info{flex:1}
+.mode-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.mode-desc{font-size:12px;color:var(--muted);line-height:1.4}
+.mode-check{width:22px;height:22px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mode-check svg{width:12px;height:12px;color:#000}
+.mode-check.hidden{opacity:0}
+
+/* x1 dropdown */
+.x1-dd{width:160px;bottom:calc(100% + 8px);right:0}
+.x1-opt{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;font-size:14px;font-weight:600;color:#ccc;transition:.2s}
+.x1-opt:hover{background:#222}
+.x1-opt.active{color:#fff}
+.x1-dot{width:8px;height:8px;background:#fff;border-radius:50%}
+.x1-lock{color:var(--muted)}
+.x1-lock svg{width:13px;height:13px}
+
+/* model dropdown */
+.model-dd{width:290px;bottom:calc(100% + 8px);left:0;max-height:320px;overflow-y:auto}
+.model-dd::-webkit-scrollbar{width:2px}
+.model-dd::-webkit-scrollbar-thumb{background:#333;border-radius:4px}
+.model-opt{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;font-size:13px;color:#bbb;transition:.2s}
+.model-opt:hover{background:#222;color:#fff}
+.model-opt.active{background:#1f2533}
+.model-opt svg,.model-opt .mi{width:18px;height:18px;flex-shrink:0}
+.model-opt .lock{margin-left:auto;color:var(--muted2)}
+.model-opt .lock svg{width:13px;height:13px}
+.mi-gemini{background:linear-gradient(135deg,#4285f4,#34a853,#fbbc04,#ea4335);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.mi-gpt{color:#10a37f}
+.mi-claude{color:#d97757}
+.mi-ds{color:#4d9fff}
+
+/* kb dropdown */
+.kb-dd{width:250px;bottom:calc(100% + 8px);right:0;padding:8px 0}
+.kb-check-row{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;font-size:13px;color:#ccc;transition:.2s}
+.kb-check-row:hover{background:#222}
+.kb-checkbox{width:20px;height:20px;background:#5b5fc7;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kb-checkbox svg{width:12px;height:12px;color:#fff}
+.kb-sep{height:1px;background:var(--border);margin:4px 16px}
+.kb-empty{padding:12px 16px;font-size:13px;color:var(--muted);font-style:italic}
+
+/* ── VOICE CALL UI ── */
+.voice-screen{display:none;position:fixed;inset:0;background:#0a0a0a;z-index:300;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.voice-screen.show{display:flex}
+.voice-avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;color:#fff;position:relative}
+.voice-ring{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(14,165,233,.3);animation:pulse-ring 1.8s ease infinite}
+.voice-ring2{position:absolute;inset:-20px;border-radius:50%;border:2px solid rgba(14,165,233,.15);animation:pulse-ring 1.8s ease infinite .4s}
+@keyframes pulse-ring{0%{transform:scale(.9);opacity:1}100%{transform:scale(1.1);opacity:0}}
+.voice-name{font-size:22px;font-weight:700;color:#fff}
+.voice-status{font-size:14px;color:var(--muted)}
+.voice-bars{display:flex;align-items:flex-end;gap:4px;height:36px}
+.voice-bars span{width:4px;background:#0ea5e9;border-radius:2px;animation:bar 1.2s ease infinite}
+.voice-bars span:nth-child(1){animation-delay:0s}
+.voice-bars span:nth-child(2){animation-delay:.1s}
+.voice-bars span:nth-child(3){animation-delay:.2s}
+.voice-bars span:nth-child(4){animation-delay:.3s}
+.voice-bars span:nth-child(5){animation-delay:.4s}
+@keyframes bar{0%,100%{height:6px}50%{height:30px}}
+.voice-controls{display:flex;gap:20px;margin-top:8px}
+.vc-btn{width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.vc-btn svg{width:22px;height:22px}
+.vc-btn.mute{background:#1e1e1e;color:#ccc}
+.vc-btn.mute:hover{background:#252525}
+.vc-btn.end{background:#ef4444;color:#fff}
+.vc-btn.end:hover{background:#dc2626}
+.vc-btn.speaker{background:#1e1e1e;color:#ccc}
+.vc-btn.speaker:hover{background:#252525}
+
+/* ── DOTS ── */
+.dots{display:flex;gap:4px;padding:6px 0}
+.dots span{width:6px;height:6px;border-radius:50%;background:#555;animation:blink 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <button class="sb-btn" onclick="closeSidebar()">
+      New Flow
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="10" y1="11" x2="14" y2="11"/></svg>
+    </button>
+    <button class="sb-btn">
+      Explore More
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </button>
+
+    <div class="sb-label">
+      Projects
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;color:var(--muted)"><polyline points="6 9 12 15 18 9"/></svg>
+      <button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+
+    <div class="project-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Fluxwith Landing Page
+    </div>
+    <div class="project-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Voice AI Integration
+    </div>
+    <div class="project-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Welcome to Fluxwith 1.0
+    </div>
+  </div>
+
+  <div class="sb-spacer"></div>
+
+  <div class="sb-bottom">
+    <div class="sb-nano">
+      <div class="sb-nano-btn">⚡ Fluxwith Pro — Upgrade Now</div>
+    </div>
+    <div class="sb-user" onclick="toggleUserMenu()">
+      <div class="sb-avatar">FX</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">Your Name</div>
+        <div class="sb-user-sub">Subscription & Settings</div>
+      </div>
+      <span class="trial-badge">TRIAL</span>
+
+      <!-- User menu popup -->
+      <div class="user-menu" id="userMenu" onclick="event.stopPropagation()">
+        <div class="um-header">Your Account</div>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account Management</button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Subscription</button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Pricing & Plans</button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Invite Friends<span class="badge-new">NEW</span></button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Order Management</button>
+        <div class="um-sep"></div>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Theme<span class="um-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l6 6 6-6"/></svg>Languages<span class="um-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Performance Mode<span class="um-toggle" id="perfToggle"></span></button>
+        <div class="um-sep"></div>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Download iOS App<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-left:auto;color:var(--muted)"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Download FluxwithOS<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-left:auto;color:var(--muted)"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>
+        <div class="um-sep"></div>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Product Docs<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-left:auto;color:var(--muted)"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M7.5 7.5c3.5-1 5.5-1 8 0"/><path d="M7 16.5c3.5 1 6.5 1 10-0.5"/><path d="M15.5 17c0 1 1.5 3 1.5 3l3.5-3.5c-1-1-3-2-3-2z"/><path d="M2 12C2 6.5 6.5 2 12 2s10 4.5 10 10-4.5 10-10 10-7-2-9-5"/></svg>Join Discord</button>
+        <button class="um-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Report Bugs</button>
+        <div class="um-sep"></div>
+        <button class="um-item red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Log Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOICE CALL SCREEN -->
+<div class="voice-screen" id="voiceScreen">
+  <div class="voice-avatar">
+    <div class="voice-ring"></div>
+    <div class="voice-ring2"></div>
+    FX
+  </div>
+  <div>
+    <div class="voice-name">Fluxwith AI</div>
+    <div class="voice-status" id="voiceStatus">Listening...</div>
+  </div>
+  <div class="voice-bars">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="voice-controls">
+    <button class="vc-btn mute" title="Mute">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
+    <button class="vc-btn end" onclick="endVoiceCall()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.42 19.42 0 0 1 4.26 9.5a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.17 0h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.15 7.9"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+    </button>
+    <button class="vc-btn speaker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-mark">fl.</span>
+      <span class="logo-name">Fluxwith</span>
+    </div>
+    <button class="hamburger" onclick="openSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+<div class="content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1 id="heroTitle">Good afternoon</h1>
+    <p id="heroSub">Ready to bring your ideas to life?</p>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-area" id="chatArea"></div>
+
+  <!-- CARD -->
+  <div class="card">
+    <div class="card-body">
+      <div class="card-top">
+        <textarea id="prompt" rows="3" placeholder="Ask AI anything..."></textarea>
+        <button class="agent-btn">
+          <span class="agent-icon">✦</span> AGENT
+        </button>
+      </div>
+    </div>
+    <div class="card-row">
+      <!-- Upload -->
+      <div style="position:relative">
+        <button class="cb-btn icon-only" id="uploadBtn">
+          <div class="tooltip">Upload files / images</div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
+      </div>
+
+      <!-- x1 -->
+      <div style="position:relative">
+        <button class="cb-btn" id="x1Btn" onclick="toggleDD('x1DD')">
+          <span id="x1Label">x1</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px;opacity:.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="dropdown x1-dd" id="x1DD">
+          <div class="x1-opt active" onclick="setX1('x1')"><span>x 1</span><div class="x1-dot"></div></div>
+          <div class="x1-opt" onclick="alert('Requires Pro plan')"><span>x 2</span><span class="x1-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div>
+          <div class="x1-opt" onclick="alert('Requires Pro plan')"><span>x 4</span><span class="x1-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div>
+        </div>
+      </div>
+
+      <!-- Start -->
+      <button class="cb-btn start-btn off" id="startBtn" onclick="handleSend()">
+        start
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- BOTTOM PILLS -->
+  <div class="pills">
+    <!-- Mode pill -->
+    <div style="position:relative">
+      <button class="pill" id="modePill" onclick="toggleDD('modeDD')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span id="modeLabel">Regular</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <!-- MODE DROPDOWN -->
+      <div class="dropdown mode-dd" id="modeDD">
+        <div class="mode-opt active" onclick="selectMode('regular','Regular',this)">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="mode-info"><div class="mode-title">Regular</div><div class="mode-desc">General Text Generation Mode, with knowledge.</div></div>
+          <div class="mode-check" id="check-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="mode-opt" onclick="selectMode('image','Image',this)">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <div class="mode-info"><div class="mode-title">Image</div><div class="mode-desc">Create images using different AI.</div></div>
+          <div class="mode-check hidden" id="check-image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="mode-opt" onclick="selectMode('video','Video',this)">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <div class="mode-info"><div class="mode-title">Video</div><div class="mode-desc">Generate short AI videos from text.</div></div>
+          <div class="mode-check hidden" id="check-video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="mode-opt" onclick="startVoiceCall()">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 18a19.5 19.5 0 0 1-5.63-5.63A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="mode-info"><div class="mode-title">Voice Call</div><div class="mode-desc">Talk to AI like a WhatsApp voice call.</div></div>
+          <div class="mode-check hidden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="mode-opt" onclick="selectMode('enhance','Prompt Enhance',this)">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+          <div class="mode-info"><div class="mode-title">Prompt Enhance</div><div class="mode-desc">Optimize your raw prompts with AI.</div></div>
+          <div class="mode-check hidden" id="check-enhance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="mode-opt" onclick="selectMode('agent','Agent Mode',this)">
+          <div class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div class="mode-info"><div class="mode-title">Agent Mode</div><div class="mode-desc">Handle multi-step, complex tasks with AI Agent.</div></div>
+          <div class="mode-check hidden" id="check-agent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model pill -->
+    <div style="position:relative">
+      <button class="pill" onclick="toggleDD('modelDD')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#10a37f"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <span id="modelLabel">DeepSeek V3</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <!-- MODEL DROPDOWN -->
+      <div class="dropdown model-dd" id="modelDD">
+        <div class="model-opt active" onclick="setModel('gemini-flash','Gemini Flash')">
+          <span class="mi mi-gemini">✦</span> Gemini 3.1 Flash Preview
+        </div>
+        <div class="model-opt" onclick="setModel('gemini-pro','Gemini Pro')">
+          <span class="mi mi-gemini">✦</span> Gemini 3 Pro Preview
+        </div>
+        <div class="model-opt" onclick="alert('Pro required')">
+          <span class="mi mi-gemini">✦</span> Gemini 2.5 Pro
+          <span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        </div>
+        <div class="model-opt" onclick="alert('Pro required')">
+          <svg class="mi mi-gpt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> GPT 5.4
+          <span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        </div>
+        <div class="model-opt" onclick="setModel('gpt5mini','GPT 5 mini')">
+          <svg class="mi mi-gpt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> GPT 5 mini
+        </div>
+        <div class="model-opt" onclick="setModel('gpt41','GPT 4.1')">
+          <svg class="mi mi-gpt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> GPT 4.1
+        </div>
+        <div class="model-opt" onclick="setModel('gpt-oss','GPT OSS 120B')">
+          <svg class="mi mi-gpt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> GPT OSS 120B
+        </div>
+        <div class="model-opt" onclick="alert('Pro required')">
+          <svg class="mi mi-claude" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 4.5V17L12 21.5 3 17V6.5L12 2z"/></svg> Claude Opus 4.6
+          <span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        </div>
+        <div class="model-opt" onclick="alert('Pro required')">
+          <svg class="mi mi-claude" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 4.5V17L12 21.5 3 17V6.5L12 2z"/></svg> Claude Sonnet 4.6
+          <span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        </div>
+        <div class="model-opt" onclick="setModel('claude-haiku','Claude Haiku 4.5')">
+          <svg class="mi mi-claude" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 4.5V17L12 21.5 3 17V6.5L12 2z"/></svg> Claude Haiku 4.5
+        </div>
+        <div class="model-opt" onclick="setModel('deepseek-v3','DeepSeek V3.2')">
+          <svg class="mi mi-ds" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> DeepSeek V3.2
+        </div>
+        <div class="model-opt" onclick="setModel('deepseek-r1','DeepSeek R1')">
+          <svg class="mi mi-ds" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> DeepSeek R1
+        </div>
+      </div>
+    </div>
+
+    <!-- Knowledge Base pill -->
+    <div style="position:relative">
+      <button class="pill" onclick="toggleDD('kbDD')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M2 12c0 2.21 4.48 4 10 4s10-1.79 10-4"/><path d="M2 12v6c0 2.21 4.48 4 10 4s10-1.79 10-4v-6"/></svg>
+        Knowledge Base
+      </button>
+      <div class="dropdown kb-dd" id="kbDD">
+        <div class="kb-check-row">
+          <div class="kb-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Deselect All
+        </div>
+        <div class="kb-sep"></div>
+        <div class="kb-empty">No knowledge base yet</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<script>
+const OPENROUTER_API_KEY = ""; // Add your key
+const BASE_URL = "https://openrouter.ai/api/v1";
+
+let currentMode = "regular";
+let currentModel = "deepseek/deepseek-chat:free";
+let isGenerating = false;
+
+// ── GREETING ──
+const h = new Date().getHours();
+const greetings = [
+  {title:"Good morning", sub:"What are you building today?"},
+  {title:"Afternoon muse", sub:"Turn your midday thoughts into tangible creations"},
+  {title:"Afternoon spark", sub:"The world needs what only you can create"},
+  {title:"Good evening", sub:"Ready to create something great?"},
+];
+const g = h < 12 ? greetings[0] : h < 15 ? greetings[1] : h < 18 ? greetings[2] : greetings[3];
+document.getElementById("heroTitle").textContent = g.title;
+document.getElementById("heroSub").textContent = g.sub;
+
+// ── PROMPT ──
+const promptEl = document.getElementById("prompt");
+promptEl.addEventListener("input", updateStart);
+promptEl.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+});
+
+function updateStart() {
+  const ok = promptEl.value.trim() && !isGenerating;
+  document.getElementById("startBtn").className = "cb-btn start-btn " + (ok ? "" : "off");
+}
+
+// ── DROPDOWNS ──
+function toggleDD(id) {
+  const dd = document.getElementById(id);
+  const isOpen = dd.classList.contains("show");
+  closeAllDD();
+  if (!isOpen) dd.classList.add("show");
+}
+function closeAllDD() {
+  document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+}
+document.addEventListener("click", e => {
+  if (!e.target.closest(".pill") && !e.target.closest(".cb-btn") && !e.target.closest(".dropdown")) closeAllDD();
+});
+
+// ── MODE ──
+function selectMode(id, label, el) {
+  currentMode = id;
+  document.getElementById("modeLabel").textContent = label;
+  document.querySelectorAll(".mode-opt").forEach(o => o.classList.remove("active"));
+  el.classList.add("active");
+  document.querySelectorAll("[id^='check-']").forEach(c => c.classList.add("hidden"));
+  const chk = document.getElementById("check-" + id);
+  if (chk) chk.classList.remove("hidden");
+  closeAllDD();
+  promptEl.placeholder = id === "image" ? "Describe an image to generate..." : id === "video" ? "Describe a video scene..." : "Ask AI anything...";
+}
+
+// ── X1 ──
+function setX1(val) {
+  document.getElementById("x1Label").textContent = val;
+  document.querySelectorAll(".x1-opt").forEach(o => o.classList.remove("active"));
+  event.target.closest(".x1-opt").classList.add("active");
+  closeAllDD();
+}
+
+// ── MODEL ──
+function setModel(id, label) {
+  document.getElementById("modelLabel").textContent = label;
+  document.querySelectorAll(".model-opt").forEach(o => o.classList.remove("active"));
+  event.target.closest(".model-opt").classList.add("active");
+  closeAllDD();
+}
+
+// ── SIDEBAR ──
+function openSidebar() {
+  document.getElementById("sidebar").classList.add("open");
+  document.getElementById("overlay").classList.add("show");
+}
+function closeSidebar() {
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+  document.getElementById("userMenu").classList.remove("show");
+}
+function toggleUserMenu() {
+  document.getElementById("userMenu").classList.toggle("show");
+}
+
+// ── VOICE CALL ──
+function startVoiceCall() {
+  closeAllDD();
+  document.getElementById("voiceScreen").classList.add("show");
+  const statuses = ["Connecting...", "Listening...", "Speaking...", "Listening..."];
+  let i = 0;
+  window._voiceInterval = setInterval(() => {
+    document.getElementById("voiceStatus").textContent = statuses[i % statuses.length];
+    i++;
+  }, 2000);
+}
+function endVoiceCall() {
+  document.getElementById("voiceScreen").classList.remove("show");
+  clearInterval(window._voiceInterval);
+}
+
+// ── CHAT ──
+function addMsg(role, content, type = "text") {
+  const ca = document.getElementById("chatArea");
+  const el = document.createElement("div");
+  el.className = role === "user" ? "msg-u" : "msg-a";
+  if (type === "image") {
+    const img = document.createElement("img");
+    img.src = content; img.alt = "Generated";
+    el.appendChild(img);
+  } else {
+    el.textContent = content;
+  }
+  ca.appendChild(el);
+  ca.scrollTop = ca.scrollHeight;
+  return el;
+}
+
+function showDots() {
+  const ca = document.getElementById("chatArea");
+  const el = document.createElement("div");
+  el.className = "msg-a"; el.id = "dotsEl";
+  el.innerHTML = `<div class="dots"><span></span><span></span><span></span></div>`;
+  ca.appendChild(el);
+  ca.scrollTop = ca.scrollHeight;
+}
+function removeDots() {
+  const el = document.getElementById("dotsEl");
+  if (el) el.remove();
+}
+
+async function handleSend() {
+  if (isGenerating || !promptEl.value.trim()) return;
+  const msg = promptEl.value;
+  promptEl.value = ""; isGenerating = true; updateStart();
+  const btn = document.getElementById("startBtn");
+  btn.innerHTML = `<svg class="spin" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
+  addMsg("user", msg);
+
+  try {
+    if (currentMode === "image") {
+      showDots();
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(msg)}?width=1024&height=1024&nologo=true`;
+      removeDots(); addMsg("assistant", url, "image");
+    } else if (currentMode === "video") {
+      addMsg("assistant", "🎬 Video generation is coming soon to Fluxwith Pro. Stay tuned!");
+    } else if (currentMode === "enhance") {
+      showDots();
+      const res = await fetch(`${BASE_URL}/chat/completions`, {
+        method:"POST", headers:{"Authorization":`Bearer ${OPENROUTER_API_KEY}`,"Content-Type":"application/json"},
+        body:JSON.stringify({model:"deepseek/deepseek-chat:free",messages:[{role:"user",content:`Enhance this prompt for better AI results: "${msg}"`}]})
+      });
+      const data = await res.json();
+      removeDots(); addMsg("assistant", "✨ Enhanced: " + (data.choices?.[0]?.message?.content || "Could not enhance."));
+    } else {
+      showDots();
+      const res = await fetch(`${BASE_URL}/chat/completions`, {
+        method:"POST",
+        headers:{"Authorization":`Bearer ${OPENROUTER_API_KEY}`,"Content-Type":"application/json","HTTP-Referer":"https://fluxwith.ai","X-Title":"Fluxwith"},
+        body:JSON.stringify({model:"deepseek/deepseek-chat:free",messages:[{role:"user",content:msg}]})
+      });
+      const data = await res.json();
+      removeDots(); addMsg("assistant", data.choices?.[0]?.message?.content || "Something went wrong.");
+    }
+  } catch(e) {
+    removeDots(); addMsg("assistant", "Error: Check your API key.");
+  }
+
+  isGenerating = false;
+  btn.innerHTML = `start <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>`;
+  updateStart();
+}
+</script>
+</body>
+</html>
