@@ -33,7 +33,7 @@
       border-bottom: 1px solid var(--border);
     }
     .nav-logo {
-      display: flex; align-items: center; gap: 2px;
+      display: flex; align-items: center; gap: 0;
     }
     .nav-logo img {
       width: 32px; height: 32px; border-radius: 8px; object-fit: cover;
@@ -41,7 +41,7 @@
     .nav-logo-name {
       font-family: 'Inter', sans-serif;
       font-size: 17px; font-weight: 500; color: #111;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
     }
     .nav-hamburger {
       width: 36px; height: 36px; display: flex; flex-direction: column;
@@ -319,11 +319,18 @@
     .d2  { animation-delay: 0.2s; }
 
     /* ── DRAWER ACCORDION ── */
+    .acc-arrow-txt {
+      font-size: 14px; color: #999; transition: transform 0.22s ease;
+      display: inline-block; line-height: 1;
+    }
+    .drawer-acc-btn.open .acc-arrow-txt { transform: rotate(180deg); }
+
     .drawer-acc-btn {
       display: flex; align-items: center; justify-content: space-between;
       width: 100%; padding: 20px 24px; font-size: 18px; font-weight: 400;
       color: var(--black); background: none; border: none;
       border-bottom: 1px solid var(--border); cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
       transition: background 0.12s; text-align: left;
     }
     .drawer-acc-btn:hover { background: var(--light); }
@@ -343,11 +350,12 @@
 
     .acc-sub-btn {
       display: flex; align-items: center; gap: 10px;
-      width: 100%; padding: 12px 20px 12px 28px;
-      font-size: 14px; font-weight: 400; color: var(--black);
+      width: 100%; padding: 11px 20px 11px 24px;
+      font-size: 15px; font-weight: 400; color: #444;
       background: none; border: none;
       cursor: pointer; text-align: left; text-decoration: none;
       transition: background 0.12s;
+      -webkit-tap-highlight-color: transparent;
     }
     .acc-sub-btn:last-child { border-bottom: none; }
     .acc-sub-btn:hover { background: #ececec; }
@@ -366,7 +374,7 @@
 <!-- NAV -->
 <nav class="nav">
   <a href="index.html" class="nav-logo">
-<svg width="28" height="20" viewBox="0 0 70 50" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block"><text x="0" y="44" font-family="Georgia,'Times New Roman',serif" font-size="52" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-4">fl.</text></svg><span class="nav-logo-name">Fluxwith</span>
+<svg width="26" height="19" viewBox="0 0 70 50" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;margin-right:-1px"><text x="0" y="44" font-family="Georgia,'Times New Roman',serif" font-size="52" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-4">fl.</text></svg><span class="nav-logo-name">fluxwith</span>
   </a>
   <button class="nav-hamburger" id="ham-btn" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -391,23 +399,19 @@
     <!-- Features accordion -->
     <button class="drawer-acc-btn" id="acc-feat-btn">
       Features
-      <svg class="acc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <span class="acc-arrow-txt">˅</span>
     </button>
     <div class="drawer-acc-body" id="acc-feat-body">
       <a href="video-call.html" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         Video Call AI
       </a>
       <a href="voice.html" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
         Voice AI
       </a>
       <a href="video-making.html" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
         AI Video
       </a>
       <a href="pic-making.html" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
         AI Image
       </a>
     </div>
@@ -418,19 +422,16 @@
     <!-- Resources accordion -->
     <button class="drawer-acc-btn" id="acc-res-btn">
       Resources
-      <svg class="acc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <span class="acc-arrow-txt">˅</span>
     </button>
     <div class="drawer-acc-body" id="acc-res-body">
       <a href="docs.html" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         Documentation
       </a>
       <a href="changelog.html" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
         Changelog
       </a>
       <a href="about.html" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
         About
       </a>
     </div>
@@ -438,19 +439,16 @@
     <!-- Community accordion -->
     <button class="drawer-acc-btn" id="acc-com-btn">
       Community
-      <svg class="acc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <span class="acc-arrow-txt">˅</span>
     </button>
     <div class="drawer-acc-body" id="acc-com-body">
       <a href="#" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         Discord
       </a>
       <a href="#" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.7 5.5 4.3 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></div>
         Twitter / X
       </a>
       <a href="#" class="acc-sub-btn">
-        <div class="acc-sub-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div>
         GitHub
       </a>
     </div>
