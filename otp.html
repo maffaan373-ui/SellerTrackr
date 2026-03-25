@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify Email — Fluxwith</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:15px;-webkit-font-smoothing:antialiased}
+    body{font-family:'Inter',sans-serif;background:#fff;color:#111;min-height:100vh;display:flex;flex-direction:column}
+    *{-webkit-tap-highlight-color:transparent}
+    .nav{height:58px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid #e5e5e5}
+    .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .nav-logo img{width:28px;height:28px;border-radius:7px;object-fit:cover}
+    .nav-logo span{font-size:16px;font-weight:600;color:#111}
+
+    /* Step tracker */
+    .steps-wrap{display:flex;align-items:center;justify-content:center;padding:28px 24px 0;max-width:300px;margin:0 auto;width:100%}
+    .step-dot{width:30px;height:30px;border-radius:50%;background:#e5e5e5;border:2px solid #e5e5e5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#bbb;flex-shrink:0;transition:all 0.3s}
+    .step-dot.done{background:#111;border-color:#111;color:#fff}
+    .step-dot.active{background:#fff;border-color:#111;color:#111}
+    .step-line{flex:1;height:2px;background:#e5e5e5;transition:background 0.3s}
+    .step-line.done{background:#111}
+    .step-label{font-size:10px;color:#bbb;text-align:center;margin-top:6px}
+
+    .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 60px}
+    .card{width:100%;max-width:360px}
+    .card-title{font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;font-weight:400;color:#111;margin-bottom:8px;letter-spacing:-0.3px}
+    .card-sub{font-size:14px;color:#6b6b6b;margin-bottom:6px;line-height:1.55}
+    .card-email{font-size:13px;font-weight:600;color:#111;margin-bottom:32px}
+
+    .otp-row{display:flex;gap:10px;justify-content:center;margin-bottom:24px}
+    .otp-inp{width:46px;height:56px;border:1.5px solid #e5e5e5;border-radius:12px;text-align:center;font-size:22px;font-weight:600;color:#111;background:#fff;outline:none;transition:border-color 0.15s;-webkit-appearance:none;caret-color:#111}
+    .otp-inp:focus{border-color:#111}
+    .otp-inp.filled{border-color:#111;background:#f8f8f8}
+    .otp-inp.error{border-color:#e53e3e;background:#fff5f5}
+    .otp-inp.success{border-color:#38a169;background:#f0fff4}
+
+    .timer-row{text-align:center;margin-bottom:20px;font-size:13px;color:#6b6b6b}
+    .timer-count{font-weight:600;color:#111;font-variant-numeric:tabular-nums}
+    .resend-btn{background:none;border:none;cursor:pointer;font-size:13px;color:#111;font-weight:500;text-decoration:underline;display:none;font-family:'Inter',sans-serif}
+
+    .banner{padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
+    .banner.error{background:#fff5f5;color:#e53e3e;border:1px solid #fed7d7;display:block}
+    .banner.success{background:#f0fff4;color:#276749;border:1px solid #c6f6d5;display:block}
+
+    .btn-submit{width:100%;padding:15px;border-radius:50px;font-size:16px;font-weight:600;color:#fff;background:#111;border:none;cursor:pointer;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-submit:hover{opacity:0.82}
+    .btn-submit:disabled{opacity:0.4;cursor:not-allowed}
+    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading .spinner{display:block}
+    .loading .btn-text{display:none}
+
+    .back-link{display:flex;align-items:center;gap:5px;font-size:13px;color:#6b6b6b;margin-top:20px;text-decoration:none;justify-content:center}
+    .back-link:hover{color:#111}
+
+    /* Success state */
+    .check-wrap{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:20px 0}
+    .check-wrap.show{display:flex}
+    .check-circle{width:64px;height:64px;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;animation:popIn 0.4s cubic-bezier(0.22,1,0.36,1)}
+    @keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+    .check-title{font-family:'Instrument Serif',serif;font-style:italic;font-size:24px;color:#111}
+    .check-sub{font-size:13px;color:#6b6b6b}
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Fluxwith"/>
+    <span>Fluxwith</span>
+  </a>
+</nav>
+
+<!-- 3-step tracker -->
+<div class="steps-wrap">
+  <div class="step-dot done" id="s1">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div class="step-line done"></div>
+  <div class="step-dot active" id="s2">2</div>
+  <div class="step-line" id="l2"></div>
+  <div class="step-dot" id="s3">3</div>
+</div>
+
+<main class="main">
+  <div class="card" id="otp-card">
+    <h1 class="card-title">Check your email</h1>
+    <p class="card-sub">We sent a 6-digit code to</p>
+    <p class="card-email" id="email-disp">loading...</p>
+
+    <div class="banner" id="banner"></div>
+
+    <div class="otp-row">
+      <input class="otp-inp" type="text" inputmode="numeric" maxlength="1" id="o1"/>
+      <input class="otp-inp" type="text" inputmode="numeric" maxlength="1" id="o2"/>
+      <input class="otp-inp" type="text" inputmode="numeric" maxlength="1" id="o3"/>
+      <input class="otp-inp" type="text" inputmode="numeric" maxlength="1" id="o4"/>
+      <input class="otp-inp" type="text" inputmode="numeric" maxlength="1" id="o5"/>
+      <input class="otp-inp" type="text" inputmode="numeric" maxlength="1" id="o6"/>
+    </div>
+
+    <div class="timer-row">
+      <span id="timer-txt">Resend code in <span class="timer-count" id="timer">60</span>s</span>
+      <button class="resend-btn" id="resend-btn">Resend code</button>
+    </div>
+
+    <button class="btn-submit" id="verify-btn">
+      <span class="btn-text">Verify</span>
+      <span class="spinner"></span>
+    </button>
+
+    <a href="signup.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to sign up
+    </a>
+  </div>
+
+  <div class="check-wrap" id="check-wrap">
+    <div class="check-circle">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="check-title">Verified!</div>
+    <div class="check-sub">Taking you to your dashboard...</div>
+  </div>
+</main>
+
+<script>
+// ── SUPABASE CONFIG ──
+const SUPABASE_URL  = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON = 'YOUR_ANON_KEY_HERE';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// Show email
+const userEmail = sessionStorage.getItem('signup_email') || '';
+document.getElementById('email-disp').textContent = userEmail || 'your email';
+
+// OTP inputs
+const inputs = Array.from({length:6}, (_,i) => document.getElementById('o'+(i+1)));
+
+inputs.forEach((inp, i) => {
+  inp.addEventListener('input', e => {
+    const v = e.target.value.replace(/[^0-9]/g,'');
+    e.target.value = v;
+    if(v){ inp.classList.add('filled'); if(i<5) inputs[i+1].focus(); }
+    else { inp.classList.remove('filled'); }
+  });
+  inp.addEventListener('keydown', e => {
+    if(e.key==='Backspace' && !inp.value && i>0){
+      inputs[i-1].focus(); inputs[i-1].value=''; inputs[i-1].classList.remove('filled');
+    }
+  });
+  inp.addEventListener('paste', e => {
+    e.preventDefault();
+    const p = (e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'');
+    p.split('').slice(0,6).forEach((ch,j) => {
+      if(inputs[i+j]){ inputs[i+j].value=ch; inputs[i+j].classList.add('filled'); }
+    });
+    inputs[Math.min(i+p.length,5)].focus();
+  });
+});
+inputs[0].focus();
+
+// Timer
+let tl = 60;
+const timerEl  = document.getElementById('timer');
+const timerTxt = document.getElementById('timer-txt');
+const resendBtn = document.getElementById('resend-btn');
+
+function startTimer() {
+  tl = 60; timerEl.textContent=60;
+  timerTxt.style.display='inline'; resendBtn.style.display='none';
+  const t = setInterval(() => {
+    tl--; timerEl.textContent=tl;
+    if(tl<=0){ clearInterval(t); timerTxt.style.display='none'; resendBtn.style.display='inline'; }
+  },1000);
+}
+startTimer();
+
+resendBtn.addEventListener('click', async () => {
+  if(!userEmail) return;
+  resendBtn.disabled=true;
+  // Supabase resend OTP
+  const { error } = await sb.auth.resend({ type:'signup', email: userEmail });
+  resendBtn.disabled=false;
+  if(error){
+    const b=document.getElementById('banner');
+    b.textContent=error.message; b.className='banner error';
+  } else {
+    inputs.forEach(i=>{i.value='';i.classList.remove('filled','error');});
+    inputs[0].focus();
+    startTimer();
+  }
+});
+
+// Verify
+document.getElementById('verify-btn').addEventListener('click', async () => {
+  const code = inputs.map(i=>i.value).join('');
+  const banner=document.getElementById('banner');
+  const btn=document.getElementById('verify-btn');
+  banner.className='banner';
+
+  if(code.length<6){
+    inputs.forEach(i=>{ if(!i.value) i.classList.add('error'); });
+    banner.textContent='Please enter all 6 digits.';
+    banner.className='banner error';
+    return;
+  }
+
+  btn.classList.add('loading'); btn.disabled=true;
+
+  // ── SUPABASE OTP VERIFY ──
+  const { error } = await sb.auth.verifyOtp({
+    email: userEmail,
+    token: code,
+    type:  'signup'
+  });
+
+  btn.classList.remove('loading'); btn.disabled=false;
+
+  if(error){
+    inputs.forEach(i=>i.classList.add('error'));
+    banner.textContent = error.message || 'Invalid code. Try again.';
+    banner.className   = 'banner error';
+    return;
+  }
+
+  // Success — update step tracker
+  const s2=document.getElementById('s2');
+  s2.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  s2.classList.remove('active'); s2.classList.add('done');
+  document.getElementById('l2').classList.add('done');
+  document.getElementById('s3').classList.add('active');
+
+  document.getElementById('otp-card').style.display='none';
+  document.getElementById('check-wrap').classList.add('show');
+
+  setTimeout(()=>{ window.location.href='user-dashboard.html'; }, 1600);
+});
+</script>
+</body>
+</html>
