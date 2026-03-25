@@ -12,13 +12,7 @@
     html{font-size:15px;-webkit-font-smoothing:antialiased}
     body{font-family:'Inter',sans-serif;background:#fff;color:#111;min-height:100vh;display:flex;flex-direction:column}
     *{-webkit-tap-highlight-color:transparent}
-    .nav{height:58px;display:flex;align-items:center;padding:0 20px;justify-content:space-between;border-bottom:1px solid #e5e5e5}
-    .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-    .nav-logo img{width:28px;height:28px;border-radius:7px;object-fit:cover}
-    .nav-logo span{font-size:16px;font-weight:600;color:#111}
-    .nav-link{font-size:14px;color:#6b6b6b;text-decoration:none}
-    .nav-link:hover{color:#111}
-    .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px 60px}
+    .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px 60px}
     .card{width:100%;max-width:380px}
     .card-title{font-family:'Instrument Serif',serif;font-style:italic;font-size:28px;font-weight:400;color:#111;margin-bottom:6px;letter-spacing:-0.3px}
     .card-sub{font-size:14px;color:#6b6b6b;margin-bottom:28px;line-height:1.5}
@@ -53,15 +47,11 @@
   </style>
 </head>
 <body>
-<nav class="nav">
-  <a href="index.html" class="nav-logo">
-    <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Fluxwith"/>
-    <span>Fluxwith</span>
-  </a>
-  <a href="login.html" class="nav-link">Sign in</a>
-</nav>
 <main class="main">
   <div class="card">
+    <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;margin-bottom:36px">
+      <svg width="22" height="22" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:-3px"><text x="2" y="48" font-family="Georgia,'Times New Roman',serif" font-size="50" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-3">fl.</text></svg><span style="font-size:17px;font-weight:600;color:#111;letter-spacing:-0.2px">Fluxwith</span>
+    </a>
     <h1 class="card-title">Create account</h1>
     <p class="card-sub">Start fluxing — it's free.</p>
     <div class="banner" id="banner"></div>
@@ -147,7 +137,13 @@ document.getElementById('signup-form').addEventListener('submit', async e => {
 
   btn.classList.add('loading'); btn.disabled=true;
 
-  const { error } = await sb.auth.signUp({ email: ev, password: pv });
+  const { data, error } = await sb.auth.signUp({
+    email:    ev,
+    password: pv,
+    options: {
+      emailRedirectTo: window.location.origin + '/user-dashboard.html'
+    }
+  });
 
   btn.classList.remove('loading'); btn.disabled=false;
 
