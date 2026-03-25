@@ -70,7 +70,7 @@
 <body>
 <nav class="nav">
   <a href="index.html" class="nav-logo">
-    <img src="https://i.ibb.co/Ndsqgj9y/IMG-20260305-022118.png" alt="Fluxwith"/>
+    <svg width="36" height="36" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><text x="8" y="62" font-family="Georgia,'Times New Roman',serif" font-size="58" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-4">fl.</text></svg>
     <span>Fluxwith</span>
   </a>
 </nav>
@@ -217,7 +217,7 @@ document.getElementById('verify-btn').addEventListener('click', async () => {
   const { error } = await sb.auth.verifyOtp({
     email: userEmail,
     token: code,
-    type:  'signup'
+    type:  'email'
   });
 
   btn.classList.remove('loading'); btn.disabled=false;
