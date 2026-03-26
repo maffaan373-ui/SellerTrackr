@@ -16,6 +16,7 @@ body{font-family:Inter,sans-serif;background:#fff;color:#111;min-height:100vh;di
 .sub{font-size:14px;color:#6b6b6b;margin-bottom:26px;line-height:1.5}
 .banner{padding:11px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;display:none}
 .banner.error{background:#fff5f5;color:#e53e3e;border:1px solid #fed7d7;display:block}
+.banner.ok{background:#f0fff4;color:#276749;border:1px solid #c6f6d5;display:block}
 .form{display:flex;flex-direction:column;gap:13px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:13px;font-weight:500;color:#111}
@@ -54,19 +55,19 @@ body{font-family:Inter,sans-serif;background:#fff;color:#111;min-height:100vh;di
     <div class="field">
       <label>Email</label>
       <input type="email" id="email" placeholder="you@example.com" autocomplete="email"/>
-      <span class="emsg" id="eem">Enter a valid email address.</span>
+      <span class="emsg" id="eem">Valid email daalo.</span>
     </div>
     <div class="field">
       <label>Password</label>
       <input type="password" id="pass" placeholder="Min. 8 characters" autocomplete="new-password"/>
       <div class="sbar"><div class="sfill" id="sf"></div></div>
       <span class="slbl" id="sl"></span>
-      <span class="emsg" id="pem">Password must be at least 8 characters.</span>
+      <span class="emsg" id="pem">Password 8 characters se kam hai.</span>
     </div>
     <div class="field">
       <label>Confirm password</label>
       <input type="password" id="conf" placeholder="Re-enter password" autocomplete="new-password"/>
-      <span class="emsg" id="cem">Passwords do not match.</span>
+      <span class="emsg" id="cem">Passwords match nahi kar rahe.</span>
     </div>
     <button type="submit" class="btn" id="btn">
       <span class="btn-text">Continue</span><span class="spinner"></span>
@@ -84,7 +85,12 @@ const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
 const sb=supabase.createClient(SURL,SKEY);
 
-// Strength
+// Agar pehle se logged in hai to dashboard pe bhejo
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session) window.location.replace('user-dashboard.html');
+});
+
+// Password strength
 const pInp=document.getElementById('pass');
 pInp.addEventListener('input',()=>{
   const v=pInp.value,sf=document.getElementById('sf'),sl=document.getElementById('sl');
@@ -117,20 +123,60 @@ document.getElementById('form').addEventListener('submit',async e=>{
   document.getElementById('conf').classList.toggle('err',!cok);
   if(!cok)ok=false;
   if(!ok)return;
+
   btn.classList.add('loading');btn.disabled=true;
-  const{error}=await sb.auth.signUp({
-    email:ev,password:pv,
-    options:{emailRedirectTo:window.location.origin+'/user-dashboard.html'}
+
+  // Supabase signUp — email confirm ON hai to OTP email aayega
+  const{data,error}=await sb.auth.signUp({
+    email:ev,
+    password:pv,
+    options:{
+      emailRedirectTo: window.location.origin+'/user-dashboard.html',
+      data:{ email: ev }
+    }
   });
+
   btn.classList.remove('loading');btn.disabled=false;
-  if(error){banner.textContent=error.message;banner.className='banner error';return;}
+
+  if(error){
+    // "User already registered" — login page pe bhejo
+    if(error.message.toLowerCase().includes('already')){
+      banner.textContent='Ye email pehle se registered hai. Sign in karo.';
+      banner.className='banner error';
+      setTimeout(()=>window.location.href='login.html',2000);
+      return;
+    }
+    banner.textContent=error.message;
+    banner.className='banner error';
+    return;
+  }
+
+  // Agar user session mil gaya (email confirm off) — seedha dashboard
+  if(data.session){
+    window.location.href='user-dashboard.html';
+    return;
+  }
+
+  // Email confirm ON hai — OTP page
   sessionStorage.setItem('signup_email',ev);
   window.location.href='otp.html';
 });
 
+// Google OAuth — Supabase dashboard mein Google provider enable karo
+// Authentication > Providers > Google
 document.getElementById('gbtn').addEventListener('click',async()=>{
-  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/user-dashboard.html'}});
-  if(error){const b=document.getElementById('banner');b.textContent=error.message;b.className='banner error';}
+  const{error}=await sb.auth.signInWithOAuth({
+    provider:'google',
+    options:{
+      redirectTo: window.location.origin+'/user-dashboard.html',
+      queryParams:{ access_type:'offline', prompt:'consent' }
+    }
+  });
+  if(error){
+    const b=document.getElementById('banner');
+    b.textContent='Google sign in error: '+error.message;
+    b.className='banner error';
+  }
 });
 </script>
 </body></html>
