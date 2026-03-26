@@ -24,7 +24,6 @@ body{font-family:Inter,sans-serif;background:#fff;color:#111;min-height:100vh;di
 .field input{width:100%;padding:13px 14px;border:1.5px solid #e5e5e5;border-radius:12px;font-size:15px;color:#111;background:#fff;outline:none;transition:border-color .15s;-webkit-appearance:none;font-family:Inter,sans-serif}
 .field input::placeholder{color:#bbb}
 .field input:focus{border-color:#111}
-.field input.err{border-color:#e53e3e}
 .btn{width:100%;padding:14px;border-radius:50px;font-size:15px;font-weight:600;color:#fff;background:#111;border:none;cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;font-family:Inter,sans-serif}
 .btn:hover{opacity:.82}
 .btn:disabled{opacity:.4;cursor:not-allowed}
@@ -53,7 +52,7 @@ body{font-family:Inter,sans-serif;background:#fff;color:#111;min-height:100vh;di
       <input type="email" id="email" placeholder="you@example.com" autocomplete="email"/>
     </div>
     <div class="field">
-      <label>Password <a href="forgot-password.html">Forgot password?</a></label>
+      <label>Password <a href="forgot-password.html">Forgot?</a></label>
       <input type="password" id="pass" placeholder="Your password" autocomplete="current-password"/>
     </div>
     <button type="submit" class="btn" id="btn">
@@ -72,6 +71,11 @@ const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
 const sb=supabase.createClient(SURL,SKEY);
 
+// Pehle se logged in
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session) window.location.replace('user-dashboard.html');
+});
+
 document.getElementById('form').addEventListener('submit',async e=>{
   e.preventDefault();
   const banner=document.getElementById('banner');
@@ -79,16 +83,23 @@ document.getElementById('form').addEventListener('submit',async e=>{
   banner.className='banner';
   const ev=document.getElementById('email').value.trim();
   const pv=document.getElementById('pass').value;
-  if(!ev||!pv){banner.textContent='Please fill in all fields.';banner.className='banner error';return;}
+  if(!ev||!pv){banner.textContent='Email aur password dono daalo.';banner.className='banner error';return;}
   btn.classList.add('loading');btn.disabled=true;
   const{error}=await sb.auth.signInWithPassword({email:ev,password:pv});
   btn.classList.remove('loading');btn.disabled=false;
-  if(error){banner.textContent=error.message;banner.className='banner error';return;}
+  if(error){
+    banner.textContent=error.message.includes('Invalid')?'Email ya password ghalat hai.':error.message;
+    banner.className='banner error';
+    return;
+  }
   window.location.href='user-dashboard.html';
 });
 
 document.getElementById('gbtn').addEventListener('click',async()=>{
-  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/user-dashboard.html'}});
+  const{error}=await sb.auth.signInWithOAuth({
+    provider:'google',
+    options:{redirectTo:window.location.origin+'/user-dashboard.html',queryParams:{access_type:'offline',prompt:'consent'}}
+  });
   if(error){const b=document.getElementById('banner');b.textContent=error.message;b.className='banner error';}
 });
 </script>
