@@ -417,6 +417,7 @@ main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36p
 // ── SUPABASE ──
 const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
+const SSVC='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjMxMTk2NSwiZXhwIjoyMDg3ODg3OTY1fQ.bBvtoL80Q_NTXT3jikgquIICDxQjYtwComOngEjIxFw'; // service role
 const sb=supabase.createClient(SURL,SKEY);
 
 // OpenRouter key — Vercel env se aayegi production mein
@@ -446,20 +447,47 @@ let userPlan='free',userCredits=500,usedCredits=0,curSession=null;
   document.getElementById('userName').textContent=name;
   document.getElementById('umEmail').textContent=email;
 
-  // Load profile from Supabase
+  // Load profile from Supabase with full credit data
   try{
-    const{data:prof}=await sb.from('profiles').select('plan,total_credits,used_credits').eq('id',u.id).single();
-    if(prof){
-      userPlan=prof.plan||'free';
-      userCredits=prof.total_credits||PLANS[userPlan]?.credits||500;
-      usedCredits=prof.used_credits||0;
+    const{data:prof,error}=await sb
+      .from('profiles')
+      .select('plan,total_credits,used_credits,billing,plan_expires_at')
+      .eq('id',u.id)
+      .single();
+
+    if(prof && !error){
+      userPlan    = prof.plan || 'free';
+      userCredits = prof.total_credits || PLANS[userPlan]?.credits || 500;
+      usedCredits = prof.used_credits  || 0;
+
+      // Check plan expiry
+      if(prof.plan_expires_at && new Date(prof.plan_expires_at) < new Date()){
+        // Plan expired — downgrade to free
+        await sb.from('profiles').update({
+          plan:'free', total_credits:500, used_credits:0
+        }).eq('id',u.id);
+        userPlan='free'; userCredits=500; usedCredits=0;
+      }
+
       updateCredBar();
+    } else {
+      // Profile might not exist yet (new user) — create it
+      await sb.from('profiles').upsert({
+        id:u.id, email, full_name:name,
+        plan:'free', total_credits:500, used_credits:0
+      });
     }
-  }catch(e){console.log('Profile load:',e);}
+  }catch(e){ console.log('Profile load:', e.message); }
 
   const planCfg=PLANS[userPlan]||PLANS.free;
   document.getElementById('userPlan').textContent=planCfg.label+' Plan';
   document.getElementById('planBadge').textContent=planCfg.badge;
+
+  // Update badge color by plan
+  const bdg=document.getElementById('planBadge');
+  if(userPlan==='pro')      bdg.style.cssText='background:#1d3461;color:#60a5fa';
+  if(userPlan==='ultimate') bdg.style.cssText='background:#2d1454;color:#c084fc';
+  if(userPlan==='infinite') bdg.style.cssText='background:#2d1f00;color:#fbbf24';
 })();
 
 function updateCredBar(){
@@ -471,13 +499,25 @@ function updateCredBar(){
   document.getElementById('credNums').textContent=remaining.toLocaleString()+' / '+userCredits.toLocaleString()+' credits';
 }
 
-async function deductCredits(cost){
+async function deductCredits(cost, type='text'){
   usedCredits+=cost;
   updateCredBar();
   if(!curSession)return;
   try{
-    await sb.from('profiles').update({used_credits:usedCredits}).eq('id',curSession.user.id);
-  }catch(e){console.log('Credit deduct:',e);}
+    // Use RPC function for atomic deduction
+    const{data,error}=await sb.rpc('deduct_credits',{
+      p_user_id: curSession.user.id,
+      p_amount:  cost,
+      p_type:    type,
+      p_desc:    `${curModel} - ${type}`
+    });
+    if(error) console.log('Credit RPC error:',error.message);
+    else if(data && data.remaining !== undefined){
+      // Sync with server value
+      usedCredits = userCredits - data.remaining;
+      updateCredBar();
+    }
+  }catch(e){ console.log('Credit deduct:', e.message); }
 }
 
 async function doLogout(){
@@ -598,19 +638,29 @@ async function callAI(messages){
 
   const body=JSON.stringify({model:curModel,messages,max_tokens:2048});
 
-  // Step 1: Try /api/chat (works only if Vercel function deployed)
+  // Step 1: Try /api/chat (Vercel function — handles credits server-side)
   try{
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body});
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:curModel, messages, max_tokens:2048,
+        user_id: curSession?.user?.id || null,
+        mode: cMode
+      })
+    });
     const text=await res.text();
-    // Check if it's actually JSON (not HTML error page)
     if(text.trim().startsWith('{')){
       const d=JSON.parse(text);
+      // 402 = insufficient credits
+      if(res.status===402) throw new Error('Credits khatam. Upgrade karo!');
       if(d.error) throw new Error(d.error);
       if(d.content) return d.content;
     }
-    // If HTML returned, /api/chat not deployed — fall through to OR_KEY
+    // HTML returned = /api/chat not deployed, use direct fallback
   }catch(apiErr){
-    // Silent fail, try direct below
+    if(apiErr.message.includes('Credits')) throw apiErr;
+    // Other error = silent fail, try direct
   }
 
   // Step 2: Direct OpenRouter (add your key in OR_KEY variable above)
@@ -648,7 +698,7 @@ async function send(){
       shD();
       const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(msg)}?width=1024&height=1024&nologo=true`;
       rmD();addMsg("assistant",url,"image");
-      await deductCredits(CREDIT_COST.image);
+      await deductCredits(CREDIT_COST.image,'image');
     } else if(cMode==="video"){
       addMsg("assistant","Video generation Infinite plan mein available hai.");
     } else {
@@ -656,7 +706,7 @@ async function send(){
       const prompt=cMode==='enhance'?`Improve this prompt, return ONLY the enhanced version:\n"${msg}"`:msg;
       const resp=await callAI([{role:"user",content:prompt}]);
       rmD();addMsg("assistant",resp);
-      await deductCredits(CREDIT_COST.text);
+      await deductCredits(CREDIT_COST.text,'text');
     }
   }catch(err){
     rmD();
