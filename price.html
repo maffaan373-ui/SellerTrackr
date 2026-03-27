@@ -6,31 +6,136 @@
 <title>Pricing — fluxwith</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#f5f5f5;color:#111;min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:'Inter',sans-serif}
+*{-webkit-tap-highlight-color:transparent}
+
 :root{
   --bg:#f5f5f5;--bg2:#ffffff;--bg3:#f0f0f0;
   --b1:#e0e0e0;--b2:#d0d0d0;--b3:#bbb;
   --tx:#111;--mu:#888;--mu2:#555;
+  --black:#111;--gray:#6b6b6b;--light:#f4f4f4;--border:#e5e5e5;--white:#fff;
 }
-html{font-size:15px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
-*{-webkit-tap-highlight-color:transparent}
-button{font-family:inherit;cursor:pointer}
 
-/* NAV */
-.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:54px;background:rgba(245,245,245,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1)}
-.nav-logo{display:flex;align-items:center;text-decoration:none}
-.nav-logo-mk{font-size:19px;font-weight:900;font-style:italic;color:#111;letter-spacing:-2px;font-family:Georgia,serif}
-.nav-logo-nm{font-size:15px;color:#aaa;font-weight:300;letter-spacing:-0.3px}
-.nav-actions{display:flex;align-items:center;gap:8px}
-.nav-btn{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--b2);background:transparent;color:var(--mu2);cursor:pointer;transition:.15s}
-.nav-btn:hover{border-color:var(--b3);color:var(--tx)}
-.nav-btn-fill{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:600;border:none;background:#111;color:#fff;cursor:pointer;transition:.15s}
-.nav-btn-fill:hover{background:#333}
+/* ── NAV (exact same as index.html) ── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;display:flex;align-items:center;
+  padding:0 20px;justify-content:space-between;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:0}
+.nav-logo-name{font-family:'Inter',sans-serif;font-size:17px;font-weight:500;color:#111;letter-spacing:-0.4px}
+.nav-hamburger{
+  width:36px;height:36px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;
+  cursor:pointer;border:none;background:none;padding:4px;
+}
+.nav-hamburger span{
+  display:block;width:20px;height:1.5px;
+  background:var(--black);border-radius:2px;transition:all 0.2s;
+}
 
-/* HERO */
+/* ── DRAWER (exact same as index.html) ── */
+.drawer-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0.3);
+  opacity:0;pointer-events:none;transition:opacity 0.25s;
+}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{
+  position:fixed;top:0;right:-100%;bottom:0;z-index:300;
+  width:min(340px,88vw);background:#fff;
+  display:flex;flex-direction:column;
+  transition:right 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+.drawer.open{right:0}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.drawer-head-logo{display:flex;align-items:center;gap:8px}
+.drawer-head-logo span{font-size:16px;font-weight:600;color:var(--black)}
+.drawer-close{
+  width:32px;height:32px;border:none;background:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--gray);border-radius:6px;transition:background 0.15s;
+}
+.drawer-close:hover{background:var(--light)}
+.drawer-nav{flex:1;overflow-y:auto;padding:8px 0}
+.drawer-link{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;font-size:18px;font-weight:400;
+  color:var(--black);border-bottom:1px solid var(--border);
+  transition:background 0.12s;text-decoration:none;
+}
+.drawer-link:hover{background:var(--light)}
+.drawer-link.active{color:var(--black);font-weight:500}
+.drawer-footer{
+  padding:16px 20px;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:10px;
+}
+.drawer-btn-ghost{
+  width:100%;padding:15px;border-radius:50px;
+  font-size:16px;font-weight:400;color:var(--black);
+  background:transparent;border:1.5px solid var(--border);
+  transition:border-color 0.15s;
+}
+.drawer-btn-ghost:hover{border-color:#999}
+.drawer-btn-solid{
+  width:100%;padding:15px;border-radius:50px;
+  font-size:16px;font-weight:600;color:#fff;
+  background:var(--black);border:none;transition:opacity 0.15s;
+}
+.drawer-btn-solid:hover{opacity:0.85}
+.acc-arrow-txt{
+  font-size:14px;color:#999;transition:transform 0.22s ease;
+  display:inline-block;line-height:1;
+}
+.drawer-acc-btn.open .acc-arrow-txt{transform:rotate(180deg)}
+.drawer-acc-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:20px 24px;font-size:18px;font-weight:400;
+  color:var(--black);background:none;border:none;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 0.12s;text-align:left;
+}
+.drawer-acc-btn:hover{background:var(--light)}
+.drawer-acc-body{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.28s cubic-bezier(0.4,0,0.2,1);
+  background:var(--light);border-bottom:none;
+}
+.drawer-acc-body.open{max-height:500px}
+.acc-sub-btn{
+  display:flex;align-items:center;gap:10px;
+  width:100%;padding:11px 20px 11px 24px;
+  font-size:15px;font-weight:400;color:#444;
+  background:none;border:none;cursor:pointer;
+  text-align:left;text-decoration:none;transition:background 0.12s;
+  -webkit-tap-highlight-color:transparent;
+}
+.acc-sub-btn:hover{background:#ececec}
+.acc-sub-btn:active{background:#e0e0e0}
+
+/* ── PAGE PADDING ── */
+.page-body{padding-top:60px}
+
+/* ── HERO ── */
 .hero{text-align:center;padding:54px 20px 38px}
-.eyebrow{display:inline-block;border:1px solid rgba(220,38,38,.2);background:rgba(220,38,38,.05);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#dc2626;margin-bottom:20px}
+.eyebrow{
+  display:inline-block;
+  border:1px solid rgba(220,38,38,.2);background:rgba(220,38,38,.05);
+  border-radius:20px;padding:5px 14px;
+  font-size:11px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:#dc2626;margin-bottom:20px;
+}
 .hero h1{font-size:clamp(26px,5.5vw,44px);font-weight:700;color:#111;letter-spacing:-.8px;line-height:1.1;margin-bottom:10px}
 .hero-sub{font-size:14px;color:var(--mu);max-width:380px;margin:0 auto 34px;line-height:1.65}
 
@@ -47,9 +152,12 @@ button{font-family:inherit;cursor:pointer}
 /* GRID */
 .grid-outer{padding:0 14px 10px;max-width:980px;margin:0 auto}
 .pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-@media(max-width:700px){.pgrid{grid-template-columns:1fr}.grid-outer{padding:0 12px 10px}}
+@media(max-width:700px){
+  .pgrid{grid-template-columns:1fr}
+  .grid-outer{padding:0 12px 10px}
+}
 
-/* Base card */
+/* Cards */
 .pc{background:var(--bg2);border:1px solid var(--b1);border-radius:16px;padding:22px 20px 20px;display:flex;flex-direction:column;position:relative;overflow:visible;transition:transform .2s,box-shadow .2s;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .pc:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
 .pc-pro{border-color:#dde5f7}
@@ -60,13 +168,11 @@ button{font-family:inherit;cursor:pointer}
 .pc-inf{background:linear-gradient(160deg,rgba(254,243,199,.7),#fff 60%),#fff;border-color:#fde68a}
 .pc-inf:hover{border-color:#fcd34d;box-shadow:0 8px 24px rgba(234,179,8,.1)}
 
-/* Badges */
 .pop-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#7c3aed,#db2777);color:#fff;font-size:9px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:.06em;white-space:nowrap;box-shadow:0 4px 14px rgba(124,58,237,.3)}
 .off-badge{position:absolute;top:14px;right:14px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.04em}
 .off-ult{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.18);color:#9333ea}
 .off-inf{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.22);color:#d97706}
 
-/* Plan */
 .plan-name{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:3px}
 .plan-tag{font-size:11px;color:var(--mu);margin-bottom:14px}
 .cr-chip{display:inline-block;background:var(--bg3);border:1px solid var(--b1);border-radius:7px;padding:5px 9px;font-size:11px;font-weight:600;color:var(--mu2);margin-bottom:14px}
@@ -77,7 +183,6 @@ button{font-family:inherit;cursor:pointer}
 .p-bill{font-size:11px;color:var(--mu);margin-bottom:20px}
 .p-strike{text-decoration:line-through;color:var(--mu);margin-right:3px}
 
-/* CTA */
 .cta{width:100%;padding:11px;border-radius:11px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.18s;margin-bottom:18px;text-align:center}
 .cta-pro{background:#eff6ff;color:#2563eb;border:1px solid #dbeafe}
 .cta-pro:hover{background:#dbeafe;border-color:#93c5fd}
@@ -86,13 +191,13 @@ button{font-family:inherit;cursor:pointer}
 .cta-inf{background:#111;color:#fbbf24;border:1px solid #333}
 .cta-inf:hover{background:#222}
 
-/* Features */
 .fl{display:flex;flex-direction:column;gap:8px;flex:1}
 .fi{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--mu2);line-height:1.45}
 .fi-check{flex-shrink:0;margin-top:1px;color:#16a34a;font-weight:700;font-size:11px;width:14px}
 .fi-cross{flex-shrink:0;margin-top:1px;color:#ccc;font-weight:700;font-size:11px;width:14px}
 .fi b{color:var(--tx);font-weight:500}
 .f-sep{height:1px;background:var(--b1);margin:4px 0}
+
 .starter{text-align:center;margin-top:18px;font-size:12px;color:var(--mu)}
 .starter a{color:var(--mu2);border-bottom:1px solid var(--b2);text-decoration:none}
 .starter a:hover{color:var(--tx)}
@@ -130,9 +235,7 @@ button{font-family:inherit;cursor:pointer}
 
 @media(max-width:480px){
   .hero{padding:36px 14px 24px}
-  .nav{padding:0 14px;height:50px}
-  .nav-btn{padding:6px 10px;font-size:12px}
-  .nav-btn-fill{padding:6px 12px;font-size:12px}
+  .nav{padding:0 14px}
   .cmp-outer{padding:44px 0 44px}
   .faq-outer{padding:0 14px 60px}
 }
@@ -140,16 +243,73 @@ button{font-family:inherit;cursor:pointer}
 </head>
 <body>
 
+<!-- NAV — same as index.html -->
 <nav class="nav">
   <a href="index.html" class="nav-logo">
-    <span class="nav-logo-mk">fl.</span>
-    <span class="nav-logo-nm">fluxwith</span>
+    <svg width="26" height="19" viewBox="0 0 70 50" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;margin-right:-1px"><text x="0" y="44" font-family="Georgia,'Times New Roman',serif" font-size="52" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-4">fl.</text></svg>
+    <span class="nav-logo-name">fluxwith</span>
   </a>
-  <div class="nav-actions">
-    <button class="nav-btn" onclick="window.location.href='login.html'">Log in</button>
-    <button class="nav-btn-fill" onclick="window.location.href='signup.html'">Sign up free</button>
-  </div>
+  <button class="nav-hamburger" id="ham-btn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+
+<!-- DRAWER — same as index.html -->
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-head-logo">
+      <svg width="22" height="22" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-bottom:-3px"><text x="2" y="48" font-family="Georgia,'Times New Roman',serif" font-size="50" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-3">fl.</text></svg>
+      <span>Fluxwith</span>
+    </div>
+    <button class="drawer-close" id="drawer-close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="drawer-nav">
+    <button class="drawer-acc-btn" id="acc-feat-btn">
+      Features
+      <span class="acc-arrow-txt">˅</span>
+    </button>
+    <div class="drawer-acc-body" id="acc-feat-body">
+      <a href="video-call.html" class="acc-sub-btn">Video Call AI</a>
+      <a href="voice.html" class="acc-sub-btn">Voice AI</a>
+      <a href="video-making.html" class="acc-sub-btn">AI Video</a>
+      <a href="pic-making.html" class="acc-sub-btn">AI Image</a>
+    </div>
+
+    <a href="pricing.html" class="drawer-link active" style="border-bottom:none">Pricing</a>
+
+    <button class="drawer-acc-btn" id="acc-res-btn">
+      Resources
+      <span class="acc-arrow-txt">˅</span>
+    </button>
+    <div class="drawer-acc-body" id="acc-res-body">
+      <a href="docs.html" class="acc-sub-btn">Documentation</a>
+      <a href="changelog.html" class="acc-sub-btn">Changelog</a>
+      <a href="about.html" class="acc-sub-btn">About</a>
+    </div>
+
+    <button class="drawer-acc-btn" id="acc-com-btn">
+      Community
+      <span class="acc-arrow-txt">˅</span>
+    </button>
+    <div class="drawer-acc-body" id="acc-com-body">
+      <a href="#" class="acc-sub-btn">Discord</a>
+      <a href="#" class="acc-sub-btn">Twitter / X</a>
+      <a href="#" class="acc-sub-btn">GitHub</a>
+    </div>
+  </nav>
+  <div class="drawer-footer">
+    <button class="drawer-btn-ghost" onclick="location.href='login.html'">Sign in</button>
+    <button class="drawer-btn-solid" onclick="location.href='signup.html'">Sign up</button>
+  </div>
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="page-body">
 
 <div class="hero">
   <div class="eyebrow">Easter Sale — Up to 30% off</div>
@@ -165,6 +325,8 @@ button{font-family:inherit;cursor:pointer}
 
 <div class="grid-outer">
   <div class="pgrid">
+
+    <!-- PRO -->
     <div class="pc pc-pro">
       <div class="plan-name">Pro</div>
       <div class="plan-tag">For serious creators</div>
@@ -184,6 +346,7 @@ button{font-family:inherit;cursor:pointer}
       </div>
     </div>
 
+    <!-- ULTIMATE -->
     <div class="pc pc-ult">
       <div class="pc-ult-inner">
         <div class="pop-badge">Most Popular</div>
@@ -207,6 +370,7 @@ button{font-family:inherit;cursor:pointer}
       </div>
     </div>
 
+    <!-- INFINITE -->
     <div class="pc pc-inf">
       <div class="off-badge off-inf">MAXIMUM POWER</div>
       <div class="plan-name" style="color:#d97706">Infinite</div>
@@ -225,10 +389,12 @@ button{font-family:inherit;cursor:pointer}
         <div class="fi"><span class="fi-check">✓</span><span>White-label option</span></div>
       </div>
     </div>
+
   </div>
   <div class="starter">Not ready to commit? <a href="signup.html">Try for free</a> — 500 credits, no card needed.</div>
 </div>
 
+<!-- COMPARE TABLE -->
 <div class="cmp-outer">
   <div class="cmp-hd">Compare plans</div>
   <div class="cmp-sub">Everything you need to make the right decision.</div>
@@ -237,7 +403,10 @@ button{font-family:inherit;cursor:pointer}
       <thead>
         <tr>
           <th style="text-align:left;width:38%">Feature</th>
-          <th>Starter</th><th style="color:#2563eb">Pro</th><th style="color:#9333ea">Ultimate</th><th style="color:#d97706">Infinite</th>
+          <th>Starter</th>
+          <th style="color:#2563eb">Pro</th>
+          <th style="color:#9333ea">Ultimate</th>
+          <th style="color:#d97706">Infinite</th>
         </tr>
       </thead>
       <tbody>
@@ -269,6 +438,7 @@ button{font-family:inherit;cursor:pointer}
   </div>
 </div>
 
+<!-- FAQ -->
 <div class="faq-outer">
   <div class="faq-hd">Frequently asked questions</div>
   <div class="fq"><button class="fq-q" onclick="togFaq(this)">What are credits and how do they work?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Credits are your usage currency on fluxwith. Every action costs credits: text messages cost 5, image generation costs 80, and video generation costs 150 per second. Credits reset at the start of each billing cycle.</p></div></div>
@@ -278,7 +448,36 @@ button{font-family:inherit;cursor:pointer}
   <div class="fq"><button class="fq-q" onclick="togFaq(this)">Is there a free trial?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Yes — the Starter plan is permanently free with 500 credits per month. No credit card required. You can upgrade whenever you need more power.</p></div></div>
 </div>
 
+</div><!-- /page-body -->
+
 <script>
+// ── Drawer ──
+const ham=document.getElementById('ham-btn');
+const drawer=document.getElementById('drawer');
+const overlay=document.getElementById('drawer-overlay');
+const closeBtn=document.getElementById('drawer-close');
+function openDrawer(){drawer.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow=''}
+ham.addEventListener('click',openDrawer);
+closeBtn.addEventListener('click',closeDrawer);
+overlay.addEventListener('click',closeDrawer);
+
+// ── Accordion ──
+function initAcc(btnId,bodyId){
+  const btn=document.getElementById(btnId);
+  const body=document.getElementById(bodyId);
+  btn.addEventListener('click',()=>{
+    const isOpen=body.classList.contains('open');
+    document.querySelectorAll('.drawer-acc-body').forEach(b=>b.classList.remove('open'));
+    document.querySelectorAll('.drawer-acc-btn').forEach(b=>b.classList.remove('open'));
+    if(!isOpen){body.classList.add('open');btn.classList.add('open')}
+  });
+}
+initAcc('acc-feat-btn','acc-feat-body');
+initAcc('acc-res-btn','acc-res-body');
+initAcc('acc-com-btn','acc-com-body');
+
+// ── Billing Toggle ──
 const IDS={pro:{mo:'4da7adb7-d343-4d60-851a-0d0f4e4fad47',yr:'6895e5e8-fbab-4642-b144-cae5c10a61ae'},ult:{mo:'dd47e7cc-a8c6-46ae-b40e-6a1bde85a2bd',yr:'38d9011e-5112-4613-88e7-fd128f2a8f7f'},inf:{mo:'9d07014f-f09b-4003-80d5-887555715ac4',yr:'80df82f4-b9c2-49ab-8ab7-ba436c240015'}};
 const PRICES={pro:{mo:'19.90',yr:'13.93'},ult:{mo:'44.91',yr:'31.44'},inf:{mo:'399.92',yr:'279.94'}};
 let yearly=false;
@@ -295,6 +494,8 @@ function swapBilling(){
   document.getElementById('inf-bill').textContent=yearly?'Billed yearly ($3,359.28/yr)':'Billed monthly';
 }
 function checkout(plan){window.open('https://sandbox.polar.sh/checkout?product_id='+IDS[plan][yearly?'yr':'mo'],'_blank')}
+
+// ── FAQ ──
 function togFaq(btn){const item=btn.closest('.fq'),wasOpen=item.classList.contains('op');document.querySelectorAll('.fq').forEach(f=>f.classList.remove('op'));if(!wasOpen)item.classList.add('op')}
 </script>
 </body>
