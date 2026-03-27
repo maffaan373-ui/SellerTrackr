@@ -14,6 +14,8 @@
   --gr:#22c55e;--bl:#3b82f6;
 }
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;overflow-x:hidden}
+
+/* ════ SPLASH ════ */
 #splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .6s ease}
 #splash.hide{opacity:0;pointer-events:none}
 .spl-mark{font-size:88px;font-weight:900;font-style:italic;color:#fff;letter-spacing:-5px;font-family:Georgia,'Times New Roman',serif;line-height:1;animation:splFade .7s cubic-bezier(.22,1,.36,1) both}
@@ -25,6 +27,8 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-sy
 .spl-dots span:nth-child(2){background:#3e3e3e;animation-delay:.22s}
 .spl-dots span:nth-child(3){background:#4e4e4e;animation-delay:.44s}
 @keyframes splBlink{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:1}}
+
+/* ════ MODEL POPUP ════ */
 .mpop-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:400;backdrop-filter:blur(3px)}
 .mpop-bg.show{display:block}
 .mpop{position:fixed;bottom:0;left:0;right:0;background:#141414;border-top:1px solid var(--b2);border-radius:20px 20px 0 0;z-index:401;max-height:82vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
@@ -54,8 +58,12 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-sy
 .ic-gpt{background:#0d1f17}.ic-gemini{background:#0d1527}.ic-claude{background:#1f120a}.ic-ds{background:#0a1525}.ic-llama{background:#0d1a2a}.ic-mis{background:#130d20}.ic-qwen{background:#151515}
 .mrow-icon svg{width:20px;height:20px}
 .c-gpt{color:#10a37f}.c-ds{color:#4d9fff}.c-llama{color:#0668E1}.c-mis{color:#8b5cf6}.c-qwen{color:#888}.c-claude{color:#d97757}
+
+/* ════ OVERLAY ════ */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50}
 .ov.show{display:block}
+
+/* ════ SIDEBAR ════ */
 .sidebar{position:fixed;top:0;right:-315px;width:295px;height:100%;background:#141414;border-left:1px solid var(--b1);z-index:100;transition:right .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
 .sidebar.open{right:0}
 .sbt{padding:14px;overflow-y:auto;flex:1}
@@ -83,10 +91,11 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-sy
 .trbdg{background:var(--gr);color:#000;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.04em}
 .umenu{display:none;position:absolute;bottom:calc(100% + 8px);left:0;right:0;background:#1e1e1e;border:1px solid var(--b2);border-radius:13px;overflow:hidden;z-index:200;box-shadow:0 16px 48px rgba(0,0,0,.8)}
 .umenu.show{display:block}
-.umhd{padding:12px 14px;font-size:13px;font-weight:700;color:#fff;border-bottom:1px solid var(--b1)}
+.umhd{padding:12px 14px;font-size:11px;color:var(--mu);border-bottom:1px solid var(--b1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .umit{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:12px;color:#bbb;cursor:pointer;transition:.2s;background:none;border:none;width:100%;text-align:left;font-family:inherit}
 .umit:hover{background:#252525;color:#fff}
 .umit svg{width:14px;height:14px;color:var(--mu);flex-shrink:0}
+.umnew{background:#6366f1;color:#fff;font-size:8px;font-weight:700;padding:2px 5px;border-radius:20px;margin-left:auto}
 .umsep{height:1px;background:var(--b1);margin:3px 0}
 .umtog{margin-left:auto;width:32px;height:17px;background:#222;border-radius:9px;position:relative;transition:.3s;flex-shrink:0}
 .umtog::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;background:#444;border-radius:50%;transition:.3s}
@@ -94,6 +103,8 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-sy
 .umtog.on::after{left:17px;background:#fff}
 .umarr{margin-left:auto;display:flex}
 .umarr svg{width:12px;height:12px;color:var(--mu)}
+
+/* ════ NAV ════ */
 nav{position:sticky;top:0;z-index:40;width:100%;display:flex;justify-content:center;background:var(--bg);border-bottom:1px solid var(--b1)}
 .navi{width:100%;max-width:500px;display:flex;justify-content:space-between;align-items:center;padding:13px 18px}
 .logo{display:flex;align-items:center;gap:0}
@@ -101,17 +112,36 @@ nav{position:sticky;top:0;z-index:40;width:100%;display:flex;justify-content:cen
 .logo-nm{font-size:17px;color:#aaa;font-weight:300;letter-spacing:-0.3px}
 .hbg{background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px}
 .hbg span{display:block;width:21px;height:1.5px;background:#777;border-radius:2px}
+
+/* ════ MAIN ════ */
 main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36px;min-height:calc(100vh - 55px)}
 .cont{width:100%;max-width:500px}
 .hero{margin-bottom:20px}
 .hero h1{font-size:27px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:7px;letter-spacing:-.4px}
 .hero p{font-size:13px;color:var(--mu)}
+
+/* Credits bar */
+.cred-bar{background:#111;border:1px solid var(--b1);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.cred-icon{width:28px;height:28px;background:#1a2040;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cred-icon svg{width:13px;height:13px;color:#60a5fa}
+.cred-info{flex:1}
+.cred-label{font-size:11px;color:var(--mu);margin-bottom:3px}
+.cred-prog{height:4px;background:#1e1e1e;border-radius:2px;overflow:hidden}
+.cred-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#3b82f6,#8b5cf6);transition:width .4s ease}
+.cred-nums{font-size:10px;color:var(--mu);margin-top:3px}
+.cred-upg{font-size:11px;font-weight:600;color:#60a5fa;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;white-space:nowrap}
+.cred-upg:hover{color:#93c5fd}
+
+/* CHAT */
 .ca{display:flex;flex-direction:column;gap:11px;margin-bottom:14px;max-height:46vh;overflow-y:auto}
 .ca::-webkit-scrollbar{width:2px}
 .ca::-webkit-scrollbar-thumb{background:#1e1e1e;border-radius:4px}
 .msg-u{align-self:flex-end;background:#1e1e1e;border:1px solid var(--b1);border-radius:13px;padding:9px 13px;max-width:85%;font-size:13px;white-space:pre-wrap;line-height:1.55;color:#ddd}
 .msg-a{align-self:flex-start;font-size:13px;color:#999;max-width:90%;white-space:pre-wrap;line-height:1.6}
 .msg-a img{width:100%;border-radius:11px;border:1px solid var(--b1);display:block;margin-top:4px}
+.msg-err{align-self:flex-start;font-size:12px;color:#ef4444;background:#1a0a0a;border:1px solid #3a1a1a;border-radius:10px;padding:8px 12px;max-width:90%}
+
+/* CARD */
 .card{background:#111;border:1px solid var(--b1);border-radius:19px;overflow:visible;margin-bottom:9px}
 .cbod{padding:13px 14px 7px;min-height:130px;display:flex;flex-direction:column;justify-content:space-between}
 .ctop{display:flex;justify-content:space-between;align-items:flex-start;gap:9px}
@@ -134,12 +164,16 @@ main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36p
 .cb:hover .tip{opacity:1}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin{animation:spin .8s linear infinite}
+
+/* PILLS */
 .pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
 .pills::-webkit-scrollbar{display:none}
 .pill{display:flex;align-items:center;gap:5px;padding:7px 12px;background:#111;border:1px solid var(--b1);border-radius:9px;font-size:12px;color:#666;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.2s;font-family:inherit;position:relative}
 .pill:hover{border-color:var(--b2);color:#aaa}
 .pill svg{width:12px;height:12px}
 .chv{width:10px !important;height:10px !important;opacity:.35}
+
+/* DROPDOWNS */
 .dd{display:none;position:absolute;background:#161616;border:1px solid var(--b2);border-radius:12px;z-index:200;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.9)}
 .dd.show{display:block}
 .mdd{width:295px;bottom:calc(100% + 7px);left:0}
@@ -168,6 +202,8 @@ main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36p
 .kbc svg{width:10px;height:10px;color:#fff}
 .kbsep{height:1px;background:var(--b1);margin:3px 13px}
 .kbem{padding:9px 13px;font-size:12px;color:var(--mu);font-style:italic}
+
+/* VOICE */
 .vsc{display:none;position:fixed;inset:0;background:#060606;z-index:300;flex-direction:column;align-items:center;justify-content:center;gap:24px}
 .vsc.show{display:flex}
 .vav{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#1e3a5f,#0ea5e9);display:flex;align-items:center;justify-content:center;position:relative}
@@ -191,6 +227,8 @@ main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36p
 .vc.mu3{background:#1e1e1e;color:#aaa}.vc.mu3:hover{background:#252525}
 .vc.end{background:#ef4444;color:#fff}.vc.end:hover{background:#dc2626}
 .vc.sp{background:#1e1e1e;color:#aaa}.vc.sp:hover{background:#252525}
+
+/* DOTS */
 .dots{display:flex;gap:3px;padding:4px 0}
 .dots span{width:5px;height:5px;border-radius:50%;background:#2a2a2a;animation:blink 1.2s infinite}
 .dots span:nth-child(2){animation-delay:.2s}
@@ -199,10 +237,14 @@ main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36p
 </style>
 </head>
 <body>
+
+<!-- SPLASH -->
 <div id="splash">
   <span class="spl-mark">fl.</span>
   <div class="spl-dots"><span></span><span></span><span></span></div>
 </div>
+
+<!-- MODEL POPUP -->
 <div class="mpop-bg" id="mpopBg" onclick="closeModelPop()"></div>
 <div class="mpop" id="mpop">
   <div class="mpop-handle"></div>
@@ -213,39 +255,70 @@ main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36p
   </div>
   <div class="mpop-scroll" id="mpopList"></div>
 </div>
+
+<!-- OVERLAY -->
 <div class="ov" id="ov" onclick="closeSB()"></div>
+
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <div class="sbt">
-    <button class="sbb" onclick="newFlow()">New Flow
+    <button class="sbb" onclick="newFlow()">
+      New Flow
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="10" y1="11" x2="14" y2="11"/></svg>
     </button>
-    <div class="sbsec">Projects
+    <button class="sbb">
+      Explore More
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </button>
+    <button class="sbb" onclick="window.location.href='pricing.html'">
+      Upgrade Plan
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </button>
+    <div class="sbsec">
+      Projects
       <button class="sbadd" onclick="newFlow()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
     </div>
     <div id="plist"><div class="prj-empty">No projects yet</div></div>
   </div>
   <div class="sbbot">
-    <button class="sbup">
+    <button class="sbup" onclick="window.location.href='pricing.html'">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      Fluxwith Pro — Upgrade
+      Fluxwith Pro — Upgrade Now
     </button>
     <div class="sbuser" onclick="togUM()">
       <div class="av" id="userAv">FX</div>
       <div class="sui">
         <div class="sun" id="userName">Loading...</div>
-        <div class="sus">Free Plan</div>
+        <div class="sus" id="userPlan">Free Plan</div>
       </div>
-      <span class="trbdg">FREE</span>
+      <span class="trbdg" id="planBadge">FREE</span>
       <div class="umenu" id="umenu" onclick="event.stopPropagation()">
         <div class="umhd" id="umEmail">Account</div>
-        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account</button>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account Management</button>
+        <button class="umit" onclick="window.location.href='pricing.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Subscription</button>
+        <button class="umit" onclick="window.location.href='pricing.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Pricing &amp; Plans</button>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Invite Friends<span class="umnew">NEW</span></button>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Order Management</button>
+        <div class="umsep"></div>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Theme<span class="umarr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></button>
         <button class="umit" onclick="togPerf()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Performance Mode<span class="umtog" id="ptog"></span></button>
+        <div class="umsep"></div>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Product Docs</button>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M7.5 7.5c3.5-1 5.5-1 8 0"/><path d="M7 16.5c3.5 1 6.5 1 10-.5"/></svg>Join Discord</button>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Languages<span class="umarr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span></button>
+        <div class="umsep"></div>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Download iOS App<span class="umarr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span></button>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Download fluxwithOS<span class="umarr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span></button>
+        <div class="umsep"></div>
+        <button class="umit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Report Bugs</button>
         <div class="umsep"></div>
         <button class="umit" onclick="doLogout()" style="color:#ef4444"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- VOICE -->
 <div class="vsc" id="vsc">
   <div class="vav"><div class="vr"></div><div class="vr"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
   <div style="text-align:center"><div class="vn">Fluxwith AI</div><div class="vs" id="vstat">Listening...</div></div>
@@ -256,54 +329,85 @@ main{display:flex;flex-direction:column;align-items:center;padding:22px 16px 36p
     <button class="vc sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
   </div>
 </div>
+
+<!-- NAV -->
 <nav>
   <div class="navi">
     <div class="logo"><span class="logo-mk">fl.</span><span class="logo-nm">fluxwith</span></div>
     <button class="hbg" onclick="openSB()"><span></span><span></span><span></span></button>
   </div>
 </nav>
+
+<!-- MAIN -->
 <main>
 <div class="cont">
   <div class="hero"><h1 id="ht">Good afternoon</h1><p id="hs">Ready to bring your ideas to life?</p></div>
+
+  <!-- Credits bar -->
+  <div class="cred-bar" id="credBar" style="display:none">
+    <div class="cred-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    <div class="cred-info">
+      <div class="cred-label">Credits remaining</div>
+      <div class="cred-prog"><div class="cred-fill" id="credFill" style="width:100%"></div></div>
+      <div class="cred-nums" id="credNums">22,000 / 22,000</div>
+    </div>
+    <button class="cred-upg" onclick="window.location.href='pricing.html'">Upgrade</button>
+  </div>
+
   <div class="ca" id="ca"></div>
+
   <div class="card">
     <div class="cbod">
       <div class="ctop">
         <textarea id="prompt" rows="3" placeholder="Ask AI anything..."></textarea>
-        <button class="agb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>AGENT</button>
+        <button class="agb">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          AGENT
+        </button>
       </div>
     </div>
     <div class="crow">
-      <div style="position:relative"><button class="cb ico"><div class="tip">Upload files</div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button></div>
+      <div style="position:relative"><button class="cb ico"><div class="tip">Upload files / images</div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button></div>
       <div style="position:relative">
         <button class="cb" onclick="tdd('x1d')"><span id="x1l">x1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:9px;height:9px;opacity:.35"><polyline points="6 9 12 15 18 9"/></svg></button>
         <div class="dd x1d" id="x1d">
           <div class="x1o act" onclick="sx1('x1',this)"><span>x 1</span><div class="xdot"></div></div>
-          <div class="x1o" onclick="nup()"><span>x 2</span></div>
-          <div class="x1o" onclick="nup()"><span>x 4</span></div>
+          <div class="x1o" onclick="nup()"><span>x 2</span><span class="xlk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div>
+          <div class="x1o" onclick="nup()"><span>x 4</span><span class="xlk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div>
         </div>
       </div>
-      <button class="cb go off" id="gbtn" onclick="send()">start <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;opacity:.5"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg></button>
+      <button class="cb go off" id="gbtn" onclick="send()">
+        start <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;opacity:.5"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>
+      </button>
     </div>
   </div>
+
   <div class="pills">
     <div style="position:relative">
       <button class="pill" onclick="tdd('mdd')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span id="mlb">Regular</span><svg class="chv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
       <div class="dd mdd" id="mdd">
-        <div class="mo act" onclick="sm('regular','Regular',this)"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="mii"><div class="mit">Regular</div><div class="mid">General Text Generation</div></div><div class="mick" id="ck-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="mo act" onclick="sm('regular','Regular',this)"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="mii"><div class="mit">Regular</div><div class="mid">General Text Generation Mode</div></div><div class="mick" id="ck-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
         <div class="mo" onclick="sm('image','Image',this)"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="mii"><div class="mit">Image</div><div class="mid">Create images using AI</div></div><div class="mick h" id="ck-image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-        <div class="mo" onclick="stV()"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 18a19.5 19.5 0 0 1-5.63-5.63A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div class="mii"><div class="mit">Voice Call</div><div class="mid">Talk to AI like a call</div></div><div class="mick h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-        <div class="mo" onclick="sm('enhance','Prompt Enhance',this)"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div><div class="mii"><div class="mit">Prompt Enhance</div><div class="mid">Optimize prompts with AI</div></div><div class="mick h" id="ck-enhance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="mo" onclick="sm('video','Video',this)"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><div class="mii"><div class="mit">Video</div><div class="mid">Generate short AI videos</div></div><div class="mick h" id="ck-video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="mo" onclick="stV()"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 18a19.5 19.5 0 0 1-5.63-5.63A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div class="mii"><div class="mit">Voice Call</div><div class="mid">Talk to AI like a WhatsApp call</div></div><div class="mick h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="mo" onclick="sm('enhance','Prompt Enhance',this)"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div><div class="mii"><div class="mit">Prompt Enhance</div><div class="mid">Optimize your prompts with AI</div></div><div class="mick h" id="ck-enhance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="mo" onclick="sm('agent','Agent Mode',this)"><div class="mib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="mii"><div class="mit">Agent Mode</div><div class="mid">Handle multi-step complex tasks</div></div><div class="mick h" id="ck-agent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
       </div>
     </div>
+
     <button class="pill" id="modelPill" onclick="openModelPop()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#10a37f"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
       <span id="moldl">DeepSeek V3</span>
       <svg class="chv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
+
     <div style="position:relative">
       <button class="pill" onclick="tdd('kbdd')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M2 12c0 2.21 4.48 4 10 4s10-1.79 10-4"/><path d="M2 12v6c0 2.21 4.48 4 10 4s10-1.79 10-4v-6"/></svg>Knowledge Base</button>
-      <div class="dd kbdd" id="kbdd"><div class="kbsep"></div><div class="kbem">No knowledge base yet</div></div>
+      <div class="dd kbdd" id="kbdd">
+        <div class="kbr"><div class="kbc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>Deselect All</div>
+        <div class="kbsep"></div>
+        <div class="kbem">No knowledge base yet</div>
+      </div>
     </div>
   </div>
 </div>
@@ -315,32 +419,76 @@ const SURL='https://dpxuopdoumomasmahnyo.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
 const sb=supabase.createClient(SURL,SKEY);
 
-// Auth check — agar logged in nahi to login page
+// OpenRouter key — Vercel env se aayegi production mein
+// Local test ke liye yahan directly daal sakte ho
+const OR_KEY = ""; // Add your OpenRouter key here OR use /api/chat
+
+// Plan config
+const PLANS={
+  free:{credits:500,label:'Free',badge:'FREE',models:['deepseek/deepseek-chat:free','deepseek/deepseek-r1:free','meta-llama/llama-3.3-70b-instruct:free','mistralai/mistral-7b-instruct:free','google/gemini-2.0-flash-exp:free']},
+  pro:{credits:22000,label:'Pro',badge:'PRO',models:['deepseek/deepseek-chat:free','deepseek/deepseek-r1:free','meta-llama/llama-3.3-70b-instruct:free','mistralai/mistral-7b-instruct:free','openai/gpt-4o-mini','google/gemini-flash-1.5','anthropic/claude-haiku-3-5','deepseek/deepseek-r1']},
+  ultimate:{credits:55000,label:'Ultimate',badge:'ULTIMATE',models:'all_flash'},
+  infinite:{credits:550000,label:'Infinite',badge:'∞',models:'all'}
+};
+const CREDIT_COST={text:5,image:80,video:150};
+
+let userPlan='free',userCredits=500,usedCredits=0,curSession=null;
+
+// Auth check + load user
 (async()=>{
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.replace('login.html');return;}
+  curSession=session;
   const u=session.user;
   const email=u.email||'';
   const name=u.user_metadata?.full_name||u.user_metadata?.name||email.split('@')[0]||'User';
-  const initials=name.slice(0,2).toUpperCase();
-  document.getElementById('userAv').textContent=initials;
+  document.getElementById('userAv').textContent=name.slice(0,2).toUpperCase();
   document.getElementById('userName').textContent=name;
   document.getElementById('umEmail').textContent=email;
+
+  // Load profile from Supabase
+  try{
+    const{data:prof}=await sb.from('profiles').select('plan,total_credits,used_credits').eq('id',u.id).single();
+    if(prof){
+      userPlan=prof.plan||'free';
+      userCredits=prof.total_credits||PLANS[userPlan]?.credits||500;
+      usedCredits=prof.used_credits||0;
+      updateCredBar();
+    }
+  }catch(e){console.log('Profile load:',e);}
+
+  const planCfg=PLANS[userPlan]||PLANS.free;
+  document.getElementById('userPlan').textContent=planCfg.label+' Plan';
+  document.getElementById('planBadge').textContent=planCfg.badge;
 })();
+
+function updateCredBar(){
+  const bar=document.getElementById('credBar');
+  bar.style.display='flex';
+  const remaining=Math.max(0,userCredits-usedCredits);
+  const pct=(remaining/userCredits)*100;
+  document.getElementById('credFill').style.width=pct+'%';
+  document.getElementById('credNums').textContent=remaining.toLocaleString()+' / '+userCredits.toLocaleString()+' credits';
+}
+
+async function deductCredits(cost){
+  usedCredits+=cost;
+  updateCredBar();
+  if(!curSession)return;
+  try{
+    await sb.from('profiles').update({used_credits:usedCredits}).eq('id',curSession.user.id);
+  }catch(e){console.log('Credit deduct:',e);}
+}
 
 async function doLogout(){
   await sb.auth.signOut();
   window.location.href='login.html';
 }
 
-// ── API — Vercel serverless se call hogi ──
-// Vercel pe deploy karo aur OPENROUTER_API_KEY env variable set karo
-const API_ENDPOINT='/api/chat'; // Vercel function
-
 // ── MODELS ──
 const MODELS=[
   {sec:"Free Models",id:"deepseek/deepseek-chat:free",name:"DeepSeek V3",sub:"Fast, powerful reasoning",tier:"free",ic:"ds"},
-  {id:"deepseek/deepseek-r1:free",name:"DeepSeek R1",sub:"Open-source reasoning",tier:"free",ic:"ds"},
+  {id:"deepseek/deepseek-r1:free",name:"DeepSeek R1",sub:"Open-source reasoning model",tier:"free",ic:"ds"},
   {id:"meta-llama/llama-3.3-70b-instruct:free",name:"Llama 3.3 70B",sub:"Meta's flagship open model",tier:"free",ic:"llama"},
   {id:"meta-llama/llama-3.1-8b-instruct:free",name:"Llama 3.1 8B",sub:"Lightweight & fast",tier:"free",ic:"llama"},
   {id:"mistralai/mistral-7b-instruct:free",name:"Mistral 7B",sub:"Efficient European AI",tier:"free",ic:"mis"},
@@ -349,14 +497,18 @@ const MODELS=[
   {sec:"Pro Models",id:"openai/gpt-4o-mini",name:"GPT-4o mini",sub:"OpenAI fast & affordable",tier:"pro",ic:"gpt"},
   {id:"openai/gpt-4o",name:"GPT-4o",sub:"OpenAI multimodal flagship",tier:"pro",ic:"gpt"},
   {id:"openai/gpt-4.1",name:"GPT-4.1",sub:"OpenAI latest series",tier:"pro",ic:"gpt"},
+  {id:"openai/gpt-4.1-mini",name:"GPT-4.1 mini",sub:"OpenAI lean & sharp",tier:"pro",ic:"gpt"},
   {id:"google/gemini-flash-1.5",name:"Gemini Flash 1.5",sub:"Google speed optimized",tier:"pro",ic:"gemini"},
-  {id:"google/gemini-pro-1.5",name:"Gemini Pro 1.5",sub:"Google 2M tokens context",tier:"pro",ic:"gemini"},
+  {id:"google/gemini-pro-1.5",name:"Gemini Pro 1.5",sub:"Google 2M context",tier:"pro",ic:"gemini"},
   {id:"anthropic/claude-haiku-3-5",name:"Claude Haiku 3.5",sub:"Anthropic compact & quick",tier:"pro",ic:"claude"},
+  {id:"mistralai/mixtral-8x7b-instruct",name:"Mixtral 8x7B",sub:"Mistral mixture of experts",tier:"pro",ic:"mis"},
   {id:"deepseek/deepseek-r1",name:"DeepSeek R1 Full",sub:"Full R1 with tool use",tier:"pro",ic:"ds"},
   {sec:"Ultimate Models",id:"google/gemini-2.5-pro-preview",name:"Gemini 2.5 Pro",sub:"Google most capable",tier:"ult",ic:"gemini"},
   {id:"anthropic/claude-sonnet-4-5",name:"Claude Sonnet 4.5",sub:"Anthropic balanced",tier:"ult",ic:"claude"},
+  {id:"openai/o1-mini",name:"o1 mini",sub:"OpenAI advanced reasoning",tier:"ult",ic:"gpt"},
   {sec:"Infinite Models",id:"openai/gpt-5",name:"GPT-5",sub:"OpenAI most powerful",tier:"inf",ic:"gpt"},
   {id:"anthropic/claude-opus-4",name:"Claude Opus 4.6",sub:"Anthropic max intelligence",tier:"inf",ic:"claude"},
+  {id:"google/gemini-ultra-1.5",name:"Gemini Ultra 1.5",sub:"Google ultra tier",tier:"inf",ic:"gemini"},
 ];
 
 const ICONS={
@@ -372,20 +524,31 @@ const BADGES={free:`<span class="mrow-badge mb-free">FREE</span>`,pro:`<span cla
 
 let curModel="deepseek/deepseek-chat:free",curModelName="DeepSeek V3";
 
+function isModelAllowed(modelTier){
+  if(userPlan==='infinite')return true;
+  if(userPlan==='ultimate')return modelTier!=='inf';
+  if(userPlan==='pro')return modelTier==='free'||modelTier==='pro';
+  return modelTier==='free';
+}
+
 function buildModelList(){
   const el=document.getElementById("mpopList");
   let html="",lastSec="";
   MODELS.forEach(m=>{
     if(m.sec&&m.sec!==lastSec){html+=`<div class="msec-hd">${m.sec}</div>`;lastSec=m.sec;}
+    const allowed=isModelAllowed(m.tier);
     const sel=m.id===curModel?" sel":"";
-    html+=`<div class="mrow${sel}" onclick="pickModel('${m.id}','${m.name.replace(/'/g,"\\'")}')">
+    const lockIcon=allowed?"":`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+    html+=`<div class="mrow${sel}" onclick="${allowed?`pickModel('${m.id}','${m.name.replace(/'/g,"\\'")}')`:'showUpgradePrompt()'}">
       ${ICONS[m.ic]||ICONS.gpt}
-      <div class="mrow-info"><div class="mrow-name">${m.name}</div><div class="mrow-sub">${m.sub}</div></div>
-      ${BADGES[m.tier]||""}
+      <div class="mrow-info"><div class="mrow-name" style="${allowed?'':'color:#444'}">${m.name}</div><div class="mrow-sub">${m.sub}</div></div>
+      ${allowed?BADGES[m.tier]||"":lockIcon}
     </div>`;
   });
   el.innerHTML=html;
 }
+
+function showUpgradePrompt(){closeModelPop();window.location.href='pricing.html';}
 function openModelPop(){buildModelList();document.getElementById("mpopBg").classList.add("show");document.getElementById("mpop").classList.add("show");}
 function closeModelPop(){document.getElementById("mpopBg").classList.remove("show");document.getElementById("mpop").classList.remove("show");}
 function pickModel(id,name){curModel=id;curModelName=name;document.getElementById("moldl").textContent=name;closeModelPop();}
@@ -395,7 +558,7 @@ setTimeout(()=>{const s=document.getElementById("splash");s.classList.add("hide"
 
 // Greeting
 const hr=new Date().getHours();
-const G=hr<12?{t:"Good morning",s:"What are you building today?"}:hr<15?{t:"Afternoon muse",s:"Turn your ideas into reality"}:hr<18?{t:"Afternoon spark",s:"The world needs what only you can create"}:{t:"Good evening",s:"Ready to create something great?"};
+const G=hr<12?{t:"Good morning",s:"What are you building today?"}:hr<15?{t:"Afternoon muse",s:"Turn your midday thoughts into reality"}:hr<18?{t:"Afternoon spark",s:"The world needs what only you can create"}:{t:"Good evening",s:"Ready to create something great?"};
 document.getElementById("ht").textContent=G.t;
 document.getElementById("hs").textContent=G.s;
 
@@ -408,7 +571,7 @@ function updBtn(){const ok=pEl.value.trim()&&!isGen;document.getElementById("gbt
 function tdd(id){const d=document.getElementById(id),w=d.classList.contains("show");cdd();if(!w)d.classList.add("show");}
 function cdd(){document.querySelectorAll(".dd").forEach(d=>d.classList.remove("show"));}
 document.addEventListener("click",e=>{if(!e.target.closest(".pill")&&!e.target.closest(".cb")&&!e.target.closest(".dd")&&!e.target.closest(".mpop")&&!e.target.closest(".mpop-bg"))cdd();});
-function sm(id,lb,el){cMode=id;document.getElementById("mlb").textContent=lb;document.querySelectorAll(".mo").forEach(o=>o.classList.remove("act"));el.classList.add("act");document.querySelectorAll("[id^='ck-']").forEach(c=>c.classList.add("h"));const ck=document.getElementById("ck-"+id);if(ck)ck.classList.remove("h");cdd();pEl.placeholder=id==="image"?"Describe an image...":"Ask AI anything...";}
+function sm(id,lb,el){cMode=id;document.getElementById("mlb").textContent=lb;document.querySelectorAll(".mo").forEach(o=>o.classList.remove("act"));el.classList.add("act");document.querySelectorAll("[id^='ck-']").forEach(c=>c.classList.add("h"));const ck=document.getElementById("ck-"+id);if(ck)ck.classList.remove("h");cdd();pEl.placeholder=id==="image"?"Describe an image to generate...":id==="video"?"Describe a video scene...":"Ask AI anything...";}
 function sx1(v,el){document.getElementById("x1l").textContent=v;document.querySelectorAll(".x1o").forEach(o=>o.classList.remove("act"));el.classList.add("act");cdd();}
 function openSB(){document.getElementById("sidebar").classList.add("open");document.getElementById("ov").classList.add("show");}
 function closeSB(){document.getElementById("sidebar").classList.remove("open");document.getElementById("ov").classList.remove("show");document.getElementById("umenu").classList.remove("show");}
@@ -417,11 +580,60 @@ function nup(){cdd();}
 function togPerf(){perfOn=!perfOn;document.getElementById("ptog").classList.toggle("on",perfOn);}
 function newFlow(){document.getElementById("ca").innerHTML="";pEl.value="";updBtn();closeSB();}
 function addProj(t){projects.unshift({t});document.getElementById("plist").innerHTML=projects.slice(0,25).map(p=>`<div class="prj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>${p.t}</div>`).join("");}
-function stV(){cdd();document.getElementById("vsc").classList.add("show");let i=0,s=["Connecting...","Listening...","Speaking...","Listening..."];window._vi=setInterval(()=>{document.getElementById("vstat").textContent=s[i++%s.length];},2000);}
+function stV(){cdd();document.getElementById("vsc").classList.add("show");const s=["Connecting...","Listening...","Speaking...","Listening..."];let i=0;window._vi=setInterval(()=>{document.getElementById("vstat").textContent=s[i++%s.length];},2000);}
 function endV(){document.getElementById("vsc").classList.remove("show");clearInterval(window._vi);}
-function addMsg(r,c,t="text"){const ca=document.getElementById("ca"),el=document.createElement("div");el.className=r==="user"?"msg-u":"msg-a";if(t==="image"){const img=document.createElement("img");img.src=c;img.alt="Generated";el.appendChild(img);}else el.textContent=c;ca.appendChild(el);ca.scrollTop=ca.scrollHeight;}
+
+function addMsg(r,c,t="text"){
+  const ca=document.getElementById("ca"),el=document.createElement("div");
+  if(t==="error"){el.className="msg-err";el.textContent=c;}
+  else{el.className=r==="user"?"msg-u":"msg-a";if(t==="image"){const img=document.createElement("img");img.src=c;img.alt="Generated";el.appendChild(img);}else el.textContent=c;}
+  ca.appendChild(el);ca.scrollTop=ca.scrollHeight;
+}
 function shD(){const ca=document.getElementById("ca"),el=document.createElement("div");el.className="msg-a";el.id="de";el.innerHTML=`<div class="dots"><span></span><span></span><span></span></div>`;ca.appendChild(el);ca.scrollTop=ca.scrollHeight;}
 function rmD(){const e=document.getElementById("de");if(e)e.remove();}
+
+async function callAI(messages){
+  const remaining=userCredits-usedCredits;
+  if(remaining<=0) throw new Error('Credits khatam ho gaye. Upgrade karo!');
+
+  const body=JSON.stringify({model:curModel,messages,max_tokens:2048});
+
+  // Step 1: Try /api/chat (works only if Vercel function deployed)
+  try{
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body});
+    const text=await res.text();
+    // Check if it's actually JSON (not HTML error page)
+    if(text.trim().startsWith('{')){
+      const d=JSON.parse(text);
+      if(d.error) throw new Error(d.error);
+      if(d.content) return d.content;
+    }
+    // If HTML returned, /api/chat not deployed — fall through to OR_KEY
+  }catch(apiErr){
+    // Silent fail, try direct below
+  }
+
+  // Step 2: Direct OpenRouter (add your key in OR_KEY variable above)
+  if(!OR_KEY || OR_KEY===''){
+    throw new Error('API setup incomplete. Vercel pe deploy karo aur OPENROUTER_API_KEY env set karo.');
+  }
+  const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+    method:'POST',
+    headers:{
+      'Authorization':`Bearer ${OR_KEY}`,
+      'Content-Type':'application/json',
+      'HTTP-Referer':'https://fluxwith.ai',
+      'X-Title':'fluxwith'
+    },
+    body
+  });
+  const rText=await r.text();
+  let d;
+  try{ d=JSON.parse(rText); }
+  catch(e){ throw new Error('OpenRouter invalid response'); }
+  if(d.error) throw new Error(d.error.message||'API error');
+  return d.choices?.[0]?.message?.content||'No response.';
+}
 
 async function send(){
   if(isGen||!pEl.value.trim())return;
@@ -430,28 +642,32 @@ async function send(){
   btn.innerHTML=`<svg class="spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
   addMsg("user",msg);
   if(document.getElementById("ca").children.length===1)addProj(msg.length>46?msg.slice(0,46)+"…":msg);
+
   try{
     if(cMode==="image"){
       shD();
       const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(msg)}?width=1024&height=1024&nologo=true`;
       rmD();addMsg("assistant",url,"image");
+      await deductCredits(CREDIT_COST.image);
+    } else if(cMode==="video"){
+      addMsg("assistant","Video generation Infinite plan mein available hai.");
     } else {
       shD();
-      // Vercel serverless se call — API key hidden rahegi
-      const res=await fetch(API_ENDPOINT,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:curModel,
-          messages:[{role:'user',content:cMode==='enhance'?`Improve this prompt, return ONLY the enhanced version:\n"${msg}"`:msg}]
-        })
-      });
-      const d=await res.json();
-      rmD();
-      if(d.error)throw new Error(d.error);
-      addMsg("assistant",d.content||"No response.");
+      const prompt=cMode==='enhance'?`Improve this prompt, return ONLY the enhanced version:\n"${msg}"`:msg;
+      const resp=await callAI([{role:"user",content:prompt}]);
+      rmD();addMsg("assistant",resp);
+      await deductCredits(CREDIT_COST.text);
     }
-  }catch(err){rmD();addMsg("assistant","Error: "+(err.message||"Check API setup."));}
+  }catch(err){
+    rmD();
+    const errMsg=err.message||"Error hua";
+    if(errMsg.includes('Credits')||errMsg.includes('Upgrade')){
+      addMsg("assistant",errMsg+" — pricing.html","error");
+    } else {
+      addMsg("assistant","Error: "+errMsg,"error");
+    }
+  }
+
   isGen=false;
   btn.innerHTML=`start <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;opacity:.5"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>`;
   updBtn();
