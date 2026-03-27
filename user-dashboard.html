@@ -46,7 +46,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-sy
 .mrow:last-child{border-bottom:none}
 .mrow:hover{background:#1c1c1c}
 .mrow.sel{background:#1a2040}
-.mrow-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.mrow-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
 .mrow-info{flex:1;min-width:0}
 .mrow-name{font-size:13px;font-weight:600;color:#ddd}
 .mrow-sub{font-size:11px;color:var(--mu);margin-top:1px}
@@ -55,8 +55,8 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-sy
 .mb-pro{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
 .mb-ult{background:rgba(168,85,247,.12);color:#c084fc;border:1px solid rgba(168,85,247,.2)}
 .mb-inf{background:rgba(234,179,8,.12);color:#fbbf24;border:1px solid rgba(234,179,8,.2)}
-.ic-gpt{background:#0d1f17}.ic-gemini{background:#0d1527}.ic-claude{background:#1f120a}.ic-ds{background:#0a1525}.ic-llama{background:#0d1a2a}.ic-mis{background:#130d20}.ic-qwen{background:#151515}
-.mrow-icon svg{width:20px;height:20px}
+.ic-gpt{background:#0a1a14}.ic-gemini{background:#0d1527}.ic-claude{background:#1f120a}.ic-ds{background:#0a1525}.ic-llama{background:#0d1a2a}.ic-mis{background:#130d20}.ic-qwen{background:#151515}
+.mrow-icon svg{width:16px;height:16px}
 .c-gpt{color:#10a37f}.c-ds{color:#4d9fff}.c-llama{color:#0668E1}.c-mis{color:#8b5cf6}.c-qwen{color:#888}.c-claude{color:#d97757}
 
 /* ════ OVERLAY ════ */
@@ -422,7 +422,8 @@ const sb=supabase.createClient(SURL,SKEY);
 
 // OpenRouter key — Vercel env se aayegi production mein
 // Local test ke liye yahan directly daal sakte ho
-const OR_KEY = ""; // OpenRouter key — Vercel env OPENROUTER_API_KEY se aayegi
+const OR_KEY = ""; // <- Yahan apni OpenRouter key daalo: sk-or-xxxx
+// YA: seller-trackr-jmey Vercel project mein api/chat.js deploy karo
 
 // Plan config
 const PLANS={
@@ -552,12 +553,12 @@ const MODELS=[
 ];
 
 const ICONS={
-  gpt:`<div class="mrow-icon" style="background:#0a1a14;border-radius:10px;overflow:hidden"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" style="width:36px;height:36px"><rect width="41" height="41" rx="8" fill="#10A37F"/><path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-6.650-2.980 10.079 10.079 0 0 0-9.612 6.988 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 6.649 2.980 10.078 10.078 0 0 0 9.618-6.992 9.967 9.967 0 0 0 6.663-4.834 10.079 10.079 0 0 0-1.243-11.814zM22.498 37.886a7.474 7.474 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.496zM6.392 31.006a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103L16.628 33.65a7.504 7.504 0 0 1-10.237-2.645zM4.297 13.62A7.469 7.469 0 0 1 8.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L7.044 23.86a7.504 7.504 0 0 1-2.747-10.24zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.051-4.648a7.498 7.498 0 0 1 11.133 7.766zm-21.063 6.929l-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943l4.33-2.501 4.332 2.497v4.998l-4.330 2.500-4.332-2.496V18z" fill="white"/></svg></div>`,
-  gemini:`<div class="mrow-icon" style="background:#000;border-radius:10px;overflow:hidden"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px"><rect width="200" height="200" fill="#000"/><defs><linearGradient id="gemGrad" x1="0%" y1="100%" x2="60%" y2="0%"><stop offset="0%" style="stop-color:#00AAEE"/><stop offset="60%" style="stop-color:#88DDFF"/><stop offset="100%" style="stop-color:#F0F8FF"/></linearGradient></defs><path d="M100,4 C100,4 104,70 196,100 C104,130 100,196 100,196 C100,196 96,130 4,100 C96,70 100,4 100,4 Z" fill="url(#gemGrad)"/></svg></div>`,
+  gpt:`<div class="mrow-icon ic-gpt"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" style="width:28px;height:28px"><rect width="41" height="41" rx="6" fill="#10A37F"/><path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-6.650-2.980 10.079 10.079 0 0 0-9.612 6.988 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 6.649 2.980 10.078 10.078 0 0 0 9.618-6.992 9.967 9.967 0 0 0 6.663-4.834 10.079 10.079 0 0 0-1.243-11.814zM22.498 37.886a7.474 7.474 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.496zM6.392 31.006a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103L16.628 33.65a7.504 7.504 0 0 1-10.237-2.645zM4.297 13.62A7.469 7.469 0 0 1 8.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L7.044 23.86a7.504 7.504 0 0 1-2.747-10.24zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.051-4.648a7.498 7.498 0 0 1 11.133 7.766zm-21.063 6.929l-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943l4.33-2.501 4.332 2.497v4.998l-4.330 2.500-4.332-2.496V18z" fill="white"/></svg></div>`,
+  gemini:`<div class="mrow-icon ic-gemini"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px"><rect width="200" height="200" fill="#000"/><defs><linearGradient id="gemGrad" x1="0%" y1="100%" x2="60%" y2="0%"><stop offset="0%" style="stop-color:#00AAEE"/><stop offset="60%" style="stop-color:#88DDFF"/><stop offset="100%" style="stop-color:#F0F8FF"/></linearGradient></defs><path d="M100,4 C100,4 104,70 196,100 C104,130 100,196 100,196 C100,196 96,130 4,100 C96,70 100,4 100,4 Z" fill="url(#gemGrad)"/></svg></div>`,
   claude:`<div class="mrow-icon ic-claude"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="c-claude"><path d="M12 2l9 4.5V17L12 21.5 3 17V6.5L12 2z"/></svg></div>`,
   ds:`<div class="mrow-icon ic-ds"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="c-ds"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>`,
   llama:`<div class="mrow-icon ic-llama"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="c-llama"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12h8M12 8v8"/></svg></div>`,
-  mis:`<div class="mrow-icon" style="background:#1a0d00;border-radius:10px;overflow:hidden"><svg viewBox="0 0 554 554" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px"><rect width="554" height="554" fill="#1a0d00"/><rect x="5" y="392" width="232" height="77" fill="#E00500"/><rect x="313" y="392" width="233" height="77" fill="#E00500"/><rect x="82" y="320" width="78" height="72" fill="#F9500F"/><rect x="236" y="320" width="79" height="72" fill="#F9500F"/><rect x="390" y="320" width="78" height="72" fill="#F9500F"/><rect x="82" y="238" width="386" height="82" fill="#FF8204"/><rect x="81" y="161" width="156" height="77" fill="#FFAF00"/><rect x="304" y="161" width="164" height="77" fill="#FFAF00"/><rect x="81" y="85" width="80" height="76" fill="#FFD800"/><rect x="389" y="85" width="80" height="76" fill="#FFD800"/></svg></div>`,
+  mis:`<div class="mrow-icon" style="background:#111;border-radius:7px;overflow:hidden;width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 554 554" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px"><rect width="554" height="554" fill="#111"/><rect x="5" y="392" width="232" height="77" fill="#E00500"/><rect x="313" y="392" width="233" height="77" fill="#E00500"/><rect x="82" y="320" width="78" height="72" fill="#F9500F"/><rect x="236" y="320" width="79" height="72" fill="#F9500F"/><rect x="390" y="320" width="78" height="72" fill="#F9500F"/><rect x="82" y="238" width="386" height="82" fill="#FF8204"/><rect x="81" y="161" width="156" height="77" fill="#FFAF00"/><rect x="304" y="161" width="164" height="77" fill="#FFAF00"/><rect x="81" y="85" width="80" height="76" fill="#FFD800"/><rect x="389" y="85" width="80" height="76" fill="#FFD800"/></svg></div>`,
   qwen:`<div class="mrow-icon ic-qwen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#888"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h6v6H9z"/></svg></div>`,
 };
 const BADGES={free:`<span class="mrow-badge mb-free">FREE</span>`,pro:`<span class="mrow-badge mb-pro">PRO</span>`,ult:`<span class="mrow-badge mb-ult">ULTIMATE</span>`,inf:`<span class="mrow-badge mb-inf">INFINITE</span>`};
@@ -663,14 +664,15 @@ async function callAI(messages){
     // Other error = silent fail, try direct
   }
 
-  // Step 2: Direct OpenRouter (add your key in OR_KEY variable above)
-  if(!OR_KEY || OR_KEY===''){
-    throw new Error('API key missing. Vercel Dashboard > Settings > Environment Variables mein OPENROUTER_API_KEY add karo, phir redeploy karo.');
+  // Step 2: Direct OpenRouter
+  const finalKey = OR_KEY;
+  if(!finalKey){
+    throw new Error('OpenRouter key daalo: OR_KEY variable mein sk-or-xxxx set karo.');
   }
   const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
     method:'POST',
     headers:{
-      'Authorization':`Bearer ${OR_KEY}`,
+      'Authorization':`Bearer ${finalKey}`,
       'Content-Type':'application/json',
       'HTTP-Referer':'https://fluxwith.ai',
       'X-Title':'fluxwith'
@@ -680,7 +682,7 @@ async function callAI(messages){
   const rText=await r.text();
   let d;
   try{ d=JSON.parse(rText); }
-  catch(e){ throw new Error('OpenRouter invalid response'); }
+  catch(e){ throw new Error('OpenRouter response parse error'); }
   if(d.error) throw new Error(d.error.message||'API error');
   return d.choices?.[0]?.message?.content||'No response.';
 }
