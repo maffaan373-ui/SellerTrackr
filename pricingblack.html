@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Pricing — fluxwith</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#0e0e0e;--bg3:#141414;
+  --b1:#1e1e1e;--b2:#272727;--b3:#333;
+  --tx:#e8e8e8;--mu:#555;--mu2:#888;
+}
+html{font-size:15px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+*{-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:54px;background:rgba(8,8,8,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1)}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.nav-logo-mk{font-size:19px;font-weight:900;font-style:italic;color:#fff;letter-spacing:-2px;font-family:Georgia,serif}
+.nav-logo-nm{font-size:15px;color:#444;font-weight:300;letter-spacing:-0.3px}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.nav-btn{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--b2);background:transparent;color:var(--mu2);cursor:pointer;transition:.15s}
+.nav-btn:hover{border-color:var(--b3);color:var(--tx)}
+.nav-btn-fill{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:600;border:none;background:#e8e8e8;color:#111;cursor:pointer;transition:.15s}
+.nav-btn-fill:hover{background:#fff}
+
+/* HERO */
+.hero{text-align:center;padding:54px 20px 38px}
+.eyebrow{display:inline-block;border:1px solid rgba(249,115,22,.2);background:rgba(249,115,22,.07);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#fb923c;margin-bottom:20px}
+.hero h1{font-size:clamp(26px,5.5vw,44px);font-weight:700;color:#fff;letter-spacing:-.8px;line-height:1.1;margin-bottom:10px}
+.hero-sub{font-size:14px;color:var(--mu2);max-width:380px;margin:0 auto 34px;line-height:1.65}
+
+/* Toggle */
+.tog-wrap{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:44px;flex-wrap:wrap}
+.tog-lbl{font-size:13px;font-weight:500;color:var(--mu);transition:.2s}
+.tog-lbl.on{color:#fff}
+.tog-track{width:46px;height:25px;background:var(--bg3);border:1px solid var(--b2);border-radius:13px;cursor:pointer;position:relative;transition:.28s;flex-shrink:0}
+.tog-track.yr{background:#0f1a2e;border-color:#1e3a5f}
+.tog-knob{position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#444;transition:.28s}
+.tog-track.yr .tog-knob{left:24px;background:#3b82f6}
+.save-pill{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#22c55e}
+
+/* GRID */
+.grid-outer{padding:0 14px 10px;max-width:980px;margin:0 auto}
+.pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:700px){.pgrid{grid-template-columns:1fr}.grid-outer{padding:0 12px 10px}}
+
+/* Base card */
+.pc{background:var(--bg2);border:1px solid var(--b1);border-radius:16px;padding:22px 20px 20px;display:flex;flex-direction:column;position:relative;overflow:visible;transition:transform .2s}
+.pc:hover{transform:translateY(-3px)}
+.pc-pro{border-color:#1a2a40}
+.pc-pro:hover{border-color:#1e3a5f}
+.pc-ult{border:none;padding:1px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#db2777,#ea580c)}
+.pc-ult:hover{filter:brightness(1.04);transform:translateY(-3px)}
+.pc-ult-inner{background:var(--bg2);border-radius:15px;padding:22px 20px 20px;display:flex;flex-direction:column;height:100%;position:relative}
+.pc-inf{background:linear-gradient(160deg,rgba(120,53,15,.18),rgba(8,8,8,0) 60%),var(--bg2);border-color:#2a1f00}
+.pc-inf:hover{border-color:#3d2f00}
+
+/* Badges */
+.pop-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#7c3aed,#db2777);color:#fff;font-size:9px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:.06em;white-space:nowrap;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.off-badge{position:absolute;top:14px;right:14px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.04em}
+.off-ult{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);color:#c084fc}
+.off-inf{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.2);color:#fbbf24}
+
+/* Plan */
+.plan-name{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:3px}
+.plan-tag{font-size:11px;color:var(--mu);margin-bottom:14px}
+.cr-chip{display:inline-block;background:var(--bg3);border:1px solid var(--b2);border-radius:7px;padding:5px 9px;font-size:11px;font-weight:600;color:var(--mu2);margin-bottom:14px}
+.price-row{display:flex;align-items:flex-end;gap:3px;margin-bottom:4px}
+.p-cur{font-size:15px;font-weight:600;color:#fff;margin-bottom:5px}
+.p-amt{font-size:34px;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1}
+.p-per{font-size:12px;color:var(--mu);margin-bottom:5px}
+.p-bill{font-size:11px;color:var(--mu);margin-bottom:20px}
+.p-strike{text-decoration:line-through;color:var(--mu);margin-right:3px}
+
+/* CTA */
+.cta{width:100%;padding:11px;border-radius:11px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.18s;margin-bottom:18px;text-align:center}
+.cta-pro{background:#0f1e36;color:#60a5fa;border:1px solid #1a3461}
+.cta-pro:hover{background:#122444;color:#93c5fd;border-color:#1e3d7a}
+.cta-ult{background:linear-gradient(135deg,#6d28d9,#be185d);color:#fff;box-shadow:0 3px 14px rgba(109,40,217,.28)}
+.cta-ult:hover{filter:brightness(1.1)}
+.cta-inf{background:linear-gradient(135deg,#78350f,#92400e);color:#fbbf24;border:1px solid rgba(234,179,8,.2)}
+.cta-inf:hover{box-shadow:0 3px 14px rgba(234,179,8,.15);filter:brightness(1.08)}
+
+/* Features */
+.fl{display:flex;flex-direction:column;gap:8px;flex:1}
+.fi{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--mu2);line-height:1.45}
+.fi-check{flex-shrink:0;margin-top:1px;color:#22c55e;font-weight:700;font-size:11px;width:14px}
+.fi-cross{flex-shrink:0;margin-top:1px;color:#282828;font-weight:700;font-size:11px;width:14px}
+.fi b{color:var(--tx);font-weight:500}
+.f-sep{height:1px;background:var(--b1);margin:4px 0}
+.starter{text-align:center;margin-top:18px;font-size:12px;color:var(--mu)}
+.starter a{color:var(--mu2);border-bottom:1px solid var(--b2);text-decoration:none}
+.starter a:hover{color:var(--tx)}
+
+/* COMPARE TABLE */
+.cmp-outer{padding:60px 14px 60px;max-width:980px;margin:0 auto}
+.cmp-hd{text-align:center;font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:-.3px}
+.cmp-sub{text-align:center;font-size:13px;color:var(--mu);margin-bottom:32px}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;min-width:520px;border-collapse:collapse;font-size:12px}
+.tbl th{padding:11px 13px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--b1)}
+.tbl th:first-child{text-align:left}
+.tbl td{padding:11px 13px;text-align:center;border-bottom:1px solid rgba(255,255,255,.025);color:var(--mu2)}
+.tbl td:first-child{text-align:left;color:var(--tx);font-weight:500}
+.tbl tr:hover td{background:rgba(255,255,255,.012)}
+.tbl .sec-row td{background:var(--bg3);color:var(--mu);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:8px 13px}
+.ck{color:#22c55e;font-weight:700}
+.cx{color:#1e1e1e;font-weight:700}
+.tag{display:inline-block;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:600}
+.tag-free{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);color:#22c55e}
+.tag-pro{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.15);color:#60a5fa}
+.tag-ult{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.15);color:#c084fc}
+.tag-inf{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.15);color:#fbbf24}
+
+/* FAQ */
+.faq-outer{padding:0 14px 80px;max-width:620px;margin:0 auto}
+.faq-hd{text-align:center;font-size:20px;font-weight:700;color:#fff;margin-bottom:26px;letter-spacing:-.3px}
+.fq{border-bottom:1px solid var(--b1)}
+.fq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:15px 2px;background:none;border:none;font-size:13px;font-weight:500;color:var(--tx);cursor:pointer;text-align:left;gap:12px;font-family:inherit}
+.fq-arr{font-size:11px;color:var(--mu);flex-shrink:0;transition:.22s;display:inline-block}
+.fq.op .fq-arr{transform:rotate(180deg)}
+.fq-a{max-height:0;overflow:hidden;transition:max-height .26s cubic-bezier(.4,0,.2,1)}
+.fq.op .fq-a{max-height:200px}
+.fq-a p{padding:0 2px 15px;font-size:13px;color:var(--mu2);line-height:1.65}
+
+@media(max-width:480px){
+  .hero{padding:36px 14px 24px}
+  .nav{padding:0 14px;height:50px}
+  .nav-btn{padding:6px 10px;font-size:12px}
+  .nav-btn-fill{padding:6px 12px;font-size:12px}
+  .cmp-outer{padding:44px 0 44px}
+  .faq-outer{padding:0 14px 60px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-mk">fl.</span>
+    <span class="nav-logo-nm">fluxwith</span>
+  </a>
+  <div class="nav-actions">
+    <button class="nav-btn" onclick="window.location.href='settings.html'">Settings</button>
+    <button class="nav-btn-fill" onclick="window.location.href='app.html'">Go to app</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Easter Sale — Up to 30% off</div>
+  <h1>Simple, powerful pricing</h1>
+  <p class="hero-sub">Start free. Upgrade for more power. Cancel anytime.</p>
+  <div class="tog-wrap">
+    <span class="tog-lbl on" id="lbl-mo">Monthly</span>
+    <div class="tog-track" id="tog" onclick="swapBilling()"><div class="tog-knob"></div></div>
+    <span class="tog-lbl" id="lbl-yr">Yearly</span>
+    <div class="save-pill">Save up to 30%</div>
+  </div>
+</div>
+
+<div class="grid-outer">
+  <div class="pgrid">
+    <div class="pc pc-pro">
+      <div class="plan-name">Pro</div>
+      <div class="plan-tag">For serious creators</div>
+      <div class="cr-chip">22,000 credits / month</div>
+      <div class="price-row"><span class="p-cur">$</span><span class="p-amt" id="pro-amt">19.90</span><span class="p-per">/mo</span></div>
+      <div class="p-bill" id="pro-bill">Billed monthly</div>
+      <button class="cta cta-pro" onclick="checkout('pro')">Continue</button>
+      <div class="fl">
+        <div class="fi"><span class="fi-check">✓</span><span><b>22,000 credits</b> per month</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>GPT-4o mini, Gemini Flash, Claude Haiku</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>All free models included</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>Image generation (80 cr/image)</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>Priority support</span></div>
+        <div class="f-sep"></div>
+        <div class="fi"><span class="fi-cross">✕</span><span>No flagship models</span></div>
+        <div class="fi"><span class="fi-cross">✕</span><span>No video generation</span></div>
+      </div>
+    </div>
+
+    <div class="pc pc-ult">
+      <div class="pc-ult-inner">
+        <div class="pop-badge">Most Popular</div>
+        <div class="off-badge off-ult">10% OFF</div>
+        <div class="plan-name" style="color:#c084fc;margin-top:10px">Ultimate</div>
+        <div class="plan-tag">For power users and teams</div>
+        <div class="cr-chip">55,000 credits / month</div>
+        <div class="price-row"><span class="p-cur" style="color:#c084fc">$</span><span class="p-amt" id="ult-amt">44.91</span><span class="p-per">/mo</span></div>
+        <div class="p-bill" id="ult-bill">Monthly &nbsp;<span class="p-strike">$49.90</span></div>
+        <button class="cta cta-ult" onclick="checkout('ult')">Get Ultimate</button>
+        <div class="fl">
+          <div class="fi"><span class="fi-check">✓</span><span><b>55,000 credits</b> per month</span></div>
+          <div class="fi"><span class="fi-check">✓</span><span>GPT-4o, Claude Sonnet 4.5, Gemini Pro</span></div>
+          <div class="fi"><span class="fi-check">✓</span><span>Everything in Pro</span></div>
+          <div class="fi"><span class="fi-check">✓</span><span>Image generation (80 cr/image)</span></div>
+          <div class="fi"><span class="fi-check">✓</span><span>Agent mode and multi-step tasks</span></div>
+          <div class="fi"><span class="fi-check">✓</span><span>API access</span></div>
+          <div class="f-sep"></div>
+          <div class="fi"><span class="fi-cross">✕</span><span>No GPT-5 or Claude Opus</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc pc-inf">
+      <div class="off-badge off-inf">MAXIMUM POWER</div>
+      <div class="plan-name" style="color:#fbbf24">Infinite</div>
+      <div class="plan-tag">For enterprises and builders</div>
+      <div class="cr-chip">550,000 credits / month</div>
+      <div class="price-row"><span class="p-cur" style="color:#fbbf24">$</span><span class="p-amt" id="inf-amt">399.92</span><span class="p-per">/mo</span></div>
+      <div class="p-bill" id="inf-bill">Billed monthly</div>
+      <button class="cta cta-inf" onclick="checkout('inf')">Get Infinite</button>
+      <div class="fl">
+        <div class="fi"><span class="fi-check">✓</span><span><b>550,000 credits</b> per month</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>GPT-5, Claude Opus 4, Gemini Ultra</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>All models — zero restrictions</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>AI Video generation (150 cr/sec)</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>Dedicated support and SLA</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>Custom integrations and API</span></div>
+        <div class="fi"><span class="fi-check">✓</span><span>White-label option</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="starter">Not ready to commit? <a href="signup.html">Try for free</a> — 500 credits, no card needed.</div>
+</div>
+
+<div class="cmp-outer">
+  <div class="cmp-hd">Compare plans</div>
+  <div class="cmp-sub">Everything you need to make the right decision.</div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="text-align:left;width:38%">Feature</th>
+          <th>Starter</th><th style="color:#60a5fa">Pro</th><th style="color:#c084fc">Ultimate</th><th style="color:#fbbf24">Infinite</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="sec-row"><td colspan="5">Credits and Limits</td></tr>
+        <tr><td>Monthly credits</td><td>500</td><td>22,000</td><td>55,000</td><td>550,000</td></tr>
+        <tr><td>Text chat cost</td><td colspan="4" style="text-align:center">5 credits per message</td></tr>
+        <tr><td>Image generation cost</td><td colspan="4" style="text-align:center">80 credits per image</td></tr>
+        <tr><td>Video generation cost</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td><span class="tag tag-inf">150 cr/sec</span></td></tr>
+        <tr class="sec-row"><td colspan="5">AI Models</td></tr>
+        <tr><td>Free models (DeepSeek, Llama, Mistral)</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+        <tr><td>Flash models (GPT-4o mini, Gemini Flash)</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+        <tr><td>Advanced models (GPT-4o, Claude Sonnet)</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+        <tr><td>Flagship models (GPT-5, Claude Opus, Sora)</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+        <tr class="sec-row"><td colspan="5">Image Generation</td></tr>
+        <tr><td>AI Image models</td><td><span class="tag tag-free">Basic</span></td><td><span class="tag tag-pro">Standard</span></td><td><span class="tag tag-ult">HD</span></td><td><span class="tag tag-inf">Ultra HD</span></td></tr>
+        <tr><td>Max images per month</td><td>6</td><td>275</td><td>687</td><td>6,875</td></tr>
+        <tr><td>Image resolution</td><td>512x512</td><td>1024x1024</td><td>2048x2048</td><td>4096x4096</td></tr>
+        <tr class="sec-row"><td colspan="5">Video Generation</td></tr>
+        <tr><td>AI Video generation</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+        <tr><td>Max video seconds/month</td><td>—</td><td>—</td><td>—</td><td>3,666 sec</td></tr>
+        <tr><td>Video models (Sora, Runway, Kling)</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+        <tr class="sec-row"><td colspan="5">Features</td></tr>
+        <tr><td>Voice call AI</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+        <tr><td>Agent mode</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+        <tr><td>API access</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+        <tr><td>White-label</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="faq-outer">
+  <div class="faq-hd">Frequently asked questions</div>
+  <div class="fq"><button class="fq-q" onclick="togFaq(this)">What are credits and how do they work?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Credits are your usage currency on fluxwith. Every action costs credits: text messages cost 5, image generation costs 80, and video generation costs 150 per second. Credits reset at the start of each billing cycle.</p></div></div>
+  <div class="fq"><button class="fq-q" onclick="togFaq(this)">Can I switch plans at any time?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Yes. You can upgrade or downgrade at any time. When upgrading, you get immediate access to the new plan's credits and models. When downgrading, the change takes effect at the next billing cycle.</p></div></div>
+  <div class="fq"><button class="fq-q" onclick="togFaq(this)">Do unused credits roll over?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Credits do not roll over between billing cycles. They reset fresh each month or year, depending on your billing preference.</p></div></div>
+  <div class="fq"><button class="fq-q" onclick="togFaq(this)">What payment methods are accepted?<span class="fq-arr">▾</span></button><div class="fq-a"><p>We accept all major credit and debit cards (Visa, Mastercard, Amex), as well as PayPal. Payments are processed securely through Polar.sh.</p></div></div>
+  <div class="fq"><button class="fq-q" onclick="togFaq(this)">Is there a free trial?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Yes — the Starter plan is permanently free with 500 credits per month. No credit card required. You can upgrade whenever you need more power.</p></div></div>
+</div>
+
+<script>
+const IDS={pro:{mo:'4da7adb7-d343-4d60-851a-0d0f4e4fad47',yr:'6895e5e8-fbab-4642-b144-cae5c10a61ae'},ult:{mo:'dd47e7cc-a8c6-46ae-b40e-6a1bde85a2bd',yr:'38d9011e-5112-4613-88e7-fd128f2a8f7f'},inf:{mo:'9d07014f-f09b-4003-80d5-887555715ac4',yr:'80df82f4-b9c2-49ab-8ab7-ba436c240015'}};
+const PRICES={pro:{mo:'19.90',yr:'13.93'},ult:{mo:'44.91',yr:'31.44'},inf:{mo:'399.92',yr:'279.94'}};
+let yearly=false;
+function swapBilling(){
+  yearly=!yearly;
+  document.getElementById('tog').classList.toggle('yr',yearly);
+  document.getElementById('lbl-mo').classList.toggle('on',!yearly);
+  document.getElementById('lbl-yr').classList.toggle('on',yearly);
+  document.getElementById('pro-amt').textContent=yearly?PRICES.pro.yr:PRICES.pro.mo;
+  document.getElementById('ult-amt').textContent=yearly?PRICES.ult.yr:PRICES.ult.mo;
+  document.getElementById('inf-amt').textContent=yearly?PRICES.inf.yr:PRICES.inf.mo;
+  document.getElementById('pro-bill').textContent=yearly?'Billed yearly ($167.16/yr)':'Billed monthly';
+  document.getElementById('ult-bill').innerHTML=yearly?'Billed yearly ($377.28/yr)':'Monthly &nbsp;<span class="p-strike">$49.90</span>';
+  document.getElementById('inf-bill').textContent=yearly?'Billed yearly ($3,359.28/yr)':'Billed monthly';
+}
+function checkout(plan){window.open('https://sandbox.polar.sh/checkout?product_id='+IDS[plan][yearly?'yr':'mo'],'_blank')}
+function togFaq(btn){const item=btn.closest('.fq'),wasOpen=item.classList.contains('op');document.querySelectorAll('.fq').forEach(f=>f.classList.remove('op'));if(!wasOpen)item.classList.add('op')}
+</script>
+</body>
+</html>
