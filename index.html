@@ -6,641 +6,994 @@
   <title>Fluxwith — The AI Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 15px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: #ffffff; color: #111111; min-height: 100vh; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: #fff; color: #111; min-height: 100vh; overflow-x: hidden; }
     a { text-decoration: none; color: inherit; }
     button { cursor: pointer; font-family: 'Inter', sans-serif; }
+    * { -webkit-tap-highlight-color: transparent; }
 
-    /* ── VARIABLES ── */
-    :root {
-      --black:   #111111;
-      --gray:    #6b6b6b;
-      --light:   #f4f4f4;
-      --border:  #e5e5e5;
-      --white:   #ffffff;
-    }
+    :root { --black:#111; --gray:#6b6b6b; --light:#f4f4f4; --border:#e5e5e5; }
 
-    /* ── NAV ── */
+    /* ══ NAV ══ */
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       height: 60px; display: flex; align-items: center;
       padding: 0 20px; justify-content: space-between;
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.96); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
-    .nav-logo {
-      display: flex; align-items: center; gap: 0;
-    }
-    .nav-logo img {
-      width: 32px; height: 32px; border-radius: 8px; object-fit: cover;
-    }
-    .nav-logo-name {
-      font-family: 'Inter', sans-serif;
-      font-size: 17px; font-weight: 500; color: #111;
-      letter-spacing: -0.4px;
-    }
+    .nav-logo { display: flex; align-items: center; cursor: pointer; }
+    .nav-logo-name { font-size: 17px; font-weight: 500; color: #111; letter-spacing: -0.4px; }
     .nav-hamburger {
       width: 36px; height: 36px; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 5px;
-      cursor: pointer; border: none; background: none; padding: 4px;
+      cursor: pointer; border: none; background: none; padding: 4px; outline: none;
     }
-    .nav-hamburger span {
-      display: block; width: 20px; height: 1.5px;
-      background: var(--black); border-radius: 2px;
-      transition: all 0.2s;
-    }
+    .nav-hamburger span { display: block; width: 20px; height: 1.5px; background: #111; border-radius: 2px; }
 
-    /* ── MOBILE DRAWER ── */
+    /* ══ DRAWER ══ */
     .drawer-overlay {
       position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.3);
-      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+      background: rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity 0.25s;
     }
     .drawer-overlay.open { opacity: 1; pointer-events: all; }
     .drawer {
       position: fixed; top: 0; right: -100%; bottom: 0; z-index: 300;
-      width: min(340px, 88vw);
-      background: #fff;
+      width: min(320px, 88vw); background: #fff;
       display: flex; flex-direction: column;
       transition: right 0.28s cubic-bezier(0.4,0,0.2,1);
     }
     .drawer.open { right: 0; }
     .drawer-head {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
     }
-    .drawer-head-logo { display: flex; align-items: center; gap: 8px; }
-    .drawer-head-logo img { width: 28px; height: 28px; border-radius: 7px; object-fit: cover; }
-    .drawer-head-logo span { font-size: 16px; font-weight: 600; color: var(--black); }
+    .drawer-head-logo { display: flex; align-items: center; gap: 6px; }
+    .drawer-head-logo span { font-size: 14px; font-weight: 600; color: #111; }
     .drawer-close {
-      width: 32px; height: 32px; border: none; background: none;
+      width: 30px; height: 30px; border: none; background: none;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      color: var(--gray); border-radius: 6px; transition: background 0.15s;
+      color: #888; border-radius: 6px; outline: none;
     }
-    .drawer-close:hover { background: var(--light); }
-    .drawer-nav { flex: 1; overflow-y: auto; padding: 8px 0; }
-    .drawer-link {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 24px; font-size: 18px; font-weight: 400;
-      color: var(--black); border-bottom: 1px solid var(--border);
-      transition: background 0.12s; text-decoration: none;
-    }
-    .drawer-link:hover { background: var(--light); }
-    .drawer-link svg { color: var(--gray); }
-    .drawer-footer {
-      padding: 16px 20px; border-top: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .drawer-btn-ghost {
-      width: 100%; padding: 15px; border-radius: 50px;
-      font-size: 16px; font-weight: 400; color: var(--black);
-      background: transparent; border: 1.5px solid var(--border);
-      transition: border-color 0.15s;
-    }
-    .drawer-btn-ghost:hover { border-color: #999; }
-    .drawer-btn-solid {
-      width: 100%; padding: 15px; border-radius: 50px;
-      font-size: 16px; font-weight: 600; color: #fff;
-      background: var(--black); border: none;
-      transition: opacity 0.15s;
-    }
-    .drawer-btn-solid:hover { opacity: 0.85; }
+    .drawer-close:active { background: #f0f0f0; }
+    .drawer-nav { flex: 1; overflow-y: auto; padding: 4px 0; }
 
-    /* ── HERO ── */
+    .d-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 13px 18px;
+      font-size: 14px; font-weight: 400; color: #111;
+      background: none; border: none; cursor: pointer;
+      text-align: left; outline: none; transition: background 0.1s;
+    }
+    .d-btn:active { background: #f0f0f0; }
+    .d-arrow {
+      font-size: 11px; color: #aaa; display: inline-block;
+      transition: transform 0.2s; flex-shrink: 0; margin-left: 6px;
+    }
+    .d-acc-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.25s cubic-bezier(0.4,0,0.2,1);
+      background: #fafafa;
+    }
+    .d-acc-body.open { max-height: 400px; }
+    .d-sub {
+      display: block; width: 100%; padding: 11px 18px 11px 28px;
+      font-size: 13px; font-weight: 400; color: #555;
+      background: none; border: none; cursor: pointer;
+      text-align: left; outline: none; transition: background 0.1s;
+    }
+    .d-sub:active { background: #ececec; }
+    .drawer-footer {
+      padding: 14px 18px; border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .d-foot-ghost {
+      width: 100%; padding: 13px; border-radius: 50px;
+      font-size: 14px; font-weight: 400; color: #111;
+      background: transparent; border: 1.5px solid var(--border); outline: none;
+    }
+    .d-foot-ghost:active { border-color: #999; }
+    .d-foot-solid {
+      width: 100%; padding: 13px; border-radius: 50px;
+      font-size: 14px; font-weight: 600; color: #fff;
+      background: #111; border: none; outline: none;
+    }
+    .d-foot-solid:active { opacity: 0.8; }
+
+    /* ══ PAGE SHOW/HIDE ══ */
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-pad { padding-top: 60px; }
+
+    /* ══ HOME ══ */
     .hero {
       min-height: 100vh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       text-align: center; padding: 100px 24px 60px;
-      position: relative; overflow: hidden;
     }
-    .hero > * { position: relative; z-index: 1; }
-
     .hero-h1 {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic; font-weight: 400;
+      font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400;
       font-size: clamp(44px, 12vw, 88px);
-      line-height: 1.08; letter-spacing: -1px;
-      color: var(--black); margin-bottom: 24px;
+      line-height: 1.08; letter-spacing: -1px; color: #111; margin-bottom: 24px;
     }
-    /* Each word animates in separately */
-    .hero-h1 .word {
-      display: inline-block;
-      opacity: 0;
-      transform: translateY(24px);
-      animation: wordIn 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
-    }
-    .hero-h1 .word:nth-child(1) { animation-delay: 0.05s; }
-    .hero-h1 .word:nth-child(2) { animation-delay: 0.18s; }
-    .hero-h1 .word:nth-child(3) { animation-delay: 0.31s; }
-    .hero-h1 .word:nth-child(4) { animation-delay: 0.44s; }
-    /* Each word has a trailing dot that pulses */
-    .hero-h1 .dot {
-      color: var(--black);
-      opacity: 0;
-      animation: dotIn 0.3s ease forwards;
-    }
-    .hero-h1 .word:nth-child(1) .dot { animation-delay: 0.28s; }
-    .hero-h1 .word:nth-child(2) .dot { animation-delay: 0.41s; }
-    .hero-h1 .word:nth-child(3) .dot { animation-delay: 0.54s; }
-    .hero-h1 .word:nth-child(4) .dot { animation-delay: 0.67s; }
-
-    @keyframes wordIn {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes dotIn {
-      from { opacity: 0; transform: scale(0.4); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
+    .hero-h1 .word { display: inline-block; opacity: 0; transform: translateY(24px); animation: wordIn 0.55s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .hero-h1 .word:nth-child(1){animation-delay:.05s} .hero-h1 .word:nth-child(2){animation-delay:.18s}
+    .hero-h1 .word:nth-child(3){animation-delay:.31s} .hero-h1 .word:nth-child(4){animation-delay:.44s}
+    .hero-h1 .dot { color:#111; opacity:0; animation:dotIn 0.3s ease forwards; }
+    .hero-h1 .word:nth-child(1) .dot{animation-delay:.28s} .hero-h1 .word:nth-child(2) .dot{animation-delay:.41s}
+    .hero-h1 .word:nth-child(3) .dot{animation-delay:.54s} .hero-h1 .word:nth-child(4) .dot{animation-delay:.67s}
+    @keyframes wordIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes dotIn  { from{opacity:0;transform:scale(0.4)} to{opacity:1;transform:scale(1)} }
     .hero-sub {
-      font-size: clamp(15px, 3.5vw, 18px); color: var(--gray);
-      max-width: 480px; line-height: 1.75; margin-bottom: 36px;
-      font-weight: 400;
-      opacity: 0; animation: wordIn 0.55s 0.75s cubic-bezier(0.22,1,0.36,1) forwards;
+      font-size: clamp(15px,3.5vw,18px); color: #6b6b6b; max-width: 480px;
+      line-height: 1.75; margin-bottom: 36px;
+      opacity:0; animation: wordIn 0.55s 0.75s cubic-bezier(0.22,1,0.36,1) forwards;
     }
     .hero-btns {
-      display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 400px;
-      opacity: 0; animation: wordIn 0.55s 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+      display:flex; flex-direction:column; gap:12px; width:100%; max-width:400px;
+      opacity:0; animation: wordIn 0.55s 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
     }
     .h-btn-ghost {
-      width: 100%; padding: 16px; border-radius: 50px;
-      font-size: 16px; font-weight: 400; color: var(--black);
-      background: transparent; border: 1.5px solid var(--border);
-      transition: border-color 0.15s;
+      width:100%; padding:16px; border-radius:50px; font-size:16px; font-weight:400;
+      color:#111; background:transparent; border:1.5px solid var(--border); outline:none;
     }
-    .h-btn-ghost:hover { border-color: #999; }
+    .h-btn-ghost:active { border-color:#999; }
     .h-btn-solid {
-      width: 100%; padding: 16px; border-radius: 50px;
-      font-size: 16px; font-weight: 600; color: #fff;
-      background: var(--black); border: none;
-      transition: opacity 0.15s;
+      width:100%; padding:16px; border-radius:50px; font-size:16px; font-weight:600;
+      color:#fff; background:#111; border:none; outline:none;
     }
-    .h-btn-solid:hover { opacity: 0.82; }
+    .h-btn-solid:active { opacity:0.82; }
 
-    /* ── MARQUEE ── */
-    .marquee-wrap {
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      overflow: hidden; background: #fff;
-    }
-    .marquee-track { display: flex; white-space: nowrap; animation: mscroll 28s linear infinite; }
+    /* Marquee */
+    .marquee-wrap { border-top:1px solid var(--border); border-bottom:1px solid var(--border); overflow:hidden; }
+    .marquee-track { display:flex; white-space:nowrap; animation:mscroll 26s linear infinite; }
     @keyframes mscroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
     .m-item {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 28px; font-size: 13px; font-weight: 500;
-      color: #999; border-right: 1px solid var(--border); flex-shrink: 0;
-    }
-    .m-item svg { color: #bbb; }
-
-    /* ── BRANDS ── */
-    .brands { padding: 56px 24px; text-align: center; }
-    .brands-label { font-size: 13px; color: var(--gray); margin-bottom: 32px; line-height: 1.6; max-width: 340px; margin-left: auto; margin-right: auto; }
-    .brands-row {
-      display: flex; align-items: center; justify-content: center;
-      gap: 40px; flex-wrap: wrap;
-    }
-    .brand-item {
-      font-size: 14px; font-weight: 600; color: #bbb;
-      letter-spacing: 0.5px; text-transform: uppercase;
-      display: flex; align-items: center; gap: 6px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:14px 28px; font-size:13px; font-weight:500;
+      color:#999; border-right:1px solid var(--border); flex-shrink:0;
     }
 
-    /* ── FEATURE BLOCKS ── */
-    .feat-block {
-      border-top: 1px solid var(--border);
-      padding: 48px 24px;
-      background: var(--light);
+    /* Feature blocks */
+    .feat-block { border-top:1px solid var(--border); padding:48px 24px; }
+    .feat-block:nth-child(odd) { background:#f9f9f9; }
+    .feat-tag { font-size:12px; font-weight:600; color:#6b6b6b; margin-bottom:14px; letter-spacing:0.3px; }
+    .feat-title { font-size:clamp(22px,5vw,30px); font-weight:700; color:#111; margin-bottom:12px; line-height:1.2; letter-spacing:-0.5px; }
+    .feat-desc { font-size:15px; color:#6b6b6b; line-height:1.75; margin-bottom:20px; }
+    .feat-link-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:14px; font-weight:500; color:#111;
+      border-bottom:1.5px solid #111; padding-bottom:1px;
+      background:none; border-left:none; border-right:none; border-top:none;
+      outline:none; cursor:pointer; font-family:'Inter',sans-serif;
     }
-    .feat-block + .feat-block { border-top: 1px solid var(--border); background: #fff; }
-    .feat-block:nth-child(odd) { background: var(--light); }
-    .feat-tag { font-size: 12px; font-weight: 600; color: var(--gray); margin-bottom: 14px; letter-spacing: 0.3px; }
-    .feat-title {
-      font-size: clamp(22px, 5vw, 30px); font-weight: 700;
-      color: var(--black); margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.5px;
-    }
-    .feat-desc { font-size: 15px; color: var(--gray); line-height: 1.75; margin-bottom: 20px; }
-    .feat-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 14px; font-weight: 500; color: var(--black);
-      border-bottom: 1.5px solid var(--black); padding-bottom: 1px;
-      transition: opacity 0.15s;
-    }
-    .feat-link:hover { opacity: 0.6; }
     .feat-mockup {
-      margin-top: 28px; border-radius: 16px; overflow: hidden;
-      background: #e8e8e8; aspect-ratio: 16/9;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border);
+      margin-top:28px; border-radius:16px; overflow:hidden;
+      background:#efefef; aspect-ratio:16/9;
+      display:flex; align-items:center; justify-content:center;
+      border:1px solid var(--border);
     }
-    .feat-mockup-inner {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 10px; padding: 24px;
-    }
-    .feat-mockup-icon { color: #ccc; }
-    .feat-mockup-label { font-size: 12px; color: #bbb; font-family: monospace; }
+    .feat-mockup-inner { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px; padding:24px; width:100%; height:100%; }
+    .feat-mockup-label { font-size:12px; color:#bbb; font-family:monospace; }
 
-    /* ── HOW IT WORKS ── */
-    .how-section { padding: 60px 24px; border-top: 1px solid var(--border); }
-    .how-label { font-size: 12px; font-weight: 600; color: var(--gray); margin-bottom: 10px; letter-spacing: 0.3px; }
-    .how-title { font-size: clamp(22px, 5vw, 30px); font-weight: 700; color: var(--black); margin-bottom: 36px; letter-spacing: -0.5px; }
-    .how-steps { display: flex; flex-direction: column; gap: 0; }
-    .how-step {
-      display: flex; gap: 16px; padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .how-step:last-child { border-bottom: none; }
-    .how-step-num {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--black); color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
-    }
-    .how-step-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-    .how-step-desc { font-size: 13px; color: var(--gray); line-height: 1.65; }
+    /* How it works */
+    .how-section { padding:60px 24px; border-top:1px solid var(--border); }
+    .how-label { font-size:12px; font-weight:600; color:#6b6b6b; margin-bottom:10px; letter-spacing:0.3px; }
+    .how-title { font-size:clamp(22px,5vw,30px); font-weight:700; color:#111; margin-bottom:36px; letter-spacing:-0.5px; }
+    .how-step { display:flex; gap:16px; padding:20px 0; border-bottom:1px solid var(--border); }
+    .how-step:last-child { border-bottom:none; }
+    .how-step-num { width:28px; height:28px; border-radius:50%; background:#111; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; margin-top:2px; }
+    .how-step-title { font-size:15px; font-weight:600; margin-bottom:4px; }
+    .how-step-desc { font-size:13px; color:#6b6b6b; line-height:1.65; }
 
-    /* ── FOOTER ── */
-    .footer { border-top: 1px solid var(--border); }
-    .footer-top { padding: 48px 24px; }
-    .footer-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-    .footer-brand img { width: 28px; height: 28px; border-radius: 7px; object-fit: cover; }
-    .footer-brand span { font-size: 15px; font-weight: 600; color: var(--black); }
-    .footer-tagline { font-size: 13px; color: var(--gray); line-height: 1.7; max-width: 240px; margin-bottom: 28px; }
-    .footer-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px; }
-    .footer-col-head { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #bbb; margin-bottom: 14px; }
-    .footer-col a { display: block; font-size: 13px; color: var(--gray); margin-bottom: 10px; transition: color 0.14s; }
-    .footer-col a:hover { color: var(--black); }
-    .footer-bottom {
-      border-top: 1px solid var(--border); padding: 16px 24px;
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-    }
-    .footer-copy { font-size: 12px; color: #bbb; }
-    .footer-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray); }
-    .footer-status-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+    /* Footer */
+    .footer { border-top:1px solid var(--border); }
+    .footer-top { padding:48px 24px; }
+    .footer-anim-tag { margin-bottom:16px; display:flex; flex-direction:column; }
+    .fat-word { display:inline-block; font-family:'Instrument Serif',serif; font-style:italic; font-size:clamp(26px,6vw,40px); font-weight:400; color:#111; letter-spacing:-0.5px; line-height:1.2; animation:wordIn 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+    #fat-w2 { animation-delay:0.2s; }
+    .footer-cols { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:32px; }
+    .footer-col-head { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#bbb; margin-bottom:14px; }
+    .footer-col-link { display:block; font-size:13px; color:#6b6b6b; margin-bottom:10px; background:none; border:none; padding:0; cursor:pointer; text-align:left; font-family:'Inter',sans-serif; outline:none; }
+    .footer-col-link:active { color:#111; }
+    .footer-bottom { border-top:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    .footer-copy { font-size:12px; color:#bbb; }
+    .footer-status { display:flex; align-items:center; gap:6px; font-size:12px; color:#6b6b6b; }
+    .footer-status-dot { width:6px; height:6px; border-radius:50%; background:#22c55e; }
 
-    /* ── FOOTER ANIMATED TAGLINE ── */
-    .footer-anim-tag {
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .fat-word {
-      display: inline-block;
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: clamp(26px, 6vw, 40px);
-      font-weight: 400;
-      color: var(--black);
-      letter-spacing: -0.5px;
-      line-height: 1.2;
-      animation: fatIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
-    }
-    #fat-w2 { animation-delay: 0.2s; }
-    @keyframes fatIn {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    /* ══ INNER PAGES ══ */
+    .inner-page { min-height:100vh; }
+    .inner-hero { padding:80px 24px 50px; border-bottom:1px solid var(--border); background:#f9f9f9; }
+    .inner-tag { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#888; margin-bottom:12px; }
+    .inner-title { font-size:clamp(28px,7vw,52px); font-weight:700; color:#111; letter-spacing:-.8px; line-height:1.1; margin-bottom:14px; }
+    .inner-sub { font-size:15px; color:#6b6b6b; line-height:1.75; max-width:520px; }
+    .inner-body { padding:40px 24px 80px; max-width:680px; }
+    .inner-section { margin-bottom:36px; }
+    .inner-section h3 { font-size:17px; font-weight:600; color:#111; margin-bottom:10px; letter-spacing:-.2px; }
+    .inner-section p { font-size:14px; color:#6b6b6b; line-height:1.75; }
+    .inner-card-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+    @media(max-width:480px){.inner-card-grid{grid-template-columns:1fr}}
+    .inner-card { background:#f5f5f5; border:1px solid #e8e8e8; border-radius:12px; padding:18px; }
+    .inner-card h4 { font-size:14px; font-weight:600; color:#111; margin-bottom:6px; }
+    .inner-card p { font-size:12px; color:#888; line-height:1.6; }
 
+    /* ══ AUTH PAGES ══ */
+    .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:80px 24px 40px; background:#f9f9f9; }
+    .auth-box { width:100%; max-width:380px; background:#fff; border:1px solid var(--border); border-radius:20px; padding:32px 28px; }
+    .auth-title { font-size:22px; font-weight:700; color:#111; margin-bottom:6px; letter-spacing:-.4px; }
+    .auth-sub { font-size:13px; color:#888; margin-bottom:28px; line-height:1.6; }
+    .auth-label { display:block; font-size:12px; font-weight:600; color:#555; margin-bottom:6px; }
+    .auth-input { width:100%; padding:12px 14px; border:1px solid #e0e0e0; border-radius:10px; font-size:14px; color:#111; outline:none; font-family:'Inter',sans-serif; margin-bottom:16px; }
+    .auth-input:focus { border-color:#999; }
+    .auth-submit { width:100%; padding:13px; border-radius:50px; font-size:14px; font-weight:600; color:#fff; background:#111; border:none; cursor:pointer; outline:none; margin-top:4px; }
+    .auth-submit:active { opacity:.8; }
+    .auth-divider { text-align:center; font-size:12px; color:#bbb; margin:16px 0; }
+    .auth-switch { margin-top:18px; text-align:center; font-size:13px; color:#888; }
+    .auth-switch span { color:#111; font-weight:500; cursor:pointer; text-decoration:underline; }
 
-    /* Remove tap highlight on mobile */
-    * { -webkit-tap-highlight-color: transparent; }
-    .acc-sub-btn, .drawer-acc-btn, .drawer-link, .h-btn-ghost, .h-btn-solid,
-    .drawer-btn-ghost, .drawer-btn-solid { -webkit-tap-highlight-color: transparent; outline: none; }
+    /* ══ PRICING ══ */
+    .pr-wrap { background:#f5f5f5; min-height:100vh; }
+    .pr-hero { text-align:center; padding:54px 20px 38px; }
+    .pr-eyebrow { display:inline-block; border:1px solid rgba(220,38,38,.2); background:rgba(220,38,38,.05); border-radius:20px; padding:5px 14px; font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#dc2626; margin-bottom:20px; }
+    .pr-hero h1 { font-size:clamp(26px,5.5vw,44px); font-weight:700; color:#111; letter-spacing:-.8px; line-height:1.1; margin-bottom:10px; }
+    .pr-hero-sub { font-size:14px; color:#888; max-width:380px; margin:0 auto 34px; line-height:1.65; }
+    .tog-wrap { display:flex; align-items:center; justify-content:center; gap:11px; margin-bottom:44px; flex-wrap:wrap; }
+    .tog-lbl { font-size:13px; font-weight:500; color:#888; transition:.2s; }
+    .tog-lbl.on { color:#111; }
+    .tog-track { width:46px; height:25px; background:#e8e8e8; border:1px solid #d0d0d0; border-radius:13px; cursor:pointer; position:relative; transition:.28s; flex-shrink:0; outline:none; }
+    .tog-track.yr { background:#e0edff; border-color:#93c5fd; }
+    .tog-knob { position:absolute; top:3px; left:3px; width:17px; height:17px; border-radius:50%; background:#bbb; transition:.28s; }
+    .tog-track.yr .tog-knob { left:24px; background:#2563eb; }
+    .save-pill { background:rgba(22,163,74,.07); border:1px solid rgba(22,163,74,.18); border-radius:20px; padding:4px 12px; font-size:11px; font-weight:700; color:#16a34a; }
+    .pr-grid-outer { padding:0 14px 10px; max-width:980px; margin:0 auto; }
+    .pgrid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+    @media(max-width:700px){.pgrid{grid-template-columns:1fr}.pr-grid-outer{padding:0 12px 10px}}
+    .pc { background:#fff; border:1px solid #e0e0e0; border-radius:16px; padding:22px 20px 20px; display:flex; flex-direction:column; position:relative; overflow:visible; transition:transform .2s,box-shadow .2s; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+    .pc:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    .pc-pro{border-color:#dde5f7}.pc-pro:hover{border-color:#93c5fd}
+    .pc-ult{border:none;padding:1px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#db2777,#ea580c);box-shadow:0 4px 20px rgba(124,58,237,.15)}
+    .pc-ult:hover{filter:brightness(1.03);transform:translateY(-3px)}
+    .pc-ult-inner{background:#fff;border-radius:15px;padding:22px 20px 20px;display:flex;flex-direction:column;height:100%;position:relative}
+    .pc-inf{background:linear-gradient(160deg,rgba(254,243,199,.7),#fff 60%),#fff;border-color:#fde68a}
+    .pc-inf:hover{border-color:#fcd34d;box-shadow:0 8px 24px rgba(234,179,8,.1)}
+    .pop-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#7c3aed,#db2777);color:#fff;font-size:9px;font-weight:700;padding:3px 12px;border-radius:20px;letter-spacing:.06em;white-space:nowrap;box-shadow:0 4px 14px rgba(124,58,237,.3)}
+    .off-badge{position:absolute;top:14px;right:14px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.04em}
+    .off-ult{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.18);color:#9333ea}
+    .off-inf{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.22);color:#d97706}
+    .plan-name{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#888;margin-bottom:3px}
+    .plan-tag{font-size:11px;color:#888;margin-bottom:14px}
+    .cr-chip{display:inline-block;background:#f0f0f0;border:1px solid #e0e0e0;border-radius:7px;padding:5px 9px;font-size:11px;font-weight:600;color:#555;margin-bottom:14px}
+    .price-row{display:flex;align-items:flex-end;gap:3px;margin-bottom:4px}
+    .p-cur{font-size:15px;font-weight:600;color:#111;margin-bottom:5px}
+    .p-amt{font-size:34px;font-weight:700;color:#111;letter-spacing:-1px;line-height:1}
+    .p-per{font-size:12px;color:#888;margin-bottom:5px}
+    .p-bill{font-size:11px;color:#888;margin-bottom:20px}
+    .p-strike{text-decoration:line-through;color:#888;margin-right:3px}
+    .cta{width:100%;padding:11px;border-radius:11px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.15s;margin-bottom:18px;text-align:center;outline:none}
+    .cta-pro{background:#eff6ff;color:#2563eb;border:1px solid #dbeafe}.cta-pro:active{background:#dbeafe}
+    .cta-ult{background:linear-gradient(135deg,#6d28d9,#be185d);color:#fff;box-shadow:0 3px 14px rgba(109,40,217,.22)}.cta-ult:active{filter:brightness(1.1)}
+    .cta-inf{background:#111;color:#fbbf24;border:1px solid #333}.cta-inf:active{background:#222}
+    .fl{display:flex;flex-direction:column;gap:8px;flex:1}
+    .fi{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:#555;line-height:1.45}
+    .fi-check{flex-shrink:0;margin-top:1px;color:#16a34a;font-weight:700;font-size:11px;width:14px}
+    .fi-cross{flex-shrink:0;margin-top:1px;color:#ccc;font-weight:700;font-size:11px;width:14px}
+    .fi b{color:#111;font-weight:500}
+    .f-sep{height:1px;background:#e0e0e0;margin:4px 0}
+    .pr-starter{text-align:center;margin-top:18px;font-size:12px;color:#888}
+    .pr-starter-btn{background:none;border:none;color:#555;border-bottom:1px solid #d0d0d0;cursor:pointer;font-size:12px;padding:0;outline:none;font-family:'Inter',sans-serif}
+    .pr-starter-btn:active{color:#111}
+    .cmp-outer{padding:60px 14px;max-width:980px;margin:0 auto}
+    .cmp-hd{text-align:center;font-size:20px;font-weight:700;color:#111;margin-bottom:6px;letter-spacing:-.3px}
+    .cmp-sub{text-align:center;font-size:13px;color:#888;margin-bottom:32px}
+    .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tbl{width:100%;min-width:520px;border-collapse:collapse;font-size:12px;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e0e0e0}
+    .tbl th{padding:11px 13px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#888;border-bottom:1px solid #e0e0e0;background:#fafafa}
+    .tbl th:first-child{text-align:left}
+    .tbl td{padding:11px 13px;text-align:center;border-bottom:1px solid rgba(0,0,0,.04);color:#555}
+    .tbl td:first-child{text-align:left;color:#111;font-weight:500}
+    .tbl tr:hover td{background:rgba(0,0,0,.012)}
+    .tbl .sec-row td{background:#fafafa;color:#888;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:8px 13px;border-top:1px solid #e0e0e0}
+    .ck{color:#16a34a;font-weight:700}.cx{color:#ddd;font-weight:700}
+    .tag{display:inline-block;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:600}
+    .tag-free{background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.14);color:#16a34a}
+    .tag-pro{background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.14);color:#2563eb}
+    .tag-ult{background:rgba(147,51,234,.07);border:1px solid rgba(147,51,234,.14);color:#9333ea}
+    .tag-inf{background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.16);color:#d97706}
+    .faq-outer{padding:0 14px 80px;max-width:620px;margin:0 auto}
+    .faq-hd{text-align:center;font-size:20px;font-weight:700;color:#111;margin-bottom:26px;letter-spacing:-.3px}
+    .fq{border-bottom:1px solid #e0e0e0}
+    .fq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:15px 2px;background:none;border:none;font-size:13px;font-weight:500;color:#111;cursor:pointer;text-align:left;gap:12px;font-family:'Inter',sans-serif;outline:none}
+    .fq-arr{font-size:11px;color:#888;flex-shrink:0;transition:.22s;display:inline-block}
+    .fq.op .fq-arr{transform:rotate(180deg)}
+    .fq-a{max-height:0;overflow:hidden;transition:max-height .26s cubic-bezier(.4,0,.2,1)}
+    .fq.op .fq-a{max-height:200px}
+    .fq-a p{padding:0 2px 15px;font-size:13px;color:#555;line-height:1.65}
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-    .fu  { animation: fadeUp 0.5s ease both; }
-    .d1  { animation-delay: 0.1s; }
-    .d2  { animation-delay: 0.2s; }
-
-    /* ── DRAWER ACCORDION ── */
-    .acc-arrow-txt {
-      font-size: 14px; color: #999; transition: transform 0.22s ease;
-      display: inline-block; line-height: 1;
-    }
-    .drawer-acc-btn.open .acc-arrow-txt { transform: rotate(180deg); }
-
-    .drawer-acc-btn {
-      display: flex; align-items: center; justify-content: space-between;
-      width: 100%; padding: 20px 24px; font-size: 18px; font-weight: 400;
-      color: var(--black); background: none; border: none;
-      border-bottom: 1px solid var(--border); cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: background 0.12s; text-align: left;
-    }
-    .drawer-acc-btn:hover { background: var(--light); }
-    .drawer-acc-btn .acc-arrow {
-      transition: transform 0.22s ease;
-      color: var(--gray); flex-shrink: 0;
-    }
-    .drawer-acc-btn.open .acc-arrow { transform: rotate(180deg); }
-
-    .drawer-acc-body {
-      max-height: 0; overflow: hidden;
-      transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1);
-      background: var(--light);
-      border-bottom: none;
-    }
-    .drawer-acc-body.open { max-height: 500px; }
-
-    .acc-sub-btn {
-      display: flex; align-items: center; gap: 10px;
-      width: 100%; padding: 11px 20px 11px 24px;
-      font-size: 15px; font-weight: 400; color: #444;
-      background: none; border: none;
-      cursor: pointer; text-align: left; text-decoration: none;
-      transition: background 0.12s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .acc-sub-btn:last-child { border-bottom: none; }
-    .acc-sub-btn:hover { background: #ececec; }
-    .acc-sub-btn:focus { outline: none; }
-    .acc-sub-btn:active { background: #e0e0e0; }
-    .acc-sub-icon {
-      width: 28px; height: 28px; border-radius: 7px;
-      background: #fff; border: none;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--black); flex-shrink: 0;
+    @media(max-width:480px){
+      .nav{padding:0 14px}
+      .pr-hero{padding:36px 14px 24px}
+      .cmp-outer{padding:44px 0}
+      .faq-outer{padding:0 14px 60px}
+      .inner-hero{padding:60px 18px 40px}
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ══ NAV ══ -->
 <nav class="nav">
-  <a href="index.html" class="nav-logo">
-<svg width="26" height="19" viewBox="0 0 70 50" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;margin-right:-1px"><text x="0" y="44" font-family="Georgia,'Times New Roman',serif" font-size="52" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-4">fl.</text></svg><span class="nav-logo-name">fluxwith</span>
-  </a>
-  <button class="nav-hamburger" id="ham-btn" aria-label="Menu">
+  <div class="nav-logo" onclick="showPage('home')">
+    <svg width="26" height="19" viewBox="0 0 70 50" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;display:block;margin-right:-1px"><text x="0" y="44" font-family="Georgia,'Times New Roman',serif" font-size="52" font-weight="900" font-style="italic" fill="#111" letter-spacing="-4">fl.</text></svg>
+    <span class="nav-logo-name">fluxwith</span>
+  </div>
+  <button class="nav-hamburger" id="ham-btn">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- DRAWER OVERLAY -->
 <div class="drawer-overlay" id="drawer-overlay"></div>
 
-<!-- DRAWER -->
+<!-- ══ DRAWER ══ -->
 <div class="drawer" id="drawer">
   <div class="drawer-head">
     <div class="drawer-head-logo">
-      <svg width="22" height="22" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-bottom:-3px"><text x="2" y="48" font-family="Georgia,'Times New Roman',serif" font-size="50" font-weight="900" font-style="italic" fill="#111111" letter-spacing="-3">fl.</text></svg><span style="font-size:16px;font-weight:600;color:#111">Fluxwith</span>
+      <svg width="20" height="20" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-bottom:-2px"><text x="2" y="48" font-family="Georgia,'Times New Roman',serif" font-size="50" font-weight="900" font-style="italic" fill="#111" letter-spacing="-3">fl.</text></svg>
+      <span>Fluxwith</span>
     </div>
     <button class="drawer-close" id="drawer-close">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
   <nav class="drawer-nav">
-
-    <!-- Features accordion -->
-    <button class="drawer-acc-btn" id="acc-feat-btn">
-      Features
-      <span class="acc-arrow-txt">˅</span>
+    <button class="d-btn" id="acc-feat-btn" onclick="toggleAcc('feat')">
+      Features <span class="d-arrow" id="arr-feat">˅</span>
     </button>
-    <div class="drawer-acc-body" id="acc-feat-body">
-      <a href="video-call.html" class="acc-sub-btn">
-        Video Call AI
-      </a>
-      <a href="voice.html" class="acc-sub-btn">
-        Voice AI
-      </a>
-      <a href="video-making.html" class="acc-sub-btn">
-        AI Video
-      </a>
-      <a href="pic-making.html" class="acc-sub-btn">
-        AI Image
-      </a>
+    <div class="d-acc-body" id="body-feat">
+      <button class="d-sub" onclick="goPage('ai-chat')">AI Chat</button>
+      <button class="d-sub" onclick="goPage('ai-image')">AI Image Generation</button>
+      <button class="d-sub" onclick="goPage('ai-video')">AI Video Generation</button>
+      <button class="d-sub" onclick="goPage('ai-canvas')">AI Canvas</button>
+      <button class="d-sub" onclick="goPage('build-website')">Build Website</button>
     </div>
 
-    <!-- Pricing — outside, direct link, no bottom border -->
-    <a href="pricing.html" class="drawer-link" style="border-bottom:none">Pricing</a>
+    <button class="d-btn" onclick="goPage('pricing')">Pricing</button>
 
-    <!-- Resources accordion -->
-    <button class="drawer-acc-btn" id="acc-res-btn">
-      Resources
-      <span class="acc-arrow-txt">˅</span>
+    <button class="d-btn" id="acc-res-btn" onclick="toggleAcc('res')">
+      Resources <span class="d-arrow" id="arr-res">˅</span>
     </button>
-    <div class="drawer-acc-body" id="acc-res-body">
-      <a href="docs.html" class="acc-sub-btn">
-        Documentation
-      </a>
-      <a href="changelog.html" class="acc-sub-btn">
-        Changelog
-      </a>
-      <a href="about.html" class="acc-sub-btn">
-        About
-      </a>
+    <div class="d-acc-body" id="body-res">
+      <button class="d-sub" onclick="goPage('docs')">Documentation</button>
+      <button class="d-sub" onclick="goPage('changelog')">Changelog</button>
+      <button class="d-sub" onclick="goPage('about')">About</button>
     </div>
 
-    <!-- Community accordion -->
-    <button class="drawer-acc-btn" id="acc-com-btn">
-      Community
-      <span class="acc-arrow-txt">˅</span>
+    <button class="d-btn" id="acc-com-btn" onclick="toggleAcc('com')">
+      Community <span class="d-arrow" id="arr-com">˅</span>
     </button>
-    <div class="drawer-acc-body" id="acc-com-body">
-      <a href="#" class="acc-sub-btn">
-        Discord
-      </a>
-      <a href="#" class="acc-sub-btn">
-        Twitter / X
-      </a>
-      <a href="#" class="acc-sub-btn">
-        GitHub
-      </a>
+    <div class="d-acc-body" id="body-com">
+      <button class="d-sub" onclick="goPage('discord')">Discord</button>
+      <button class="d-sub" onclick="goPage('twitter')">Twitter / X</button>
+      <button class="d-sub" onclick="goPage('github')">GitHub</button>
     </div>
-
   </nav>
   <div class="drawer-footer">
-    <button class="drawer-btn-ghost" onclick="location.href='login.html'">Sign in</button>
-    <button class="drawer-btn-solid" onclick="location.href='signup.html'">Sign up</button>
+    <button class="d-foot-ghost" onclick="goPage('login')">Sign in</button>
+    <button class="d-foot-solid" onclick="goPage('signup')">Sign up</button>
   </div>
 </div>
 
-<!-- HERO -->
-<section class="hero">
-  <h1 class="hero-h1">
-    <span class="word">speak<span class="dot">.</span></span>
-    <span class="word"> see<span class="dot">.</span></span><br>
-    <span class="word">create<span class="dot">.</span></span>
-    <span class="word"> now<span class="dot">.</span></span>
-  </h1>
-  <p class="hero-sub">
-    An AI platform that connects your voice, vision, and creativity in a single flow.
-  </p>
-  <div class="hero-btns">
-    <button class="h-btn-ghost" onclick="location.href='login.html'">Sign in</button>
-    <button class="h-btn-solid" onclick="location.href='signup.html'">Sign up free</button>
-  </div>
-</section>
+<!-- ══════════════════════════════════════════
+     HOME
+══════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <h1 class="hero-h1">
+      <span class="word">think<span class="dot">.</span></span>
+      <span class="word"> build<span class="dot">.</span></span><br>
+      <span class="word">create<span class="dot">.</span></span>
+      <span class="word"> ship<span class="dot">.</span></span>
+    </h1>
+    <p class="hero-sub">One platform for AI chat, image generation, video creation, canvas workflows, and website building.</p>
+    <div class="hero-btns">
+      <button class="h-btn-ghost" onclick="goPage('login')">Sign in</button>
+      <button class="h-btn-solid" onclick="goPage('signup')">Get started free</button>
+    </div>
+  </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>AI Video</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>AI Image</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>AI Chat</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real-time AI</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video Call AI</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice AI</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>AI Video</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>AI Image</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>AI Chat</div>
-    <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real-time AI</div>
-  </div>
-</div>
-
-<!-- FEATURE BLOCKS -->
-<div class="feat-block">
-  <div class="feat-tag">Video Call AI</div>
-  <h2 class="feat-title">Talk face-to-face<br>with your AI</h2>
-  <p class="feat-desc">A real-time anime avatar joins your video calls. Speaks any language, listens and responds naturally.</p>
-  <a href="video-call.html" class="feat-link">Learn more about Video Call <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-  <div class="feat-mockup">
-    <div class="feat-mockup-inner">
-      <svg class="feat-mockup-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-      <span class="feat-mockup-label">Video Call Preview</span>
+  <!-- Marquee -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>AI Chat</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>AI Image</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>AI Video</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>AI Canvas</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Build Website</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real-time AI</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>AI Chat</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>AI Image</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>AI Video</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>AI Canvas</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Build Website</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real-time AI</div>
+      <div class="m-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>40+ Languages</div>
     </div>
   </div>
-</div>
 
-<div class="feat-block">
-  <div class="feat-tag">Voice AI</div>
-  <h2 class="feat-title">Speak freely,<br>AI speaks back</h2>
-  <p class="feat-desc">Send voice, get voice replies in under 500ms. Natural conversation in any language — no typing needed.</p>
-  <a href="voice.html" class="feat-link">Learn more about Voice AI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-  <div class="feat-mockup">
-    <div class="feat-mockup-inner">
-      <svg class="feat-mockup-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-      <span class="feat-mockup-label">Voice AI Preview</span>
+  <!-- Feature Blocks -->
+  <div class="feat-block">
+    <div class="feat-tag">AI Chat</div>
+    <h2 class="feat-title">Chat with the world's<br>best AI models</h2>
+    <p class="feat-desc">Access GPT-4o, Claude, Gemini, and 20+ free models from one interface. Switch models mid-conversation without losing context.</p>
+    <button class="feat-link-btn" onclick="goPage('ai-chat')">Explore AI Chat ›</button>
+    <div class="feat-mockup"><div class="feat-mockup-inner"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="feat-mockup-label">AI Chat Preview</span></div></div>
+  </div>
+
+  <div class="feat-block">
+    <div class="feat-tag">AI Image Generation</div>
+    <h2 class="feat-title">Describe anything,<br>see it instantly</h2>
+    <p class="feat-desc">Generate stunning images from text prompts in any style — realistic, anime, 3D, oil painting. Up to 4096×4096 resolution.</p>
+    <button class="feat-link-btn" onclick="goPage('ai-image')">Explore AI Image ›</button>
+    <div class="feat-mockup"><div class="feat-mockup-inner"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="feat-mockup-label">AI Image Preview</span></div></div>
+  </div>
+
+  <div class="feat-block">
+    <div class="feat-tag">AI Canvas / Workflow</div>
+    <h2 class="feat-title">Build visual workflows<br>with AI nodes</h2>
+    <p class="feat-desc">Drag, connect, and automate. Chain AI steps together on an infinite canvas — chat, image, and logic all in one flow.</p>
+    <button class="feat-link-btn" onclick="goPage('ai-canvas')">Explore AI Canvas ›</button>
+    <div class="feat-mockup"><div class="feat-mockup-inner"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span class="feat-mockup-label">Canvas Preview</span></div></div>
+  </div>
+
+  <div class="feat-block">
+    <div class="feat-tag">Build Website</div>
+    <h2 class="feat-title">Describe a site,<br>get working code</h2>
+    <p class="feat-desc">Tell the AI what you want and it builds a fully functional website — HTML, CSS, and JavaScript — ready to deploy in seconds.</p>
+    <button class="feat-link-btn" onclick="goPage('build-website')">Explore Website Builder ›</button>
+    <div class="feat-mockup"><div class="feat-mockup-inner"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="feat-mockup-label">Website Builder Preview</span></div></div>
+  </div>
+
+  <!-- How it works -->
+  <div class="how-section">
+    <div class="how-label">Simple process</div>
+    <h2 class="how-title">Up and running<br>in 60 seconds</h2>
+    <div>
+      <div class="how-step"><div class="how-step-num">1</div><div><div class="how-step-title">Create your account</div><div class="how-step-desc">Sign up free — no credit card. Instant access to all features with 500 starter credits.</div></div></div>
+      <div class="how-step"><div class="how-step-num">2</div><div><div class="how-step-title">Pick a tool</div><div class="how-step-desc">Chat, image, video, canvas, or website builder — choose from the dashboard in one tap.</div></div></div>
+      <div class="how-step"><div class="how-step-num">3</div><div><div class="how-step-title">Start creating</div><div class="how-step-desc">Works in 40+ languages from the first message. No setup, no learning curve.</div></div></div>
     </div>
   </div>
-</div>
 
-<div class="feat-block">
-  <div class="feat-tag">AI Image</div>
-  <h2 class="feat-title">Describe anything,<br>see it instantly</h2>
-  <p class="feat-desc">Text to image in any style — realistic, anime, oil painting, 3D render — up to 8K resolution.</p>
-  <a href="pic-making.html" class="feat-link">Learn more about Image AI <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-  <div class="feat-mockup">
-    <div class="feat-mockup-inner">
-      <svg class="feat-mockup-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      <span class="feat-mockup-label">AI Image Preview</span>
-    </div>
-  </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<div class="how-section">
-  <div class="how-label">Simple process</div>
-  <h2 class="how-title">Up and running<br>in 60 seconds</h2>
-  <div class="how-steps">
-    <div class="how-step">
-      <div class="how-step-num">1</div>
-      <div>
-        <div class="how-step-title">Create your account</div>
-        <div class="how-step-desc">Sign up free — no credit card. Instant access to all features.</div>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-anim-tag">
+        <div><span class="fat-word">stop searching</span></div>
+        <div><span class="fat-word" id="fat-w2">start fluxing</span></div>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <div class="footer-col-head">Product</div>
+          <button class="footer-col-link" onclick="goPage('ai-chat')">AI Chat</button>
+          <button class="footer-col-link" onclick="goPage('ai-image')">AI Image</button>
+          <button class="footer-col-link" onclick="goPage('ai-video')">AI Video</button>
+          <button class="footer-col-link" onclick="goPage('ai-canvas')">AI Canvas</button>
+          <button class="footer-col-link" onclick="goPage('build-website')">Build Website</button>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-head">Company</div>
+          <button class="footer-col-link" onclick="goPage('pricing')">Pricing</button>
+          <button class="footer-col-link" onclick="goPage('docs')">Documentation</button>
+          <button class="footer-col-link" onclick="goPage('about')">About</button>
+          <button class="footer-col-link" onclick="goPage('changelog')">Changelog</button>
+        </div>
       </div>
     </div>
-    <div class="how-step">
-      <div class="how-step-num">2</div>
-      <div>
-        <div class="how-step-title">Pick a feature</div>
-        <div class="how-step-desc">Chat, voice, image, video — choose from the dashboard in one tap.</div>
-      </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 Fluxwith. All rights reserved.</span>
+      <div class="footer-status"><div class="footer-status-dot"></div>All systems operational</div>
     </div>
-    <div class="how-step">
-      <div class="how-step-num">3</div>
-      <div>
-        <div class="how-step-title">Start creating</div>
-        <div class="how-step-desc">Works in any language from the first message. No setup, no learning curve.</div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AI CHAT
+══════════════════════════════════════════ -->
+<div class="page" id="page-ai-chat">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Feature</div>
+      <h1 class="inner-title">AI Chat</h1>
+      <p class="inner-sub">Access 20+ AI models — GPT-4o, Claude, Gemini, DeepSeek, and more — from one clean interface.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>One interface, every model</h3><p>Stop switching between apps. Fluxwith brings every major AI model into one place with a unified conversation history, file uploads, and context memory.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>GPT-4o & Claude</h4><p>Access frontier models from OpenAI and Anthropic on Pro and above.</p></div>
+        <div class="inner-card"><h4>Free models</h4><p>DeepSeek, Llama, Mistral and more — always free with no credit cost.</p></div>
+        <div class="inner-card"><h4>File uploads</h4><p>Send images, PDFs, and documents directly in the chat window.</p></div>
+        <div class="inner-card"><h4>40+ languages</h4><p>Chat in any language — AI auto-detects and responds accordingly.</p></div>
+      </div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AI IMAGE
+══════════════════════════════════════════ -->
+<div class="page" id="page-ai-image">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Feature</div>
+      <h1 class="inner-title">AI Image Generation</h1>
+      <p class="inner-sub">Type a description, pick a style, and generate stunning images instantly — up to 4096×4096 resolution.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>Any style, any resolution</h3><p>From photorealistic portraits to surreal abstract art — the AI understands your creative intent and renders it in seconds.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>Multiple styles</h4><p>Realistic, anime, oil painting, watercolor, 3D render, sketch and more.</p></div>
+        <div class="inner-card"><h4>Up to 4096px</h4><p>Ultra HD on Infinite plan, HD on Ultimate, Standard on Pro.</p></div>
+        <div class="inner-card"><h4>80 cr/image</h4><p>Flat rate per image regardless of style. No hidden fees.</p></div>
+        <div class="inner-card"><h4>Batch generate</h4><p>Create multiple variations of the same prompt in one click.</p></div>
+      </div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AI VIDEO
+══════════════════════════════════════════ -->
+<div class="page" id="page-ai-video">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Feature</div>
+      <h1 class="inner-title">AI Video Generation</h1>
+      <p class="inner-sub">Turn any text prompt into a cinematic video clip using Sora, Runway, and Kling. Available on the Infinite plan.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>Text to video in seconds</h3><p>Describe a scene, choose a visual style, and the AI generates a high-quality video clip. Realistic, animated, or stylized — your call.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>Sora, Runway, Kling</h4><p>Three top video models accessible from one place.</p></div>
+        <div class="inner-card"><h4>Up to 4K output</h4><p>High-resolution video with smooth, consistent frame rates.</p></div>
+        <div class="inner-card"><h4>150 cr/sec</h4><p>Simple per-second pricing. Full control over your credit usage.</p></div>
+        <div class="inner-card"><h4>Multiple styles</h4><p>Cinematic, anime, 3D render, documentary — pick your aesthetic.</p></div>
+      </div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('pricing')">View Infinite plan</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AI CANVAS
+══════════════════════════════════════════ -->
+<div class="page" id="page-ai-canvas">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Feature</div>
+      <h1 class="inner-title">AI Canvas</h1>
+      <p class="inner-sub">An infinite visual workspace where you drag, connect, and automate AI workflows — no code required.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>Build AI workflows visually</h3><p>Connect chat, image generation, and logic nodes on a freeform canvas. Create powerful automated pipelines without writing a single line of code.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>Drag & drop</h4><p>Add AI nodes, connect them, and run your workflow instantly.</p></div>
+        <div class="inner-card"><h4>Multi-model</h4><p>Mix and match different AI models within the same workflow.</p></div>
+        <div class="inner-card"><h4>Templates</h4><p>Start from pre-built workflow templates for common use cases.</p></div>
+        <div class="inner-card"><h4>Export</h4><p>Download outputs or connect to external tools via API.</p></div>
+      </div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BUILD WEBSITE
+══════════════════════════════════════════ -->
+<div class="page" id="page-build-website">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Feature</div>
+      <h1 class="inner-title">Build Website</h1>
+      <p class="inner-sub">Describe what you want and get a fully functional website — HTML, CSS, JavaScript — ready to deploy instantly.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>From idea to live site</h3><p>No design skills, no coding experience needed. Just describe your website and the AI generates clean, production-ready code that you can deploy anywhere.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>Full code output</h4><p>Get complete HTML, CSS, and JavaScript — not just mockups.</p></div>
+        <div class="inner-card"><h4>Editable</h4><p>Edit the generated code directly in the built-in code editor.</p></div>
+        <div class="inner-card"><h4>Mobile-first</h4><p>All generated sites are responsive and mobile-friendly by default.</p></div>
+        <div class="inner-card"><h4>One-click deploy</h4><p>Deploy to Vercel, Netlify, or download the files directly.</p></div>
+      </div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DOCS
+══════════════════════════════════════════ -->
+<div class="page" id="page-docs">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Resources</div>
+      <h1 class="inner-title">Documentation</h1>
+      <p class="inner-sub">API reference, integration guides, code examples, and SDKs for JavaScript and Python.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>Getting started</h3><p>Create an account, get your API key from the dashboard, and make your first request in under 5 minutes. Full REST API with official SDKs.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>API Reference</h4><p>Full endpoint docs with request/response examples for every feature.</p></div>
+        <div class="inner-card"><h4>Quick Start</h4><p>Step-by-step guide to get up and running in 5 minutes.</p></div>
+        <div class="inner-card"><h4>SDKs</h4><p>Official libraries for JavaScript and Python.</p></div>
+        <div class="inner-card"><h4>Webhooks</h4><p>Real-time event notifications for your integrations.</p></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-top">
-    <div class="footer-anim-tag">
-      <div><span class="fat-word" id="fat-w1">stop searching</span></div>
-      <div><span class="fat-word" id="fat-w2">start fluxing</span></div>
+<!-- ══════════════════════════════════════════
+     CHANGELOG
+══════════════════════════════════════════ -->
+<div class="page" id="page-changelog">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Resources</div>
+      <h1 class="inner-title">Changelog</h1>
+      <p class="inner-sub">Every update, improvement, and fix — logged here as we ship.</p>
     </div>
-    <div class="footer-cols">
-      <div class="footer-col">
-        <div class="footer-col-head">Product</div>
-        <a href="video-call.html">Video Call AI</a>
-        <a href="voice.html">Voice AI</a>
-        <a href="video-making.html">AI Video</a>
-        <a href="pic-making.html">AI Image</a>
-      </div>
-      <div class="footer-col">
-        <div class="footer-col-head">Company</div>
-        <a href="pricing.html">Pricing</a>
-        <a href="docs.html">Documentation</a>
-        <a href="about.html">About</a>
-        <a href="changelog.html">Changelog</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+    <div class="inner-body">
+      <div class="inner-section"><h3>v1.2.0 — March 2025</h3><p>Added AI Video Generation on Infinite plan. AI Canvas workflow builder launched. New model: Claude Sonnet 4.5 added to Ultimate plan.</p></div>
+      <div class="inner-section"><h3>v1.1.0 — February 2025</h3><p>Website Builder released. Agent mode available on Ultimate and Infinite. API access now live. New onboarding wizard for new users.</p></div>
+      <div class="inner-section"><h3>v1.0.0 — January 2025</h3><p>Initial launch. AI Chat, AI Image Generation, and three pricing tiers: Pro, Ultimate, Infinite.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ABOUT
+══════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Company</div>
+      <h1 class="inner-title">About Fluxwith</h1>
+      <p class="inner-sub">We're building the simplest way to use every major AI model — chat, image, video, canvas, and websites — in one place.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>Our mission</h3><p>AI should be accessible to everyone — not just developers. Fluxwith brings the world's best AI models into one clean interface that anyone can use in any language.</p></div>
+      <div class="inner-section"><h3>What we believe</h3><p>The best AI experience is one where the technology gets out of the way. Simple, fast, and powerful — that's what we build toward every day.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>Founded</h4><p>2024 — remote-first team across multiple countries.</p></div>
+        <div class="inner-card"><h4>Models</h4><p>20+ AI models from OpenAI, Anthropic, Google, and more.</p></div>
+        <div class="inner-card"><h4>Languages</h4><p>40+ languages supported across all features.</p></div>
+        <div class="inner-card"><h4>Uptime</h4><p>99.9% SLA on Infinite, 99.5% on all other plans.</p></div>
       </div>
     </div>
   </div>
-  <div class="footer-bottom">
-    <span class="footer-copy">&copy; 2025 Fluxwith. All rights reserved.</span>
-    <div class="footer-status">
-      <div class="footer-status-dot"></div>
-      All systems operational
+</div>
+
+<!-- ══════════════════════════════════════════
+     DISCORD
+══════════════════════════════════════════ -->
+<div class="page" id="page-discord">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Community</div>
+      <h1 class="inner-title">Discord</h1>
+      <p class="inner-sub">Join the Fluxwith community — get help, share creations, and talk directly with the team.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>What's inside</h3><p>Thousands of creators, builders, and AI enthusiasts. Share your work, get feedback, vote on features, and stay up to date with every release.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>#general</h4><p>Introductions and general conversation.</p></div>
+        <div class="inner-card"><h4>#showcase</h4><p>Share images, videos, and sites you've built with Fluxwith.</p></div>
+        <div class="inner-card"><h4>#feedback</h4><p>Request features and report bugs directly to the team.</p></div>
+        <div class="inner-card"><h4>#announcements</h4><p>First to know about new features and updates.</p></div>
+      </div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:220px;padding:13px" onclick="window.open('https://discord.gg/fluxwith','_blank')">Join Discord server</button></div>
     </div>
   </div>
-</footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TWITTER
+══════════════════════════════════════════ -->
+<div class="page" id="page-twitter">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Community</div>
+      <h1 class="inner-title">Twitter / X</h1>
+      <p class="inner-sub">Follow @fluxwith for updates, tips, and the best AI creations from the community.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>Stay in the loop</h3><p>We post new feature releases, behind-the-scenes updates, and AI showcases daily. Tag us in your creations to get featured.</p></div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:220px;padding:13px" onclick="window.open('https://twitter.com/fluxwith','_blank')">Follow on X</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     GITHUB
+══════════════════════════════════════════ -->
+<div class="page" id="page-github">
+  <div class="page-pad inner-page">
+    <div class="inner-hero">
+      <div class="inner-tag">Community</div>
+      <h1 class="inner-title">GitHub</h1>
+      <p class="inner-sub">Open-source SDKs, code examples, and community integrations — all on GitHub.</p>
+    </div>
+    <div class="inner-body">
+      <div class="inner-section"><h3>What we open source</h3><p>Our JavaScript and Python SDKs are fully open source. Community integrations and starter templates are also hosted here.</p></div>
+      <div class="inner-card-grid">
+        <div class="inner-card"><h4>fluxwith-js</h4><p>Official JavaScript SDK — npm install fluxwith.</p></div>
+        <div class="inner-card"><h4>fluxwith-py</h4><p>Official Python SDK — pip install fluxwith.</p></div>
+        <div class="inner-card"><h4>examples</h4><p>Ready-to-run code for every feature and use case.</p></div>
+        <div class="inner-card"><h4>community</h4><p>User-submitted integrations and templates.</p></div>
+      </div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:220px;padding:13px" onclick="window.open('https://github.com/fluxwith','_blank')">View on GitHub</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LOGIN
+══════════════════════════════════════════ -->
+<div class="page" id="page-login">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to your Fluxwith account.</div>
+      <label class="auth-label">Email</label>
+      <input class="auth-input" type="email" placeholder="you@example.com"/>
+      <label class="auth-label">Password</label>
+      <input class="auth-input" type="password" placeholder="••••••••"/>
+      <button class="auth-submit">Sign in</button>
+      <div class="auth-divider">or</div>
+      <div class="auth-switch">Don't have an account? <span onclick="goPage('signup')">Sign up free</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SIGNUP
+══════════════════════════════════════════ -->
+<div class="page" id="page-signup">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-title">Create your account</div>
+      <div class="auth-sub">Free forever. No credit card required.</div>
+      <label class="auth-label">Name</label>
+      <input class="auth-input" type="text" placeholder="Your name"/>
+      <label class="auth-label">Email</label>
+      <input class="auth-input" type="email" placeholder="you@example.com"/>
+      <label class="auth-label">Password</label>
+      <input class="auth-input" type="password" placeholder="Create a password"/>
+      <button class="auth-submit">Create account</button>
+      <div class="auth-divider">or</div>
+      <div class="auth-switch">Already have an account? <span onclick="goPage('login')">Sign in</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PRICING
+══════════════════════════════════════════ -->
+<div class="page" id="page-pricing">
+  <div class="page-pad pr-wrap">
+    <div class="pr-hero">
+      <div class="pr-eyebrow">Easter Sale — Up to 30% off</div>
+      <h1>Simple, powerful pricing</h1>
+      <p class="pr-hero-sub">Start free. Upgrade for more power. Cancel anytime.</p>
+      <div class="tog-wrap">
+        <span class="tog-lbl on" id="lbl-mo">Monthly</span>
+        <div class="tog-track" id="tog" onclick="swapBilling()"><div class="tog-knob"></div></div>
+        <span class="tog-lbl" id="lbl-yr">Yearly</span>
+        <div class="save-pill">Save up to 30%</div>
+      </div>
+    </div>
+
+    <div class="pr-grid-outer">
+      <div class="pgrid">
+        <!-- PRO -->
+        <div class="pc pc-pro">
+          <div class="plan-name">Pro</div>
+          <div class="plan-tag">For serious creators</div>
+          <div class="cr-chip">22,000 credits / month</div>
+          <div class="price-row"><span class="p-cur">$</span><span class="p-amt" id="pro-amt">19.90</span><span class="p-per">/mo</span></div>
+          <div class="p-bill" id="pro-bill">Billed monthly</div>
+          <button class="cta cta-pro" onclick="goPage('signup')">Get Pro</button>
+          <div class="fl">
+            <div class="fi"><span class="fi-check">✓</span><span><b>22,000 credits</b> per month</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>AI Chat — GPT-4o mini, Gemini Flash, Claude Haiku</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>AI Image (80 cr/image, up to 1024px)</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>AI Canvas &amp; Website Builder</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>All free models included</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>Priority support</span></div>
+            <div class="f-sep"></div>
+            <div class="fi"><span class="fi-cross">✕</span><span>No flagship models</span></div>
+            <div class="fi"><span class="fi-cross">✕</span><span>No AI Video generation</span></div>
+          </div>
+        </div>
+
+        <!-- ULTIMATE -->
+        <div class="pc pc-ult">
+          <div class="pc-ult-inner">
+            <div class="pop-badge">Most Popular</div>
+            <div class="off-badge off-ult">10% OFF</div>
+            <div class="plan-name" style="color:#9333ea;margin-top:10px">Ultimate</div>
+            <div class="plan-tag">For power users and teams</div>
+            <div class="cr-chip">55,000 credits / month</div>
+            <div class="price-row"><span class="p-cur" style="color:#9333ea">$</span><span class="p-amt" id="ult-amt">44.91</span><span class="p-per">/mo</span></div>
+            <div class="p-bill" id="ult-bill">Monthly &nbsp;<span class="p-strike">$49.90</span></div>
+            <button class="cta cta-ult" onclick="goPage('signup')">Get Ultimate</button>
+            <div class="fl">
+              <div class="fi"><span class="fi-check">✓</span><span><b>55,000 credits</b> per month</span></div>
+              <div class="fi"><span class="fi-check">✓</span><span>AI Chat — GPT-4o, Claude Sonnet 4.5, Gemini Pro</span></div>
+              <div class="fi"><span class="fi-check">✓</span><span>AI Image HD (up to 2048px)</span></div>
+              <div class="fi"><span class="fi-check">✓</span><span>AI Canvas &amp; Website Builder</span></div>
+              <div class="fi"><span class="fi-check">✓</span><span>Agent mode &amp; multi-step tasks</span></div>
+              <div class="fi"><span class="fi-check">✓</span><span>API access</span></div>
+              <div class="f-sep"></div>
+              <div class="fi"><span class="fi-cross">✕</span><span>No AI Video generation</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INFINITE -->
+        <div class="pc pc-inf">
+          <div class="off-badge off-inf">MAXIMUM POWER</div>
+          <div class="plan-name" style="color:#d97706">Infinite</div>
+          <div class="plan-tag">For enterprises and builders</div>
+          <div class="cr-chip">550,000 credits / month</div>
+          <div class="price-row"><span class="p-cur" style="color:#d97706">$</span><span class="p-amt" id="inf-amt">399.92</span><span class="p-per">/mo</span></div>
+          <div class="p-bill" id="inf-bill">Billed monthly</div>
+          <button class="cta cta-inf" onclick="goPage('signup')">Get Infinite</button>
+          <div class="fl">
+            <div class="fi"><span class="fi-check">✓</span><span><b>550,000 credits</b> per month</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>AI Chat — GPT-5, Claude Opus 4, Gemini Ultra</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>AI Image Ultra HD (up to 4096px)</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>AI Video generation (150 cr/sec)</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>AI Canvas &amp; Website Builder</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>Dedicated support &amp; SLA</span></div>
+            <div class="fi"><span class="fi-check">✓</span><span>Custom integrations, API &amp; white-label</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pr-starter">
+        Not ready to commit?
+        <button class="pr-starter-btn" onclick="goPage('signup')">Try for free</button>
+        — 500 credits, no card needed.
+      </div>
+    </div>
+
+    <!-- Compare table -->
+    <div class="cmp-outer">
+      <div class="cmp-hd">Compare plans</div>
+      <div class="cmp-sub">Everything you need to make the right decision.</div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="text-align:left;width:38%">Feature</th>
+              <th>Starter</th>
+              <th style="color:#2563eb">Pro</th>
+              <th style="color:#9333ea">Ultimate</th>
+              <th style="color:#d97706">Infinite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="sec-row"><td colspan="5">Credits</td></tr>
+            <tr><td>Monthly credits</td><td>500</td><td>22,000</td><td>55,000</td><td>550,000</td></tr>
+            <tr><td>Chat cost</td><td colspan="4" style="text-align:center">5 credits per message</td></tr>
+            <tr><td>Image cost</td><td colspan="4" style="text-align:center">80 credits per image</td></tr>
+            <tr><td>Video cost</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td><span class="tag tag-inf">150 cr/sec</span></td></tr>
+            <tr class="sec-row"><td colspan="5">AI Chat Models</td></tr>
+            <tr><td>Free models (DeepSeek, Llama, Mistral)</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Flash models (GPT-4o mini, Gemini Flash)</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Advanced models (GPT-4o, Claude Sonnet)</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Flagship models (GPT-5, Claude Opus)</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+            <tr class="sec-row"><td colspan="5">AI Image</td></tr>
+            <tr><td>Image generation</td><td><span class="tag tag-free">Basic</span></td><td><span class="tag tag-pro">Standard</span></td><td><span class="tag tag-ult">HD</span></td><td><span class="tag tag-inf">Ultra HD</span></td></tr>
+            <tr><td>Max resolution</td><td>512×512</td><td>1024×1024</td><td>2048×2048</td><td>4096×4096</td></tr>
+            <tr><td>Max images/month</td><td>6</td><td>275</td><td>687</td><td>6,875</td></tr>
+            <tr class="sec-row"><td colspan="5">AI Video</td></tr>
+            <tr><td>Video generation</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+            <tr><td>Video models (Sora, Runway, Kling)</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+            <tr class="sec-row"><td colspan="5">Tools</td></tr>
+            <tr><td>AI Canvas / Workflow</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Build Website</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Agent mode</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>API access</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>White-label</td><td class="cx">✕</td><td class="cx">✕</td><td class="cx">✕</td><td class="ck">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-outer">
+      <div class="faq-hd">Frequently asked questions</div>
+      <div class="fq"><button class="fq-q" onclick="togFaq(this)">What are credits and how do they work?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Credits are your usage currency on Fluxwith. Chat messages cost 5 credits, image generation costs 80 credits per image, and video generation costs 150 credits per second. Credits reset at the start of each billing cycle.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="togFaq(this)">Can I switch plans at any time?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Yes. Upgrade or downgrade anytime. Upgrades take effect immediately with access to new credits and models. Downgrades apply at the next billing cycle.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="togFaq(this)">Do unused credits roll over?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Credits do not roll over. They reset fresh each billing cycle — monthly or yearly depending on your plan.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="togFaq(this)">What payment methods are accepted?<span class="fq-arr">▾</span></button><div class="fq-a"><p>We accept all major credit and debit cards (Visa, Mastercard, Amex) and PayPal. All payments are processed securely through Polar.sh.</p></div></div>
+      <div class="fq"><button class="fq-q" onclick="togFaq(this)">Is there a free plan?<span class="fq-arr">▾</span></button><div class="fq-a"><p>Yes — the Starter plan is permanently free with 500 credits per month. No credit card required. Upgrade whenever you need more power.</p></div></div>
+    </div>
+  </div>
+</div>
 
 <script>
-// Drawer toggle
-const ham = document.getElementById('ham-btn');
-const drawer = document.getElementById('drawer');
-const overlay = document.getElementById('drawer-overlay');
-const closeBtn = document.getElementById('drawer-close');
+  /* ══ PAGE SWITCHER ══ */
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const pg = document.getElementById('page-' + name);
+    if (pg) pg.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  function goPage(name) {
+    closeDrawer();
+    showPage(name);
+  }
 
-function openDrawer() {
-  drawer.classList.add('open');
-  overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDrawer() {
-  drawer.classList.remove('open');
-  overlay.classList.remove('open');
-  document.body.style.overflow = '';
-}
-ham.addEventListener('click', openDrawer);
-closeBtn.addEventListener('click', closeDrawer);
-overlay.addEventListener('click', closeDrawer);
+  /* ══ DRAWER ══ */
+  const ham = document.getElementById('ham-btn');
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  const closeBtn = document.getElementById('drawer-close');
+  function openDrawer() { drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  ham.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
 
-// Accordion
-function initAcc(btnId, bodyId) {
-  const btn  = document.getElementById(btnId);
-  const body = document.getElementById(bodyId);
-  btn.addEventListener('click', () => {
-    const isOpen = body.classList.contains('open');
-    // close all first
-    document.querySelectorAll('.drawer-acc-body').forEach(b => b.classList.remove('open'));
-    document.querySelectorAll('.drawer-acc-btn').forEach(b => b.classList.remove('open'));
-    // open this one if it was closed
-    if (!isOpen) {
-      body.classList.add('open');
-      btn.classList.add('open');
+  /* ══ ACCORDION ══ */
+  const accState = { feat: false, res: false, com: false };
+  function toggleAcc(key) {
+    const wasOpen = accState[key];
+    Object.keys(accState).forEach(k => {
+      accState[k] = false;
+      const b = document.getElementById('body-' + k);
+      const a = document.getElementById('arr-' + k);
+      if (b) b.classList.remove('open');
+      if (a) a.style.transform = '';
+    });
+    if (!wasOpen) {
+      accState[key] = true;
+      const b = document.getElementById('body-' + key);
+      const a = document.getElementById('arr-' + key);
+      if (b) b.classList.add('open');
+      if (a) a.style.transform = 'rotate(180deg)';
     }
-  });
-}
-initAcc('acc-feat-btn', 'acc-feat-body');
-initAcc('acc-res-btn',  'acc-res-body');
-initAcc('acc-com-btn',  'acc-com-body');
+  }
+
+  /* ══ BILLING TOGGLE ══ */
+  const PRICES = { pro:{mo:'19.90',yr:'13.93'}, ult:{mo:'44.91',yr:'31.44'}, inf:{mo:'399.92',yr:'279.94'} };
+  let yearly = false;
+  function swapBilling() {
+    yearly = !yearly;
+    document.getElementById('tog').classList.toggle('yr', yearly);
+    document.getElementById('lbl-mo').classList.toggle('on', !yearly);
+    document.getElementById('lbl-yr').classList.toggle('on', yearly);
+    document.getElementById('pro-amt').textContent = yearly ? PRICES.pro.yr : PRICES.pro.mo;
+    document.getElementById('ult-amt').textContent = yearly ? PRICES.ult.yr : PRICES.ult.mo;
+    document.getElementById('inf-amt').textContent = yearly ? PRICES.inf.yr : PRICES.inf.mo;
+    document.getElementById('pro-bill').textContent = yearly ? 'Billed yearly ($167.16/yr)' : 'Billed monthly';
+    document.getElementById('ult-bill').innerHTML   = yearly ? 'Billed yearly ($377.28/yr)' : 'Monthly &nbsp;<span class="p-strike">$49.90</span>';
+    document.getElementById('inf-bill').textContent = yearly ? 'Billed yearly ($3,359.28/yr)' : 'Billed monthly';
+  }
+
+  /* ══ FAQ ══ */
+  function togFaq(btn) {
+    const item = btn.closest('.fq'), wasOpen = item.classList.contains('op');
+    document.querySelectorAll('.fq').forEach(f => f.classList.remove('op'));
+    if (!wasOpen) item.classList.add('op');
+  }
 </script>
 </body>
 </html>
