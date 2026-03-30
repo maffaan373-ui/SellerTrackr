@@ -220,20 +220,6 @@
     .inner-card h4 { font-size:14px; font-weight:600; color:#111; margin-bottom:6px; }
     .inner-card p { font-size:12px; color:#888; line-height:1.6; }
 
-    /* ══ AUTH PAGES ══ */
-    .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:80px 24px 40px; background:#f9f9f9; }
-    .auth-box { width:100%; max-width:380px; background:#fff; border:1px solid var(--border); border-radius:20px; padding:32px 28px; }
-    .auth-title { font-size:22px; font-weight:700; color:#111; margin-bottom:6px; letter-spacing:-.4px; }
-    .auth-sub { font-size:13px; color:#888; margin-bottom:28px; line-height:1.6; }
-    .auth-label { display:block; font-size:12px; font-weight:600; color:#555; margin-bottom:6px; }
-    .auth-input { width:100%; padding:12px 14px; border:1px solid #e0e0e0; border-radius:10px; font-size:14px; color:#111; outline:none; font-family:'Inter',sans-serif; margin-bottom:16px; }
-    .auth-input:focus { border-color:#999; }
-    .auth-submit { width:100%; padding:13px; border-radius:50px; font-size:14px; font-weight:600; color:#fff; background:#111; border:none; cursor:pointer; outline:none; margin-top:4px; }
-    .auth-submit:active { opacity:.8; }
-    .auth-divider { text-align:center; font-size:12px; color:#bbb; margin:16px 0; }
-    .auth-switch { margin-top:18px; text-align:center; font-size:13px; color:#888; }
-    .auth-switch span { color:#111; font-weight:500; cursor:pointer; text-decoration:underline; }
-
     /* ══ PRICING ══ */
     .pr-wrap { background:#f5f5f5; min-height:100vh; }
     .pr-hero { text-align:center; padding:54px 20px 38px; }
@@ -353,8 +339,8 @@
     </button>
     <div class="d-acc-body" id="body-feat">
       <button class="d-sub" onclick="goPage('ai-chat')">AI Chat</button>
-      <button class="d-sub" onclick="goPage('ai-image')">AI Image Generation</button>
-      <button class="d-sub" onclick="goPage('ai-video')">AI Video Generation</button>
+      <button class="d-sub" onclick="goPage('ai-image')">AI Image</button>
+      <button class="d-sub" onclick="goPage('ai-video')">AI Video</button>
       <button class="d-sub" onclick="goPage('ai-canvas')">AI Canvas</button>
       <button class="d-sub" onclick="goPage('build-website')">Build Website</button>
     </div>
@@ -380,8 +366,8 @@
     </div>
   </nav>
   <div class="drawer-footer">
-    <button class="d-foot-ghost" onclick="goPage('login')">Sign in</button>
-    <button class="d-foot-solid" onclick="goPage('signup')">Sign up</button>
+    <button class="d-foot-ghost" onclick="location.href='login.html'">Sign in</button>
+    <button class="d-foot-solid" onclick="location.href='signup.html'">Sign up</button>
   </div>
 </div>
 
@@ -398,8 +384,8 @@
     </h1>
     <p class="hero-sub">One platform for AI chat, image generation, video creation, canvas workflows, and website building.</p>
     <div class="hero-btns">
-      <button class="h-btn-ghost" onclick="goPage('login')">Sign in</button>
-      <button class="h-btn-solid" onclick="goPage('signup')">Get started free</button>
+      <button class="h-btn-ghost" onclick="location.href='login.html'">Sign in</button>
+      <button class="h-btn-solid" onclick="location.href='signup.html'">Get started free</button>
     </div>
   </section>
 
@@ -433,7 +419,7 @@
   </div>
 
   <div class="feat-block">
-    <div class="feat-tag">AI Image Generation</div>
+    <div class="feat-tag">AI Image</div>
     <h2 class="feat-title">Describe anything,<br>see it instantly</h2>
     <p class="feat-desc">Generate stunning images from text prompts in any style — realistic, anime, 3D, oil painting. Up to 4096×4096 resolution.</p>
     <button class="feat-link-btn" onclick="goPage('ai-image')">Explore AI Image ›</button>
@@ -517,7 +503,7 @@
         <div class="inner-card"><h4>File uploads</h4><p>Send images, PDFs, and documents directly in the chat window.</p></div>
         <div class="inner-card"><h4>40+ languages</h4><p>Chat in any language — AI auto-detects and responds accordingly.</p></div>
       </div>
-      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="location.href='signup.html'">Try it free</button></div>
     </div>
   </div>
 </div>
@@ -529,7 +515,7 @@
   <div class="page-pad inner-page">
     <div class="inner-hero">
       <div class="inner-tag">Feature</div>
-      <h1 class="inner-title">AI Image Generation</h1>
+      <h1 class="inner-title">AI Image</h1>
       <p class="inner-sub">Type a description, pick a style, and generate stunning images instantly — up to 4096×4096 resolution.</p>
     </div>
     <div class="inner-body">
@@ -540,7 +526,7 @@
         <div class="inner-card"><h4>80 cr/image</h4><p>Flat rate per image regardless of style. No hidden fees.</p></div>
         <div class="inner-card"><h4>Batch generate</h4><p>Create multiple variations of the same prompt in one click.</p></div>
       </div>
-      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="location.href='signup.html'">Try it free</button></div>
     </div>
   </div>
 </div>
@@ -552,7 +538,7 @@
   <div class="page-pad inner-page">
     <div class="inner-hero">
       <div class="inner-tag">Feature</div>
-      <h1 class="inner-title">AI Video Generation</h1>
+      <h1 class="inner-title">AI Video</h1>
       <p class="inner-sub">Turn any text prompt into a cinematic video clip using Sora, Runway, and Kling. Available on the Infinite plan.</p>
     </div>
     <div class="inner-body">
@@ -586,7 +572,7 @@
         <div class="inner-card"><h4>Templates</h4><p>Start from pre-built workflow templates for common use cases.</p></div>
         <div class="inner-card"><h4>Export</h4><p>Download outputs or connect to external tools via API.</p></div>
       </div>
-      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="location.href='signup.html'">Try it free</button></div>
     </div>
   </div>
 </div>
@@ -609,7 +595,7 @@
         <div class="inner-card"><h4>Mobile-first</h4><p>All generated sites are responsive and mobile-friendly by default.</p></div>
         <div class="inner-card"><h4>One-click deploy</h4><p>Deploy to Vercel, Netlify, or download the files directly.</p></div>
       </div>
-      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="goPage('signup')">Try it free</button></div>
+      <div class="inner-section" style="margin-top:28px"><button class="h-btn-solid" style="max-width:200px;padding:13px" onclick="location.href='signup.html'">Try it free</button></div>
     </div>
   </div>
 </div>
@@ -647,9 +633,9 @@
       <p class="inner-sub">Every update, improvement, and fix — logged here as we ship.</p>
     </div>
     <div class="inner-body">
-      <div class="inner-section"><h3>v1.2.0 — March 2025</h3><p>Added AI Video Generation on Infinite plan. AI Canvas workflow builder launched. New model: Claude Sonnet 4.5 added to Ultimate plan.</p></div>
+      <div class="inner-section"><h3>v1.2.0 — March 2025</h3><p>Added AI Video on Infinite plan. AI Canvas workflow builder launched. New model: Claude Sonnet 4.5 added to Ultimate plan.</p></div>
       <div class="inner-section"><h3>v1.1.0 — February 2025</h3><p>Website Builder released. Agent mode available on Ultimate and Infinite. API access now live. New onboarding wizard for new users.</p></div>
-      <div class="inner-section"><h3>v1.0.0 — January 2025</h3><p>Initial launch. AI Chat, AI Image Generation, and three pricing tiers: Pro, Ultimate, Infinite.</p></div>
+      <div class="inner-section"><h3>v1.0.0 — January 2025</h3><p>Initial launch. AI Chat, AI Image, and three pricing tiers: Pro, Ultimate, Infinite.</p></div>
     </div>
   </div>
 </div>
@@ -741,46 +727,6 @@
 </div>
 
 <!-- ══════════════════════════════════════════
-     LOGIN
-══════════════════════════════════════════ -->
-<div class="page" id="page-login">
-  <div class="auth-wrap">
-    <div class="auth-box">
-      <div class="auth-title">Welcome back</div>
-      <div class="auth-sub">Sign in to your Fluxwith account.</div>
-      <label class="auth-label">Email</label>
-      <input class="auth-input" type="email" placeholder="you@example.com"/>
-      <label class="auth-label">Password</label>
-      <input class="auth-input" type="password" placeholder="••••••••"/>
-      <button class="auth-submit">Sign in</button>
-      <div class="auth-divider">or</div>
-      <div class="auth-switch">Don't have an account? <span onclick="goPage('signup')">Sign up free</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     SIGNUP
-══════════════════════════════════════════ -->
-<div class="page" id="page-signup">
-  <div class="auth-wrap">
-    <div class="auth-box">
-      <div class="auth-title">Create your account</div>
-      <div class="auth-sub">Free forever. No credit card required.</div>
-      <label class="auth-label">Name</label>
-      <input class="auth-input" type="text" placeholder="Your name"/>
-      <label class="auth-label">Email</label>
-      <input class="auth-input" type="email" placeholder="you@example.com"/>
-      <label class="auth-label">Password</label>
-      <input class="auth-input" type="password" placeholder="Create a password"/>
-      <button class="auth-submit">Create account</button>
-      <div class="auth-divider">or</div>
-      <div class="auth-switch">Already have an account? <span onclick="goPage('login')">Sign in</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
      PRICING
 ══════════════════════════════════════════ -->
 <div class="page" id="page-pricing">
@@ -806,7 +752,7 @@
           <div class="cr-chip">22,000 credits / month</div>
           <div class="price-row"><span class="p-cur">$</span><span class="p-amt" id="pro-amt">19.90</span><span class="p-per">/mo</span></div>
           <div class="p-bill" id="pro-bill">Billed monthly</div>
-          <button class="cta cta-pro" onclick="goPage('signup')">Get Pro</button>
+          <button class="cta cta-pro" onclick="location.href='signup.html'">Get Pro</button>
           <div class="fl">
             <div class="fi"><span class="fi-check">✓</span><span><b>22,000 credits</b> per month</span></div>
             <div class="fi"><span class="fi-check">✓</span><span>AI Chat — GPT-4o mini, Gemini Flash, Claude Haiku</span></div>
@@ -830,7 +776,7 @@
             <div class="cr-chip">55,000 credits / month</div>
             <div class="price-row"><span class="p-cur" style="color:#9333ea">$</span><span class="p-amt" id="ult-amt">44.91</span><span class="p-per">/mo</span></div>
             <div class="p-bill" id="ult-bill">Monthly &nbsp;<span class="p-strike">$49.90</span></div>
-            <button class="cta cta-ult" onclick="goPage('signup')">Get Ultimate</button>
+            <button class="cta cta-ult" onclick="location.href='signup.html'">Get Ultimate</button>
             <div class="fl">
               <div class="fi"><span class="fi-check">✓</span><span><b>55,000 credits</b> per month</span></div>
               <div class="fi"><span class="fi-check">✓</span><span>AI Chat — GPT-4o, Claude Sonnet 4.5, Gemini Pro</span></div>
@@ -852,7 +798,7 @@
           <div class="cr-chip">550,000 credits / month</div>
           <div class="price-row"><span class="p-cur" style="color:#d97706">$</span><span class="p-amt" id="inf-amt">399.92</span><span class="p-per">/mo</span></div>
           <div class="p-bill" id="inf-bill">Billed monthly</div>
-          <button class="cta cta-inf" onclick="goPage('signup')">Get Infinite</button>
+          <button class="cta cta-inf" onclick="location.href='signup.html'">Get Infinite</button>
           <div class="fl">
             <div class="fi"><span class="fi-check">✓</span><span><b>550,000 credits</b> per month</span></div>
             <div class="fi"><span class="fi-check">✓</span><span>AI Chat — GPT-5, Claude Opus 4, Gemini Ultra</span></div>
@@ -867,7 +813,7 @@
 
       <div class="pr-starter">
         Not ready to commit?
-        <button class="pr-starter-btn" onclick="goPage('signup')">Try for free</button>
+        <button class="pr-starter-btn" onclick="location.href='signup.html'">Try for free</button>
         — 500 credits, no card needed.
       </div>
     </div>
