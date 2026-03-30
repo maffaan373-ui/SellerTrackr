@@ -1269,55 +1269,28 @@ async function chatSend(){
 }
 
 // ====================================================
-// AI CALL
-// /api/chat serverless pe call karta hai.
-// Sirf 402 (credits empty) pe block karta hai.
-// Baaki sab errors ignore karke response return karta hai.
+// AI CALL — calls /api/chat serverless function
+// No OR_KEY fallback — /api/chat handles everything
 // ====================================================
 async function callAI(messages, model, sys=null){
   const finalMsgs = sys ? [{role:'system',content:sys},...messages] : messages;
-  const body = {model, messages:finalMsgs, max_tokens:4096};
-
   try{
     const r = await fetch('/api/chat', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(body)
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({model, messages: finalMsgs, max_tokens: 4096})
     });
-    // 402 = credits khatam — yeh block karo
-    if(r.status===402) throw new Error('CREDITS_EMPTY');
     const txt = await r.text();
-    if(txt.trim().startsWith('{')){
-      const d = JSON.parse(txt);
-      if(d.content !== undefined) return d.content;
-      // /api/chat ne error diya — OpenRouter error forward karo
-      if(d.error) throw new Error(d.error);
-    }
-    // Non-JSON ya unexpected response = OR_KEY fallback try karo
+    let d;
+    try{ d = JSON.parse(txt); }
+    catch(e){ throw new Error('Server response invalid. Vercel deployment check karo.'); }
+    if(r.status === 402) throw new Error('CREDITS_EMPTY');
+    if(d.error) throw new Error(d.error);
+    return d.content ?? '';
   }catch(e){
-    if(e.message==='CREDITS_EMPTY') throw e;
-    // Sirf 402 aur OpenRouter errors throw karo
-    // "User not found" ya koi bhi credit error = ignore, fallback pe jao
-    const skip = e instanceof TypeError || e.message.includes('not found') || e.message.includes('profile');
-    if(!skip) throw e;
+    if(e.message === 'CREDITS_EMPTY') throw e;
+    throw e;
   }
-
-  // --- Direct OR_KEY fallback (local dev only) ---
-  if(!OR_KEY) throw new Error('AI response nahi aaya. Vercel mein OPENROUTER_API_KEY check karo.');
-  const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-    method:'POST',
-    headers:{
-      'Authorization':'Bearer '+OR_KEY,
-      'Content-Type':'application/json',
-      'HTTP-Referer':location.origin,
-      'X-Title':'fluxwith'
-    },
-    body:JSON.stringify({model, max_tokens:4096, messages:sys?[{role:'system',content:sys},...messages]:messages})
-  });
-  if(!r.ok){const e=await r.json().catch(()=>({})); throw new Error(e.error?.message||'HTTP '+r.status);}
-  const d=await r.json();
-  if(d.error) throw new Error(d.error.message||'API error');
-  return d.choices?.[0]?.message?.content||'';
 }
 
 // ====================================================
