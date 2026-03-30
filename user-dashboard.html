@@ -1270,23 +1270,39 @@ async function chatSend(){
 
 // ====================================================
 // AI CALL
-// /api/chat is preferred (serverless, key is server-side)
-// Falls back to OR_KEY if set locally
+// Tries /api/chat (Vercel serverless) first.
+// Falls back to direct OR_KEY only if route returns 404.
 // ====================================================
 async function callAI(messages, model, sys=null){
   const body={model, messages:sys?[{role:'system',content:sys},...messages]:messages, max_tokens:2048, user_id:sess?.user?.id};
+
+  // --- Try /api/chat serverless route ---
   try{
     const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const txt=await r.text();
-    if(txt.trim().startsWith('{')){
+    // If response is not JSON (e.g. Vercel 404 HTML), route doesn't exist
+    if(!txt.trim().startsWith('{')){
+      // Fall through to OR_KEY only on 404
+      if(r.status!==404) throw new Error('Server error '+r.status+': '+txt.slice(0,120));
+      // 404 = route missing, try OR_KEY fallback below
+    } else {
       const d=JSON.parse(txt);
       if(r.status===402) throw new Error('CREDITS_EMPTY');
       if(d.error) throw new Error(d.error);
-      if(d.content) return d.content;
+      return d.content ?? '';
     }
-  }catch(e){if(e.message==='CREDITS_EMPTY') throw e;}
-  // Direct fallback (dev only)
-  if(!OR_KEY) throw new Error('API not configured. Deploy /api/chat with OPENROUTER_API_KEY.');
+  }catch(e){
+    // Always re-throw these — never swallow them
+    if(e.message==='CREDITS_EMPTY') throw e;
+    if(e.message.startsWith('Server error')) throw e;
+    if(e.message.startsWith('Bad status')) throw e;
+    // Only a real network TypeError means the route is unreachable
+    // (e.g. local dev without Vercel). Fall through to OR_KEY.
+    if(!(e instanceof TypeError)) throw e;
+  }
+
+  // --- Direct OR_KEY fallback (local dev only) ---
+  if(!OR_KEY) throw new Error('API Error: /api/chat se response nahi aaya. Vercel env mein OPENROUTER_API_KEY check karo.');
   const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
     method:'POST',
     headers:{
