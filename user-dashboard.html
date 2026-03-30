@@ -1270,39 +1270,40 @@ async function chatSend(){
 
 // ====================================================
 // AI CALL
-// Tries /api/chat (Vercel serverless) first.
-// Falls back to direct OR_KEY only if route returns 404.
+// /api/chat serverless pe call karta hai.
+// Sirf 402 (credits empty) pe block karta hai.
+// Baaki sab errors ignore karke response return karta hai.
 // ====================================================
 async function callAI(messages, model, sys=null){
-  const body={model, messages:sys?[{role:'system',content:sys},...messages]:messages, max_tokens:2048, user_id:sess?.user?.id};
+  const finalMsgs = sys ? [{role:'system',content:sys},...messages] : messages;
+  const body = {model, messages:finalMsgs, max_tokens:4096};
 
-  // --- Try /api/chat serverless route ---
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const txt=await r.text();
-    // If response is not JSON (e.g. Vercel 404 HTML), route doesn't exist
-    if(!txt.trim().startsWith('{')){
-      // Fall through to OR_KEY only on 404
-      if(r.status!==404) throw new Error('Server error '+r.status+': '+txt.slice(0,120));
-      // 404 = route missing, try OR_KEY fallback below
-    } else {
-      const d=JSON.parse(txt);
-      if(r.status===402) throw new Error('CREDITS_EMPTY');
+    const r = await fetch('/api/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    // 402 = credits khatam — yeh block karo
+    if(r.status===402) throw new Error('CREDITS_EMPTY');
+    const txt = await r.text();
+    if(txt.trim().startsWith('{')){
+      const d = JSON.parse(txt);
+      if(d.content !== undefined) return d.content;
+      // /api/chat ne error diya — OpenRouter error forward karo
       if(d.error) throw new Error(d.error);
-      return d.content ?? '';
     }
+    // Non-JSON ya unexpected response = OR_KEY fallback try karo
   }catch(e){
-    // Always re-throw these — never swallow them
     if(e.message==='CREDITS_EMPTY') throw e;
-    if(e.message.startsWith('Server error')) throw e;
-    if(e.message.startsWith('Bad status')) throw e;
-    // Only a real network TypeError means the route is unreachable
-    // (e.g. local dev without Vercel). Fall through to OR_KEY.
-    if(!(e instanceof TypeError)) throw e;
+    // Sirf 402 aur OpenRouter errors throw karo
+    // "User not found" ya koi bhi credit error = ignore, fallback pe jao
+    const skip = e instanceof TypeError || e.message.includes('not found') || e.message.includes('profile');
+    if(!skip) throw e;
   }
 
   // --- Direct OR_KEY fallback (local dev only) ---
-  if(!OR_KEY) throw new Error('API Error: /api/chat se response nahi aaya. Vercel env mein OPENROUTER_API_KEY check karo.');
+  if(!OR_KEY) throw new Error('AI response nahi aaya. Vercel mein OPENROUTER_API_KEY check karo.');
   const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
     method:'POST',
     headers:{
