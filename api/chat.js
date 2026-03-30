@@ -1,7 +1,7 @@
 // api/chat.js — Vercel Serverless Function
-// Credits HTML client-side handle karta hai — yahan sirf OpenRouter call hai
+// CommonJS format — ES modules mat use karo Vercel Node.js mein
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OR_KEY}`,
+        'Authorization': 'Bearer ' + OR_KEY,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://fluxwith.io',
         'X-Title': 'fluxwith'
@@ -51,4 +51,4 @@ export default async function handler(req, res) {
   } catch (err) {
     return res.status(500).json({ error: err.message || 'Server error' });
   }
-}
+};
