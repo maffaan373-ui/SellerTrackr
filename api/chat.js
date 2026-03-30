@@ -1,9 +1,6 @@
 // api/chat.js — Vercel Serverless Function
-// Deploy karo: /api/chat.js
-// Env variable set karo: OPENROUTER_API_KEY
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -16,7 +13,7 @@ export default async function handler(req, res) {
   const SB_SVC = process.env.SUPABASE_SERVICE_KEY;
 
   if (!OR_KEY) {
-    return res.status(500).json({ error: 'OPENROUTER_API_KEY Vercel environment variables mein set nahi hai' });
+    return res.status(500).json({ error: 'OPENROUTER_API_KEY set nahi hai Vercel environment variables mein' });
   }
 
   // Parse body
@@ -33,11 +30,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'model aur messages required hain' });
   }
 
-  // Credit cost per mode
   const COST = { text: 5, image: 80, video: 150, website: 200, enhance: 5 };
   const cost = COST[mode] || 5;
 
-  // Deduct credits via Supabase RPC (only if user_id and service key available)
+  // Deduct credits — only block on INSUFFICIENT CREDITS, not on other errors
   if (user_id && SB_SVC) {
     try {
       const credRes = await fetch(`${SB_URL}/rest/v1/rpc/deduct_credits`, {
@@ -56,19 +52,24 @@ export default async function handler(req, res) {
       });
 
       const credData = await credRes.json();
+
+      // Only block if credits are genuinely insufficient
+      // "User not found" or profile missing = let request through (non-blocking)
       if (credData && credData.ok === false) {
-        return res.status(402).json({
-          error: 'Insufficient credits',
-          remaining: credData.remaining || 0
-        });
+        const errMsg = (credData.error || '').toLowerCase();
+        if (errMsg.includes('insufficient')) {
+          return res.status(402).json({ error: 'Insufficient credits', remaining: credData.remaining || 0 });
+        }
+        // Any other error (user not found, profile missing, etc.) = log and continue
+        console.warn('Credit deduct skipped:', credData.error);
       }
     } catch (e) {
-      // Credit deduction failed — log but don't block the request
-      console.error('Credit deduct error:', e.message);
+      // Network/DB error = don't block AI call
+      console.error('Credit deduct error (non-blocking):', e.message);
     }
   }
 
-  // Call OpenRouter API
+  // Call OpenRouter
   try {
     const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -78,11 +79,7 @@ export default async function handler(req, res) {
         'HTTP-Referer': process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://fluxwith.io',
         'X-Title': 'fluxwith'
       },
-      body: JSON.stringify({
-        model,
-        messages,
-        max_tokens: 4096
-      })
+      body: JSON.stringify({ model, messages, max_tokens: 4096 })
     });
 
     const text = await orRes.text();
@@ -94,15 +91,17 @@ export default async function handler(req, res) {
     }
 
     if (!orRes.ok) {
-      return res.status(orRes.status).json({ error: data?.error?.message || 'OpenRouter API error: ' + orRes.status });
+      return res.status(orRes.status).json({ error: data?.error?.message || 'OpenRouter error: ' + orRes.status });
     }
 
     if (data.error) {
       return res.status(400).json({ error: data.error.message || 'API error' });
     }
 
-    const content = data.choices?.[0]?.message?.content || '';
-    return res.status(200).json({ content, credits_used: cost });
+    return res.status(200).json({
+      content: data.choices?.[0]?.message?.content || '',
+      credits_used: cost
+    });
 
   } catch (err) {
     return res.status(500).json({ error: 'Server error: ' + (err.message || 'Unknown') });
