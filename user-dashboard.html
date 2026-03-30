@@ -941,19 +941,31 @@ function db(fn,k,ms=300){clearTimeout(_db[k]);_db[k]=setTimeout(fn,ms);}
 let _authDone=false;
 async function initAuth(){
   if(_authDone)return; _authDone=true;
+
+  // Set up auth state listener BEFORE getSession.
+  // Only redirect on explicit SIGNED_OUT — never on !s,
+  // because Supabase can fire events with s=null during
+  // token refresh cycles which would cause a login loop.
+  sb.auth.onAuthStateChange((ev,s)=>{
+    if(ev==='SIGNED_OUT'){location.replace('login.html');return;}
+    if((ev==='TOKEN_REFRESHED'||ev==='SIGNED_IN')&&s) sess=s;
+  });
+
   try{
     const {data:{session}, error} = await sb.auth.getSession();
     if(error) throw error;
     if(!session){location.replace('login.html');return;}
     sess = session;
-    sb.auth.onAuthStateChange((ev,s)=>{
-      if(ev==='SIGNED_OUT'||!s){location.replace('login.html');return;}
-      if(ev==='TOKEN_REFRESHED') sess=s;
-    });
     await loadProfile(session.user);
   }catch(e){
-    console.error('Auth error:', e.message);
-    location.replace('login.html');
+    // Only redirect on genuine auth failures, not profile/DB errors
+    if(!sess){
+      console.error('Auth error:', e.message);
+      location.replace('login.html');
+    }else{
+      console.error('Profile load error:', e.message);
+      hideSplash();
+    }
   }
 }
 
@@ -962,47 +974,48 @@ async function loadProfile(u){
   const meta  = u.user_metadata||{};
   const name  = meta.full_name||meta.name||email.split('@')[0]||'User';
 
-  // Admin check — show only admin UI
+  // Admin check — show only admin UI, hide everything else
   if(email === ADMIN_EMAIL){
     isAdmin = true;
     userRole = 'admin';
-    // Hide all user elements
-    document.getElementById('userNav').style.display   = 'none';
-    document.getElementById('chat-view').style.display = 'none';
+    document.getElementById('userNav').style.display     = 'none';
+    document.getElementById('chat-view').style.display   = 'none';
     document.getElementById('canvas-view').style.display = 'none';
-    document.getElementById('toolbar').style.display   = 'none';
-    document.getElementById('sidebar').style.display   = 'none';
-    // Show admin UI
+    document.getElementById('toolbar').style.display     = 'none';
+    document.getElementById('sidebar').style.display     = 'none';
     document.getElementById('adminNav').classList.add('show');
     document.getElementById('adminView').classList.add('show');
     hideSplash();
-    await adLoad('analytics');
+    // Wrap in try-catch so DB errors never bubble up to initAuth
+    try{ await adLoad('analytics'); }catch(e){ console.error('Admin load:', e.message); }
     return;
   }
 
   // Normal user UI
-  document.getElementById('userNav').style.display = 'flex';
-  document.getElementById('chat-view').style.display = 'flex';
-  document.getElementById('uav').textContent   = name.slice(0,2).toUpperCase();
-  document.getElementById('uname').textContent = name;
-  document.getElementById('uemail').textContent= email;
+  document.getElementById('userNav').style.display     = 'flex';
+  document.getElementById('chat-view').style.display   = 'flex';
+  document.getElementById('uav').textContent    = name.slice(0,2).toUpperCase();
+  document.getElementById('uname').textContent  = name;
+  document.getElementById('uemail').textContent = email;
   const h=new Date().getHours();
   const gt=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
   const gEl=document.getElementById('grtxt');
   if(gEl) gEl.textContent = gt+', '+name.split(' ')[0];
 
+  // Fetch profile — errors here must never redirect to login
   try{
     const {data:p, error} = await sb.from('profiles')
       .select('plan,total_credits,used_credits,role,plan_expires_at')
       .eq('id',u.id).single();
     if(error?.code==='PGRST116'){
+      // Profile doesn't exist yet — insert default row
       await sb.from('profiles').insert({
         id:u.id, email, full_name:name,
         avatar_url:meta.avatar_url||null, plan:'free', total_credits:500, used_credits:0
-      });
+      }).catch(()=>{});
     }else if(p){
       if(p.plan_expires_at && new Date(p.plan_expires_at)<new Date() && p.plan!=='free'){
-        await sb.from('profiles').update({plan:'free',total_credits:500,used_credits:0}).eq('id',u.id);
+        await sb.from('profiles').update({plan:'free',total_credits:500,used_credits:0}).eq('id',u.id).catch(()=>{});
         userPlan='free'; totalCr=500; usedCr=0;
         showToast('Plan expired, downgraded to free');
       }else{
@@ -1012,9 +1025,13 @@ async function loadProfile(u){
         userRole = p.role||'user';
       }
     }
-  }catch(e){console.error('Profile:', e.message);}
+  }catch(e){
+    // Profile fetch failed (e.g. RLS/DB error) — continue with free defaults
+    console.error('Profile fetch:', e.message);
+  }
 
-  updPlanUI(); updCrBar(); loadSpList();
+  updPlanUI(); updCrBar();
+  try{ loadSpList(); }catch(e){}
   hideSplash();
 }
 
