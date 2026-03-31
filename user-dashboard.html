@@ -906,7 +906,7 @@ const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 const ADMIN_EMAIL = 'maffaan373@gmail.com';
 // PipeDream API URL — apna PipeDream URL yahan daalo
 // Format: 'https://eoXXXXXX.m.pipedream.net'
-const PIPEDREAM_URL = window.__PIPEDREAM_URL || '';
+const PIPEDREAM_URL = 'https://eof2izwaaodgs5w.m.pipedream.net';
 
 // OR_KEY: local dev ke liye only (kabhi deploy mat karo real key)
 const OR_KEY = window.__OR_KEY || '';
@@ -1065,6 +1065,7 @@ function updCrBar(){
 async function deductCr(cost, type='text'){
   usedCr += cost; updCrBar();
   if(!sess) return;
+  // Non-blocking — credit errors kabhi AI call ko block nahi karein
   try{
     const {data} = await sb.rpc('deduct_credits',{
       p_user_id:sess.user.id, p_amount:cost, p_type:type, p_desc:type+' gen'
@@ -1072,7 +1073,10 @@ async function deductCr(cost, type='text'){
     if(data?.remaining!==undefined){
       usedCr = totalCr - data.remaining; updCrBar();
     }
-  }catch(e){console.error('deductCr:', e);}
+  }catch(e){
+    console.warn('deductCr skipped:', e.message);
+    // Error ignore karo — AI response milne do
+  }
 }
 function hasCr(c){return (totalCr-usedCr)>=c;}
 function canUseWB(){return ['pro','ultimate','infinite'].includes(userPlan);}
