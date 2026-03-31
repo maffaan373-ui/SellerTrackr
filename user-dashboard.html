@@ -904,7 +904,11 @@ body.canvas-mode .toast{bottom:68px}
 const SB_URL  = 'https://dpxuopdoumomasmahnyo.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRweHVvcGRvdW1vbWFzbWFobnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTE5NjUsImV4cCI6MjA4Nzg4Nzk2NX0.MxsfAZqhjp2M-yi8LVgOpTJEhSLujYTGJdivSM_VpcQ';
 const ADMIN_EMAIL = 'maffaan373@gmail.com';
-// Fallback direct key (dev only — never commit real keys):
+// PipeDream API URL — apna PipeDream URL yahan daalo
+// Format: 'https://eoXXXXXX.m.pipedream.net'
+const PIPEDREAM_URL = window.__PIPEDREAM_URL || '';
+
+// OR_KEY: local dev ke liye only (kabhi deploy mat karo real key)
 const OR_KEY = window.__OR_KEY || '';
 const PLAN_CR  = {free:500, pro:22000, ultimate:55000, infinite:550000};
 const PLAN_SV  = {free:3, pro:999, ultimate:999, infinite:999};
@@ -924,7 +928,7 @@ const sb = supabase.createClient(SB_URL, SB_ANON, {
 let sess=null, userRole='user', userPlan='free', totalCr=500, usedCr=0;
 let perfOn=false, isAdmin=false;
 let curView='chat', chatMode='regular';
-let chatModel='deepseek/deepseek-chat:free', chatMN='DeepSeek V3', chatGen=false;
+let chatModel='openrouter/free', chatMN='Auto (Free)', chatGen=false;
 let chatHistory=[];
 let stage=null, kLayer=null;
 let cW=window.innerWidth, cH=window.innerHeight-50-60;
@@ -1116,13 +1120,13 @@ function switchView(v){
 // MODELS
 // ====================================================
 const MODELS=[
-  {sec:'Free',  id:'deepseek/deepseek-chat:free',              name:'DeepSeek V3',       sub:'Fast reasoning',       tier:'free',ic:'ids'},
-  {             id:'deepseek/deepseek-r1:free',                name:'DeepSeek R1',       sub:'Open-source reasoning',tier:'free',ic:'ids'},
-  {             id:'meta-llama/llama-3.3-70b-instruct:free',   name:'Llama 3.3 70B',     sub:'Meta flagship',        tier:'free',ic:'ill'},
-  {             id:'meta-llama/llama-3.1-8b-instruct:free',    name:'Llama 3.1 8B',      sub:'Lightweight',          tier:'free',ic:'ill'},
-  {             id:'mistralai/mistral-7b-instruct:free',       name:'Mistral 7B',        sub:'European AI',          tier:'free',ic:'iw'},
-  {             id:'google/gemini-2.0-flash-exp:free',         name:'Gemini 2.0 Flash',  sub:'Google multimodal',    tier:'free',ic:'im'},
-  {             id:'qwen/qwen-2.5-72b-instruct:free',          name:'Qwen 2.5 72B',      sub:'Alibaba large',        tier:'free',ic:'iw'},
+  {sec:'Free',  id:'openrouter/free',              name:'DeepSeek V3 (Mar 24)',sub:'Fast reasoning',       tier:'free',ic:'ids'},
+  {             id:'deepseek/deepseek-r1-zero:free',                name:'DeepSeek R1 Zero',   sub:'Open-source reasoning',tier:'free',ic:'ids'},
+  {             id:'meta-llama/llama-3.3-70b-instruct:free',   name:'Llama 4 Maverick',   sub:'Meta flagship',        tier:'free',ic:'ill'},
+  {             id:'google/gemma-3-27b-it:free',    name:'Llama 4 Scout',      sub:'Lightweight',          tier:'free',ic:'ill'},
+  {             id:'mistralai/mistral-small-3.1-24b-instruct:free',       name:'Mistral Small 3.1',  sub:'European AI',          tier:'free',ic:'iw'},
+  {             id:'google/gemma-3-27b-it:free',         name:'Gemini 2.5 Pro Exp', sub:'Google multimodal',    tier:'free',ic:'im'},
+  {             id:'nvidia/llama-3.1-nemotron-nano-8b-v1:free',          name:'Nemotron Nano 8B',   sub:'NVIDIA free model',        tier:'free',ic:'iw'},
   {sec:'Pro',   id:'openai/gpt-4o-mini',                       name:'GPT-4o mini',       sub:'Fast & affordable',    tier:'pro', ic:'ig'},
   {             id:'openai/gpt-4o',                            name:'GPT-4o',            sub:'OpenAI flagship',      tier:'pro', ic:'ig'},
   {             id:'openai/gpt-4.1',                           name:'GPT-4.1',           sub:'Latest OpenAI',        tier:'pro', ic:'ig'},
@@ -1269,24 +1273,30 @@ async function chatSend(){
 }
 
 // ====================================================
-// AI CALL — calls /api/chat serverless function
-// No OR_KEY fallback — /api/chat handles everything
+// AI CALL
+// PipeDream URL use karta hai — PIPEDREAM_URL set karo
 // ====================================================
 async function callAI(messages, model, sys=null){
   const finalMsgs = sys ? [{role:'system',content:sys},...messages] : messages;
+  const payload = JSON.stringify({model, messages:finalMsgs, max_tokens:4096});
+
+  // PipeDream endpoint try karo
+  const endpoint = PIPEDREAM_URL || '/api/chat';
+
   try{
-    const r = await fetch('/api/chat', {
+    const r = await fetch(endpoint, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({model, messages: finalMsgs, max_tokens: 4096})
+      body: payload
     });
     const txt = await r.text();
     let d;
     try{ d = JSON.parse(txt); }
-    catch(e){ throw new Error('Server response invalid. Vercel deployment check karo.'); }
+    catch(e){ throw new Error('Invalid server response: ' + txt.slice(0, 100)); }
     if(r.status === 402) throw new Error('CREDITS_EMPTY');
     if(d.error) throw new Error(d.error);
-    return d.content ?? '';
+    if(d.content !== undefined) return d.content;
+    throw new Error('Response mein content nahi aaya');
   }catch(e){
     if(e.message === 'CREDITS_EMPTY') throw e;
     throw e;
@@ -1530,7 +1540,7 @@ function addNode(o={}){
   const id='n'+(++nid);
   const cx=(cW/2-tx)/sc-145, cy=(cH/2-ty)/sc-90;
   const nd={
-    id, model:o.model||'deepseek/deepseek-chat:free',
+    id, model:o.model||'openrouter/free',
     modelName:o.modelName||'DeepSeek V3',
     x:o.x!==undefined?o.x:cx+(Math.random()-.5)*120,
     y:o.y!==undefined?o.y:cy+(Math.random()-.5)*60,
@@ -1856,7 +1866,7 @@ function applyTpl(i){
   nodes=[];conns=[];nid=0;
   const map={};
   t.nd.forEach((n,j)=>{
-    const nd=addNode({x:n.x+80,y:n.y+80,model:'deepseek/deepseek-chat:free',modelName:'DeepSeek V3',mode:n.m||'regular'});
+    const nd=addNode({x:n.x+80,y:n.y+80,model:'openrouter/free',modelName:'Auto (Free)',mode:n.m||'regular'});
     const ta=document.getElementById('ndta-'+nd.id); if(ta){ta.value=n.p;nd.prompt=n.p;} map[j]=nd.id;
   });
   (t.co||[]).forEach(([f,to])=>{if(map[f]&&map[to])conns.push({from:map[f],to:map[to]});});
