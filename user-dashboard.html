@@ -556,6 +556,82 @@ input,textarea,select{font-family:inherit;outline:none;color:inherit}
 .toast.ok{border-color:rgba(34,197,94,.2);color:#4ade80}
 body.canvas-mode .toast{bottom:65px}
 @media(max-width:540px){.hm{display:none!important}.ai-node{width:265px}}
+
+/* ── ACCOUNT MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.82);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--b2);border-radius:16px;
+  width:min(420px,96vw);max-height:92vh;display:flex;flex-direction:column;
+  box-shadow:0 24px 80px rgba(0,0,0,.9);animation:fadeUp .2s ease;overflow:hidden}
+.modal-hd{padding:14px 16px;border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:13px;font-weight:700;color:#fff}
+.modal-body{padding:16px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+.modal-section{display:flex;flex-direction:column;gap:6px}
+.modal-label{font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.07em;text-transform:uppercase}
+.modal-input{width:100%;background:var(--bg3);border:1px solid var(--b2);border-radius:9px;
+  color:var(--tx);font-size:13px;padding:9px 12px;transition:border-color .12s;display:block}
+.modal-input:focus{border-color:var(--b3)}
+.modal-input:disabled{color:var(--mu);cursor:not-allowed}
+.modal-input::placeholder{color:var(--mu)}
+.modal-foot{padding:10px 16px 14px;border-top:1px solid var(--b1);display:flex;gap:7px;flex-shrink:0}
+.modal-save{flex:1;padding:10px;background:linear-gradient(135deg,rgba(91,106,240,.85),rgba(123,138,248,.8));
+  border-radius:9px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;
+  border:none;transition:.13s}
+.modal-save:hover{filter:brightness(1.08)}
+.modal-save:disabled{background:var(--b2);color:var(--mu);cursor:not-allowed;filter:none}
+.modal-cancel{padding:10px 14px;background:var(--bg3);border:1px solid var(--b2);
+  border-radius:9px;color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;transition:.12s}
+.modal-cancel:hover{color:#ccc;border-color:var(--b3)}
+/* Profile avatar big */
+.acc-avatar{width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,#1a3354,#0d6fa8);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:700;color:#fff;flex-shrink:0;margin:0 auto 4px}
+.acc-avatar-row{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0 8px}
+.acc-avatar-name{font-size:14px;font-weight:700;color:#fff}
+.acc-avatar-email{font-size:11px;color:var(--mu)}
+/* Plan badge in account */
+.acc-plan-row{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;background:var(--bg3);border:1px solid var(--b1);border-radius:10px}
+.acc-plan-l{font-size:12px;font-weight:600;color:#dde}
+.acc-plan-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px}
+.acc-cr-row{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;background:var(--bg3);border:1px solid var(--b1);border-radius:10px;margin-top:5px}
+.acc-cr-l{font-size:12px;color:var(--mu2)}
+.acc-cr-v{font-size:14px;font-weight:700;color:#fff}
+/* Stat chips */
+.acc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.acc-stat{background:var(--bg3);border:1px solid var(--b1);border-radius:9px;padding:10px;text-align:center}
+.acc-stat-v{font-size:18px;font-weight:700;color:#fff}
+.acc-stat-l{font-size:10px;color:var(--mu);margin-top:2px}
+/* Danger */
+.modal-danger{padding:10px 12px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.12);
+  border-radius:9px}
+.modal-danger-title{font-size:11px;font-weight:700;color:var(--rd);margin-bottom:6px}
+.modal-danger-btn{padding:6px 14px;background:rgba(239,68,68,.08);
+  border:1px solid rgba(239,68,68,.18);border-radius:7px;
+  font-size:11px;font-weight:600;color:var(--rd);cursor:pointer;transition:.12s}
+.modal-danger-btn:hover{background:rgba(239,68,68,.16)}
+
+/* ── LANGUAGE MODAL ── */
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.lang-item{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--bg3);border:1px solid var(--b1);border-radius:10px;
+  cursor:pointer;transition:.12s}
+.lang-item:hover{border-color:var(--b3);background:var(--bg4)}
+.lang-item.on{background:rgba(91,106,240,.08);border-color:rgba(91,106,240,.28)}
+.lang-flag{font-size:18px;flex-shrink:0}
+.lang-info{flex:1;min-width:0}
+.lang-name{font-size:12px;font-weight:600;color:#dde}
+.lang-native{font-size:10px;color:var(--mu)}
+.lang-check{width:16px;height:16px;border:1.5px solid var(--b3);border-radius:50%;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.12s}
+.lang-check.on{background:var(--ac);border-color:var(--ac)}
+.lang-check.on::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff;display:block}
+
 </style>
 </head>
 <body>
@@ -637,8 +713,9 @@ body.canvas-mode .toast{bottom:65px}
       <span class="ubadge" id="ubadge">FREE</span>
       <div class="umenu" id="umenu" onclick="event.stopPropagation()">
         <div class="umhd" id="uemail">Account</div>
+        <button class="umit" onclick="closeSB();openAccModal()">Account Management</button>
+        <button class="umit" onclick="closeSB();openLangModal()">Language</button>
         <button class="umit" onclick="location.href='pricing.html'">Subscription</button>
-        <button class="umit" onclick="location.href='pricing.html'">Pricing</button>
         <div class="umsep"></div>
         <button class="umit" onclick="logout()" style="color:var(--rd)">Sign Out</button>
       </div>
@@ -862,7 +939,7 @@ async function loadProfile(u){
   const g=document.getElementById('grtxt');if(g)g.textContent=gt+', '+name.split(' ')[0];
   try{
     const{data:p,error}=await sb.from('profiles')
-      .select('plan,total_credits,used_credits,role,plan_expires_at').eq('id',u.id).single();
+      .select('plan,total_credits,used_credits,role,plan_expires_at,full_name,notes,billing').eq('id',u.id).single();
     if(error?.code==='PGRST116'){
       await sb.from('profiles').insert({id:u.id,email,full_name:name,
         avatar_url:meta.avatar_url||null,plan:'free',total_credits:2000,used_credits:0}).catch(()=>{});
@@ -1593,7 +1670,236 @@ document.addEventListener('keydown',e=>{
   if(e.key==='0'&&curView==='canvas'){sc=1;tx=0;ty=0;applyXf();}
   if(e.key==='f'&&curView==='canvas')fitView();
 });
+
+// ══════════════════════════════════════════════
+// ACCOUNT MANAGEMENT
+// ══════════════════════════════════════════════
+let userProfile = {};
+let currentLang = localStorage.getItem('fx_lang') || 'en';
+
+const LANGS = [
+  {code:'en', name:'English',    native:'English',   flag:'EN'},
+  {code:'ur', name:'Urdu',       native:'اردو',      flag:'UR'},
+  {code:'hi', name:'Hindi',      native:'हिन्दी',     flag:'HI'},
+  {code:'ar', name:'Arabic',     native:'العربية',   flag:'AR'},
+  {code:'fr', name:'French',     native:'Français',  flag:'FR'},
+  {code:'de', name:'German',     native:'Deutsch',   flag:'DE'},
+  {code:'es', name:'Spanish',    native:'Español',   flag:'ES'},
+  {code:'zh', name:'Chinese',    native:'中文',       flag:'ZH'},
+  {code:'tr', name:'Turkish',    native:'Türkçe',    flag:'TR'},
+  {code:'ru', name:'Russian',    native:'Русский',   flag:'RU'},
+];
+
+function openAccModal(){
+  document.getElementById('accModal').classList.add('show');
+  loadAccModal();
+}
+function closeAccModal(){document.getElementById('accModal').classList.remove('show');}
+document.getElementById('accModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAccModal();});
+
+async function loadAccModal(){
+  const body=document.getElementById('accBody');
+  body.innerHTML='<div class="adload">Loading...</div>';
+  if(!sess){body.innerHTML='<div class="adload" style="color:var(--rd)">Not logged in</div>';return;}
+  try{
+    // Fetch stats
+    const u=sess.user;
+    const email=u.email||'';
+    const[{data:p},{data:canvas},{data:txns}]=await Promise.all([
+      sb.from('profiles').select('full_name,avatar_url,plan,total_credits,used_credits,notes,created_at,billing').eq('id',u.id).single(),
+      sb.from('canvas_saves').select('id').eq('user_id',u.id),
+      sb.from('credit_transactions').select('id').eq('user_id',u.id),
+    ]);
+    userProfile = p||{};
+    const name=p?.full_name||email.split('@')[0]||'User';
+    const initials=name.slice(0,2).toUpperCase();
+    const rem=Math.max(0,(p?.total_credits||2000)-(p?.used_credits||0));
+    const planColors={free:'background:rgba(34,197,94,.15);color:#22c55e',pro:'background:#1d3461;color:#60a5fa',ultimate:'background:#2d1454;color:#c084fc',infinite:'background:#2d1f00;color:#fbbf24'};
+    const planBadge={free:'FREE',pro:'PRO',ultimate:'ULTIMATE',infinite:'INFINITE'};
+    const plan=p?.plan||'free';
+    const joined=p?.created_at?new Date(p.created_at).toLocaleDateString('en',{month:'long',year:'numeric'}):'—';
+
+    body.innerHTML=`
+      <div class="acc-avatar-row">
+        <div class="acc-avatar" id="accAvatar">${initials}</div>
+        <div class="acc-avatar-name">${name}</div>
+        <div class="acc-avatar-email">${email}</div>
+      </div>
+      <div class="acc-plan-row">
+        <span class="acc-plan-l">Current Plan</span>
+        <span class="acc-plan-badge" style="${planColors[plan]||planColors.free}">${planBadge[plan]||'FREE'}</span>
+      </div>
+      <div class="acc-cr-row">
+        <span class="acc-cr-l">Credits Remaining</span>
+        <span class="acc-cr-v">${rem.toLocaleString()} / ${(p?.total_credits||2000).toLocaleString()}</span>
+      </div>
+      <div class="acc-stats">
+        <div class="acc-stat"><div class="acc-stat-v">${(canvas||[]).length}</div><div class="acc-stat-l">Canvases Saved</div></div>
+        <div class="acc-stat"><div class="acc-stat-v">${(txns||[]).length}</div><div class="acc-stat-l">API Calls</div></div>
+        <div class="acc-stat"><div class="acc-stat-v">${joined}</div><div class="acc-stat-l">Member Since</div></div>
+        <div class="acc-stat"><div class="acc-stat-v">${p?.billing||'monthly'}</div><div class="acc-stat-l">Billing Cycle</div></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Full Name</div>
+        <input class="modal-input" id="accName" value="${name}" placeholder="Your full name"/>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Email</div>
+        <input class="modal-input" value="${email}" disabled/>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Notes (private)</div>
+        <input class="modal-input" id="accNotes" value="${p?.notes||''}" placeholder="Private notes about your account..."/>
+      </div>
+      <div class="modal-danger">
+        <div class="modal-danger-title">Danger Zone</div>
+        <button class="modal-danger-btn" onclick="if(confirm('Are you sure you want to sign out from all devices?'))signOutAll()">Sign Out All Devices</button>
+      </div>`;
+    // Footer
+    const foot=document.createElement('div');foot.className='modal-foot';
+    foot.innerHTML=`<button class="modal-cancel" onclick="closeAccModal()">Cancel</button><button class="modal-save" onclick="saveAccount()">Save Changes</button>`;
+    document.getElementById('accModal').querySelector('.modal-box').appendChild(foot);
+  }catch(e){body.innerHTML=`<div class="adload" style="color:var(--rd)">Error: ${e.message}</div>`;}
+}
+
+async function saveAccount(){
+  if(!sess)return;
+  const name=(document.getElementById('accName')?.value||'').trim();
+  const notes=(document.getElementById('accNotes')?.value||'').trim();
+  if(!name){showToast('Name required','err');return;}
+  const btn=document.querySelector('#accModal .modal-save');
+  if(btn){btn.disabled=true;btn.textContent='Saving...';}
+  try{
+    const{error}=await sb.from('profiles').update({
+      full_name:name,notes:notes||null,updated_at:new Date().toISOString()
+    }).eq('id',sess.user.id);
+    if(error)throw error;
+    // Update UI
+    document.getElementById('uname').textContent=name;
+    document.getElementById('uav').textContent=name.slice(0,2).toUpperCase();
+    const g=document.getElementById('grtxt');if(g){const h=new Date().getHours();const gt=h<12?'Good morning':h<17?'Good afternoon':'Good evening';g.textContent=gt+', '+name.split(' ')[0];}
+    showToast('Profile saved','ok');
+    closeAccModal();
+  }catch(e){showToast('Error: '+e.message,'err');}
+  finally{if(btn){btn.disabled=false;btn.textContent='Save Changes';}}
+}
+
+async function signOutAll(){
+  try{
+    await sb.auth.signOut({scope:'global'});
+    location.replace('login.html');
+  }catch(e){showToast('Error: '+e.message,'err');}
+}
+
+// ══════════════════════════════════════════════
+// LANGUAGE SELECTOR
+// ══════════════════════════════════════════════
+function openLangModal(){
+  document.getElementById('langModal').classList.add('show');
+  renderLangGrid();
+}
+function closeLangModal(){document.getElementById('langModal').classList.remove('show');}
+document.getElementById('langModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLangModal();});
+
+function renderLangGrid(){
+  const grid=document.getElementById('langGrid');
+  grid.innerHTML=LANGS.map(l=>`
+    <div class="lang-item${currentLang===l.code?' on':''}" onclick="selectLang('${l.code}')">
+      <span class="lang-flag" style="font-family:monospace;font-size:13px;font-weight:700;color:var(--mu2);min-width:22px">${l.flag}</span>
+      <div class="lang-info">
+        <div class="lang-name">${l.name}</div>
+        <div class="lang-native">${l.native}</div>
+      </div>
+      <div class="lang-check${currentLang===l.code?' on':''}"></div>
+    </div>`).join('');
+}
+
+function selectLang(code){
+  currentLang=code;
+  renderLangGrid();
+}
+
+async function saveLang(){
+  localStorage.setItem('fx_lang',currentLang);
+  // Save to Supabase if logged in
+  if(sess){
+    try{
+      await sb.from('profiles').update({notes:(userProfile.notes||'')+' | lang:'+currentLang}).eq('id',sess.user.id);
+    }catch(e){}
+  }
+  applyLang(currentLang);
+  showToast('Language saved','ok');
+  closeLangModal();
+}
+
+const LANG_STRINGS = {
+  en:{placeholder:'Ask AI anything...',greet_sub:"Let's make something amazing together",regular:'Regular',image:'Image',video:'Video',website:'Website',slide:'Slide'},
+  ur:{placeholder:'AI se kuch bhi pucho...',greet_sub:'Milke kuch shandar banate hain',regular:'Mazmoon',image:'Tasveer',video:'Video',website:'Website',slide:'Slide'},
+  hi:{placeholder:'AI se kuch bhi pucho...',greet_sub:'Milkar kuch amazing banate hain',regular:'Regular',image:'Image',video:'Video',website:'Website',slide:'Slide'},
+  ar:{placeholder:'اسأل الذكاء الاصطناعي أي شيء...',greet_sub:'دعنا نصنع شيئا مذهلا معا',regular:'عادي',image:'صورة',video:'فيديو',website:'موقع',slide:'شريحة'},
+  fr:{placeholder:"Demandez n'importe quoi...",greet_sub:'Créons quelque chose ensemble',regular:'Normal',image:'Image',video:'Vidéo',website:'Site',slide:'Diapo'},
+  de:{placeholder:'Frag AI irgendetwas...',greet_sub:'Lass uns gemeinsam etwas Tolles erstellen',regular:'Normal',image:'Bild',video:'Video',website:'Website',slide:'Folie'},
+  es:{placeholder:'Pregunta a la IA...',greet_sub:'Creemos algo increíble juntos',regular:'Normal',image:'Imagen',video:'Video',website:'Sitio',slide:'Diapositiva'},
+  zh:{placeholder:'向AI提问任何内容...',greet_sub:'让我们一起创造精彩',regular:'常规',image:'图片',video:'视频',website:'网站',slide:'幻灯片'},
+  tr:{placeholder:'AI'ye herhangi bir şey sor...',greet_sub:'Birlikte harika bir şey yapalım',regular:'Normal',image:'Resim',video:'Video',website:'Site',slide:'Slayt'},
+  ru:{placeholder:'Спроси ИИ о чём угодно...',greet_sub:'Давай создадим что-то вместе',regular:'Обычный',image:'Изображение',video:'Видео',website:'Сайт',slide:'Слайд'},
+};
+
+function applyLang(code){
+  const s=LANG_STRINGS[code]||LANG_STRINGS.en;
+  const ta=document.getElementById('chatPrompt');if(ta)ta.placeholder=s.placeholder;
+  const sub=document.getElementById('grsub');if(sub)sub.textContent=s.greet_sub;
+  // Update mode chips text
+  const chips={mpt:s.regular,mpi:s.image,mpv:s.video,mpw:s.website};
+  Object.entries(chips).forEach(([id,txt])=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
+  // RTL for arabic/urdu
+  document.body.style.direction=(code==='ar'||code==='ur')?'rtl':'ltr';
+}
+
+// Apply saved language on load
+(()=>{
+  const saved=localStorage.getItem('fx_lang')||'en';
+  currentLang=saved;
+  if(saved!=='en') applyLang(saved);
+})();
+
 (async()=>{await initAuth();})();
 </script>
+
+<!-- ACCOUNT MANAGEMENT MODAL -->
+<div class="modal-bg" id="accModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-title">Account Management</span>
+      <button class="px" onclick="closeAccModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="accBody">
+      <div class="adload">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- LANGUAGE MODAL -->
+<div class="modal-bg" id="langModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-title">Language</span>
+      <button class="px" onclick="closeLangModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--mu2);margin-bottom:2px">Select your preferred language for the interface.</div>
+      <div class="lang-grid" id="langGrid"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="modal-cancel" onclick="closeLangModal()">Close</button>
+      <button class="modal-save" onclick="saveLang()">Save Language</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
