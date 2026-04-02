@@ -692,6 +692,110 @@ body.canvas-mode .toast{bottom:65px}
   display:flex;align-items:center;justify-content:center;color:#fff;
   cursor:pointer;transition:.14s;flex-shrink:0;border:none}
 .mode-plus-btn:hover{background:var(--b4)}
+
+/* ════════════════════════════════
+   PRICING VIEW
+════════════════════════════════ */
+#pricing-view{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;
+  display:none;overflow-y:auto;background:var(--bg);z-index:1}
+#pricing-view::before{content:'';position:fixed;top:var(--nav-h);left:0;right:0;
+  height:120px;background:linear-gradient(to bottom,rgba(8,8,9,.9),transparent);
+  pointer-events:none;z-index:2}
+.pr-page{max-width:1060px;margin:0 auto;padding:44px 18px 80px}
+.pr-hero{text-align:center;margin-bottom:44px}
+.pr-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;
+  background:rgba(91,106,240,.1);border:1px solid rgba(91,106,240,.18);
+  border-radius:20px;font-size:11px;font-weight:600;color:var(--ac2);margin-bottom:16px}
+.pr-h1{font-size:clamp(26px,5vw,44px);font-weight:700;color:#fff;
+  letter-spacing:-.5px;line-height:1.1;margin-bottom:10px}
+.pr-sub{font-size:14px;color:var(--mu2);max-width:440px;margin:0 auto;line-height:1.6}
+/* toggle */
+.pr-toggle-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:40px}
+.pr-tl{font-size:12px;font-weight:600;color:var(--mu);transition:.2s}
+.pr-tl.on{color:#fff}
+.pr-pill{width:44px;height:23px;background:var(--b2);border-radius:12px;
+  position:relative;cursor:pointer;transition:.24s;border:none;flex-shrink:0}
+.pr-pill.on{background:var(--ac)}
+.pr-pill::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;
+  background:var(--mu);border-radius:50%;transition:.24s}
+.pr-pill.on::after{left:24px;background:#fff}
+.pr-save{padding:2px 7px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);
+  border-radius:20px;font-size:9px;font-weight:700;color:var(--gr);margin-left:3px}
+/* plans */
+.pr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:54px}
+@media(max-width:860px){.pr-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.pr-grid{grid-template-columns:1fr}}
+.pr-card{background:var(--bg2);border:1px solid var(--b2);border-radius:15px;
+  padding:20px 18px;display:flex;flex-direction:column;position:relative;overflow:hidden;
+  transition:border-color .2s,box-shadow .2s}
+.pr-card:hover{border-color:var(--b3)}
+.pr-card.popular{border-color:rgba(91,106,240,.38);
+  box-shadow:0 0 0 1px rgba(91,106,240,.12),0 8px 30px rgba(91,106,240,.09)}
+.pr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.pr-card.c-free::before{background:linear-gradient(90deg,var(--b3),var(--b4))}
+.pr-card.c-pro::before{background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.pr-card.c-ult::before{background:linear-gradient(90deg,#7e22ce,var(--pu))}
+.pr-card.c-inf::before{background:linear-gradient(90deg,#b45309,var(--yl))}
+.pr-pop{position:absolute;top:13px;right:13px;padding:2px 7px;
+  background:rgba(91,106,240,.14);border:1px solid rgba(91,106,240,.24);
+  border-radius:20px;font-size:8px;font-weight:700;color:var(--ac2)}
+.pr-name{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--mu2);margin-bottom:9px}
+.pr-amount{font-size:34px;font-weight:700;color:#fff;letter-spacing:-2px;line-height:1}
+.pr-amount sup{font-size:15px;font-weight:400;color:var(--mu2);vertical-align:top;margin-top:6px;display:inline-block}
+.pr-period{font-size:10px;color:var(--mu);margin-top:3px}
+.pr-orig{font-size:10px;color:var(--mu);text-decoration:line-through;min-height:15px;margin-top:1px}
+.pr-desc{font-size:11px;color:var(--mu2);margin:10px 0 16px;line-height:1.5}
+.pr-btn{width:100%;padding:10px;border-radius:9px;font-size:11px;font-weight:700;
+  cursor:pointer;transition:.13s;margin-bottom:18px;border:none}
+.pr-card.c-free .pr-btn{background:var(--bg3);border:1px solid var(--b2);color:var(--mu2)}
+.pr-card.c-free .pr-btn:hover{color:#fff;border-color:var(--b3)}
+.pr-card.c-pro .pr-btn{background:linear-gradient(135deg,rgba(91,106,240,.85),rgba(123,138,248,.8));color:#fff}
+.pr-card.c-pro .pr-btn:hover{filter:brightness(1.1)}
+.pr-card.c-ult .pr-btn{background:linear-gradient(135deg,rgba(126,34,206,.7),rgba(168,85,247,.8));color:#fff}
+.pr-card.c-ult .pr-btn:hover{filter:brightness(1.1)}
+.pr-card.c-inf .pr-btn{background:linear-gradient(135deg,rgba(180,83,9,.65),rgba(251,191,36,.75));color:#fff}
+.pr-card.c-inf .pr-btn:hover{filter:brightness(1.1)}
+.pr-div{height:1px;background:var(--b1);margin-bottom:14px}
+.pr-feats{display:flex;flex-direction:column;gap:7px;flex:1}
+.pr-feat{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--mu);line-height:1.4}
+.pr-feat.y{color:#c0c0d0}
+.pr-fic{width:13px;height:13px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center}
+.pr-fic.y{background:rgba(34,197,94,.12)}
+.pr-fic.n{background:var(--bg3)}
+.pr-fic svg{width:7px;height:7px}
+/* compare */
+.pr-cmp{margin-bottom:54px}
+.pr-sec-t{font-size:18px;font-weight:700;color:#fff;text-align:center;margin-bottom:6px}
+.pr-sec-s{font-size:12px;color:var(--mu2);text-align:center;margin-bottom:22px}
+.pr-table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;
+  border:1px solid var(--b1)}
+.pr-table th{padding:10px 14px;background:var(--bg2);font-size:9px;font-weight:700;
+  color:var(--mu);letter-spacing:.08em;text-transform:uppercase;text-align:center;
+  border-bottom:1px solid var(--b1)}
+.pr-table th:first-child{text-align:left}
+.pr-table td{padding:10px 14px;font-size:11px;color:var(--mu2);
+  border-bottom:1px solid rgba(255,255,255,.025);text-align:center;background:var(--bg2)}
+.pr-table td:first-child{text-align:left;color:#ccc;font-weight:500}
+.pr-table tr:hover td{background:var(--bg3)}
+.pr-table tr:last-child td{border-bottom:none}
+.pr-table .hi{color:var(--ac2);background:rgba(91,106,240,.03)}
+.pr-table th.hi{background:rgba(91,106,240,.07)}
+.pr-chk{color:var(--gr);font-weight:700}
+.pr-x{color:var(--mu)}
+/* faq */
+.pr-faq{max-width:620px;margin:0 auto}
+.pr-faq-item{border:1px solid var(--b1);border-radius:10px;margin-bottom:7px;
+  background:var(--bg2);overflow:hidden}
+.pr-faq-q{display:flex;align-items:center;justify-content:space-between;
+  padding:13px 15px;cursor:pointer;font-size:12px;font-weight:600;color:#dde}
+.pr-faq-q:hover{color:#fff}
+.pr-faq-q svg{width:13px;height:13px;color:var(--mu);transition:transform .2s;flex-shrink:0}
+.pr-faq-item.open .pr-faq-q svg{transform:rotate(180deg)}
+.pr-faq-a{display:none;padding:0 15px 13px;font-size:12px;color:var(--mu2);line-height:1.7}
+.pr-faq-item.open .pr-faq-a{display:block}
+
 </style>
 </head>
 <body>
@@ -757,10 +861,10 @@ body.canvas-mode .toast{bottom:65px}
     <button class="sb-btn hi" onclick="openWB();closeSB()">Build Website</button>
     <button class="sb-btn" onclick="showTpl();closeSB()">Templates</button>
     <button class="sb-btn" onclick="togSave();closeSB()">Save / Load</button>
-    <button class="sb-btn" onclick="location.href='pricing.html'">Upgrade Plan</button>
+    <button class="sb-btn" onclick="openPricing()">Upgrade Plan</button>
   </div>
   <div class="sb-foot">
-    <button class="sb-upg" onclick="location.href='pricing.html'">fluxwith Pro</button>
+    <button class="sb-upg" onclick="openPricing()">fluxwith Pro</button>
     <div class="sb-user" onclick="togUM()">
       <div class="av" id="uav">FX</div>
       <div class="sui"><div class="sun" id="uname">Loading...</div><div class="sus" id="uplan">Free Plan</div></div>
@@ -769,7 +873,7 @@ body.canvas-mode .toast{bottom:65px}
         <div class="umhd" id="uemail">Account</div>
         <button class="umit" onclick="closeSB();openAccModal()">Account Management</button>
         <button class="umit" onclick="closeSB();openLangModal()">Language</button>
-        <button class="umit" onclick="location.href='pricing.html'">Subscription</button>
+        <button class="umit" onclick="openPricing()">Subscription</button>
         <div class="umsep"></div>
         <button class="umit" onclick="logout()" style="color:var(--rd)">Sign Out</button>
       </div>
@@ -791,6 +895,7 @@ body.canvas-mode .toast{bottom:65px}
     <div class="nav-vtabs hm">
       <button class="nav-vtab on" id="vtChat" onclick="switchView('chat')">Chat</button>
       <button class="nav-vtab" id="vtCanvas" onclick="switchView('canvas')">Canvas</button>
+      <button class="nav-vtab" id="vtPricing" onclick="openPricing()">Pricing</button>
     </div>
     <button class="nav-hbg" onclick="openSB()"><span></span><span></span><span></span></button>
   </div>
@@ -964,11 +1069,112 @@ body.canvas-mode .toast{bottom:65px}
     <div class="upgic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
     <div class="upgttl">Credits Khatam</div>
     <div class="upgdesc">Pro plan mein 22,000 credits milte hain per month.</div>
-    <button class="upgcta" onclick="location.href='pricing.html'">View Plans</button>
+    <button class="upgcta" onclick="openPricing()">View Plans</button>
     <button class="upgskip" onclick="hideUpg()">Continue without upgrading</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<!-- ACCOUNT MANAGEMENT MODAL -->
+<div class="modal-bg" id="accModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-title">Account Management</span>
+      <button class="px" onclick="closeAccModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="accBody">
+      <div class="adload">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- LANGUAGE MODAL -->
+<div class="modal-bg" id="langModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-title">Language</span>
+      <button class="px" onclick="closeLangModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--mu2);margin-bottom:2px">Select your preferred language for the interface.</div>
+      <div class="lang-grid" id="langGrid"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="modal-cancel" onclick="closeLangModal()">Close</button>
+      <button class="modal-save" onclick="saveLang()">Save Language</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     PRICING VIEW (inline section)
+════════════════════════════════ -->
+<div id="pricing-view">
+  <div class="pr-page">
+    <!-- Hero -->
+    <div class="pr-hero">
+      <div class="pr-badge">Simple, transparent pricing</div>
+      <div class="pr-h1">Choose your plan</div>
+      <div class="pr-sub">Start free. Upgrade when you need more power. Cancel anytime.</div>
+    </div>
+    <!-- Billing toggle -->
+    <div class="pr-toggle-row">
+      <span class="pr-tl on" id="prLblM">Monthly</span>
+      <button class="pr-pill" id="prToggle" onclick="prToggleBilling()"></button>
+      <span class="pr-tl" id="prLblY">Yearly <span class="pr-save">Save 25%</span></span>
+    </div>
+    <!-- Plans grid -->
+    <div class="pr-grid" id="prGrid"></div>
+    <!-- Comparison -->
+    <div class="pr-cmp">
+      <div class="pr-sec-t">Full comparison</div>
+      <div class="pr-sec-s">See exactly what each plan includes</div>
+      <div style="overflow-x:auto">
+        <table class="pr-table">
+          <thead>
+            <tr>
+              <th style="width:36%">Feature</th>
+              <th>Free</th>
+              <th class="hi">Pro</th>
+              <th>Ultimate</th>
+              <th>Infinite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Monthly Credits</td><td>2,000</td><td class="hi"><strong>22,000</strong></td><td>55,000</td><td>550,000</td></tr>
+            <tr><td>Chat Messages</td><td>400</td><td class="hi">4,400</td><td>11,000</td><td>Unlimited</td></tr>
+            <tr><td>Image Generations</td><td>25</td><td class="hi">275</td><td>687</td><td>6,875</td></tr>
+            <tr><td>Website Builds</td><td>10</td><td class="hi">110</td><td>275</td><td>2,750</td></tr>
+            <tr><td>Canvas Saves</td><td>3</td><td class="hi">Unlimited</td><td>Unlimited</td><td>Unlimited</td></tr>
+            <tr><td>Free AI Models</td><td><span class="pr-chk">Yes</span></td><td class="hi"><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>GPT-4o, Claude, Gemini</td><td><span class="pr-x">No</span></td><td class="hi"><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>Gemini 2.5 Pro, o1</td><td><span class="pr-x">No</span></td><td class="hi"><span class="pr-x">No</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>GPT-5, Claude Opus 4</td><td><span class="pr-x">No</span></td><td class="hi"><span class="pr-x">No</span></td><td><span class="pr-x">No</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>Video Generation</td><td><span class="pr-x">No</span></td><td class="hi"><span class="pr-x">No</span></td><td><span class="pr-x">No</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>Multi-model Chat</td><td><span class="pr-chk">Yes</span></td><td class="hi"><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>AI Canvas</td><td><span class="pr-chk">Yes</span></td><td class="hi"><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>Website Builder</td><td><span class="pr-chk">Yes</span></td><td class="hi"><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>API Access</td><td><span class="pr-x">No</span></td><td class="hi"><span class="pr-x">No</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+            <tr><td>Priority Support</td><td><span class="pr-x">No</span></td><td class="hi"><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td><td><span class="pr-chk">Yes</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- FAQ -->
+    <div class="pr-faq">
+      <div class="pr-sec-t" style="margin-bottom:20px">Frequently asked questions</div>
+      <div id="prFaqList"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
 
 <script>
 'use strict';
@@ -1118,8 +1324,10 @@ function switchView(v){
   curView=v;
   document.getElementById('vtChat')?.classList.toggle('on',v==='chat');
   document.getElementById('vtCanvas')?.classList.toggle('on',v==='canvas');
+  document.getElementById('vtPricing')?.classList.toggle('on',v==='pricing');
   document.getElementById('chat-view').style.display=v==='chat'?'flex':'none';
   document.getElementById('canvas-view').style.display=v==='canvas'?'block':'none';
+  document.getElementById('pricing-view').style.display=v==='pricing'?'block':'none';
   document.getElementById('toolbar').style.display=v==='canvas'?'flex':'none';
   document.body.classList.toggle('canvas-mode',v==='canvas');
   if(v==='canvas'){
@@ -1173,7 +1381,7 @@ function buildMpop(nodeId){
     const isSel=nodeId?curM===m.id:selectedModels.includes(m.id);
     const sel=isSel?' sel':'';
     const chk=(!nodeId&&multiSelectOn&&ok)?`<div class="mchk${isSel?' on':''}"></div>`:'';
-    const fn=ok?`pickM('${m.id}','${m.name.replace(/'/g,"\\'")}','${nodeId||''}')`:"location.href='pricing.html'";
+    const fn=ok?`pickM('${m.id}','${m.name.replace(/'/g,"\\'")}','${nodeId||''}')`:"openPricing()";
     h+=`<div class="mrow${sel}" onclick="${fn}">${IC[m.ic]||IC.iw}
       <div class="min"><div class="mn" style="${ok?'':'color:#252530'}">${m.name}</div><div class="ms">${m.sub}</div></div>
       ${ok?(chk||BD[m.tier]||''):`<span style="font-size:10px;color:#333">Pro</span>`}
@@ -1192,8 +1400,8 @@ function pickM(mid,mname,nid){
     chatModel=selectedModels[0];chatMN=mname;updMultiBadge();buildMpop(null);
   }else{chatModel=mid;chatMN=mname;selectedModels=[mid];const el=document.getElementById('chatMN');if(el)el.textContent=mname;updMultiBadge();closeMpop();}
 }
-document.getElementById('mpopBg').onclick=closeMpop;
-document.getElementById('mpopX').onclick=closeMpop;
+document.getElementById('mpopBg')?.addEventListener('click',closeMpop);
+document.getElementById('mpopX')?.addEventListener('click',closeMpop);
 function togMultiSelect(){multiSelectOn=!multiSelectOn;document.getElementById('multiToggle')?.classList.toggle('on',multiSelectOn);buildMpop(modelTgt);}
 function updMultiBadge(){
   const badge=document.getElementById('multiBadge'),mn=document.getElementById('chatMN');
@@ -1310,8 +1518,8 @@ function setMode(m){
   const ta=document.getElementById('chatPrompt');
   if(ta)ta.placeholder=m==='image'?'Describe an image...':m==='video'?'Describe a video scene...':'Ask AI anything...';
 }
-document.getElementById('chatPrompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();}});
-document.getElementById('chatPrompt').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';});
+document.getElementById('chatPrompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();}});
+document.getElementById('chatPrompt')?.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';});
 
 function addMsg(role,content,type='text'){
   const wrap=document.getElementById('chatMsgs');
@@ -1411,7 +1619,7 @@ async function callAI(messages,model,sys=null){
 const WB_STYLES=['SaaS Landing','Portfolio','Blog','E-commerce','Agency','App Landing','Restaurant','Startup'];
 function openWB(){document.getElementById('wbModal').classList.add('show');renderWBForm();}
 function closeWB(){document.getElementById('wbModal').classList.remove('show');}
-document.getElementById('wbModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeWB();});
+document.getElementById('wbModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeWB();});
 function renderWBForm(){
   document.getElementById('wbContent').innerHTML=`
     <div class="wb-body">
@@ -1924,7 +2132,7 @@ function openAccModal(){
   loadAccModal();
 }
 function closeAccModal(){document.getElementById('accModal').classList.remove('show');}
-document.getElementById('accModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAccModal();});
+document.getElementById('accModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeAccModal();});
 
 async function loadAccModal(){
   const body=document.getElementById('accBody');
@@ -2028,7 +2236,7 @@ function openLangModal(){
   renderLangGrid();
 }
 function closeLangModal(){document.getElementById('langModal').classList.remove('show');}
-document.getElementById('langModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLangModal();});
+document.getElementById('langModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeLangModal();});
 
 function renderLangGrid(){
   const grid=document.getElementById('langGrid');
@@ -2092,43 +2300,178 @@ function applyLang(code){
   if(saved!=='en') applyLang(saved);
 })();
 
+
+// ════════════════════════════════
+// PRICING VIEW
+// ════════════════════════════════
+const POLAR_CONFIG = {
+  organization: 'fluxwith',
+  products: {
+    pro_monthly:      'YOUR_PRO_MONTHLY_ID',
+    pro_yearly:       'YOUR_PRO_YEARLY_ID',
+    ultimate_monthly: 'YOUR_ULTIMATE_MONTHLY_ID',
+    ultimate_yearly:  'YOUR_ULTIMATE_YEARLY_ID',
+    infinite_monthly: 'YOUR_INFINITE_MONTHLY_ID',
+    infinite_yearly:  'YOUR_INFINITE_YEARLY_ID',
+  }
+};
+
+let prYearly = false;
+
+const PR_PLANS = [
+  {id:'free', name:'Free', cls:'c-free',
+   mp:0, yp:0, desc:'Perfect to explore fluxwith AI.',
+   btn:'Start for Free',
+   feats:[
+     {t:'2,000 credits / month', y:true},
+     {t:'Free AI models (Gemma, Mistral, Llama)', y:true},
+     {t:'AI Chat + Image generation', y:true},
+     {t:'AI Canvas + Website Builder', y:true},
+     {t:'3 canvas saves', y:true},
+     {t:'GPT-4o / Claude / Gemini', y:false},
+     {t:'Priority support', y:false},
+   ]
+  },
+  {id:'pro', name:'Pro', cls:'c-pro popular',
+   mp:19, yp:14, desc:'For creators and professionals.',
+   btn:'Start Pro', pk:'pro',
+   feats:[
+     {t:'22,000 credits / month', y:true},
+     {t:'Everything in Free', y:true},
+     {t:'GPT-4o, Claude Haiku, Gemini Flash', y:true},
+     {t:'275 image generations / mo', y:true},
+     {t:'Unlimited canvas saves', y:true},
+     {t:'110 website builds / mo', y:true},
+     {t:'Priority support', y:true},
+     {t:'Video generation', y:false},
+   ]
+  },
+  {id:'ultimate', name:'Ultimate', cls:'c-ult',
+   mp:49, yp:37, desc:'For power users and teams.',
+   btn:'Start Ultimate', pk:'ultimate',
+   feats:[
+     {t:'55,000 credits / month', y:true},
+     {t:'Everything in Pro', y:true},
+     {t:'Gemini 2.5 Pro, Claude Sonnet, o1', y:true},
+     {t:'687 image generations / mo', y:true},
+     {t:'275 website builds / mo', y:true},
+     {t:'API access', y:true},
+     {t:'Priority support', y:true},
+     {t:'Video generation', y:false},
+   ]
+  },
+  {id:'infinite', name:'Infinite', cls:'c-inf',
+   mp:499, yp:374, desc:'Unlimited AI for enterprises.',
+   btn:'Start Infinite', pk:'infinite',
+   feats:[
+     {t:'550,000 credits / month', y:true},
+     {t:'Everything in Ultimate', y:true},
+     {t:'GPT-5, Claude Opus 4, Gemini Ultra', y:true},
+     {t:'Video generation', y:true},
+     {t:'6,875 image generations / mo', y:true},
+     {t:'Unlimited website builds', y:true},
+     {t:'Dedicated support + SLA', y:true},
+   ]
+  }
+];
+
+const PR_FAQS = [
+  {q:'What are credits?', a:'Credits are used for each AI action. Chat = 5cr, Image = 80cr, Website build = 200cr. Credits reset every month on your billing date.'},
+  {q:'Can I cancel anytime?', a:'Yes, cancel from account settings anytime. You keep your credits until the end of the billing period.'},
+  {q:'What payment methods are accepted?', a:'We use Polar.sh for payments, which supports all major credit/debit cards worldwide.'},
+  {q:'What happens when I run out of credits?', a:'AI features pause until next month. You can upgrade anytime to get more credits immediately.'},
+  {q:'Is there a free trial?', a:'The Free plan gives 2,000 credits forever with no time limit. Paid plans have a 7-day refund policy.'},
+  {q:'Do unused credits roll over?', a:'Credits do not roll over. Each billing cycle you get a fresh batch based on your plan.'},
+];
+
+function openPricing(){
+  // Hide other views
+  document.getElementById('chat-view').style.display='none';
+  document.getElementById('canvas-view').style.display='none';
+  document.getElementById('toolbar').style.display='none';
+  document.getElementById('pricing-view').style.display='block';
+  document.body.classList.remove('canvas-mode');
+  curView='pricing';
+  // Deactivate nav tabs
+  document.getElementById('vtChat')?.classList.remove('on');
+  document.getElementById('vtCanvas')?.classList.remove('on');
+  // Render
+  prRenderPlans();
+  prRenderFaq();
+}
+
+function closePricing(){
+  document.getElementById('pricing-view').style.display='none';
+  switchView('chat');
+}
+
+function prToggleBilling(){
+  prYearly = !prYearly;
+  document.getElementById('prToggle').classList.toggle('on', prYearly);
+  document.getElementById('prLblM').classList.toggle('on', !prYearly);
+  document.getElementById('prLblY').classList.toggle('on', prYearly);
+  prRenderPlans();
+}
+
+function prRenderPlans(){
+  const g = document.getElementById('prGrid');
+  if(!g) return;
+  g.innerHTML = PR_PLANS.map(p => {
+    const price = prYearly ? p.yp : p.mp;
+    const orig = p.mp;
+    const isPopular = p.cls.includes('popular');
+    const isFree = p.id === 'free';
+    return `<div class="pr-card ${p.cls}">
+      ${isPopular ? '<div class="pr-pop">Most Popular</div>' : ''}
+      <div class="pr-name">${p.name}</div>
+      <div class="pr-amount">${isFree ? '<span style="font-size:32px;letter-spacing:-1px">Free</span>' : `<sup>$</sup>${price}`}</div>
+      <div class="pr-period">${isFree ? 'Forever free' : prYearly ? 'per month, billed yearly' : 'per month'}</div>
+      <div class="pr-orig">${(!isFree && prYearly) ? `was $${orig}/mo` : ''}</div>
+      <div class="pr-desc">${p.desc}</div>
+      <button class="pr-btn" onclick="prCheckout('${p.id}')">${p.btn}</button>
+      <div class="pr-div"></div>
+      <div class="pr-feats">
+        ${p.feats.map(f=>`<div class="pr-feat${f.y?' y':''}">
+          <div class="pr-fic ${f.y?'y':'n'}">
+            ${f.y
+              ? '<svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'}
+          </div>
+          <span>${f.t}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function prRenderFaq(){
+  const el = document.getElementById('prFaqList');
+  if(!el) return;
+  el.innerHTML = PR_FAQS.map((f,i)=>`
+    <div class="pr-faq-item" id="prfaq${i}">
+      <div class="pr-faq-q" onclick="prTogFaq(${i})">
+        <span>${f.q}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="pr-faq-a">${f.a}</div>
+    </div>`).join('');
+}
+
+function prTogFaq(i){
+  document.getElementById('prfaq'+i)?.classList.toggle('open');
+}
+
+function prCheckout(planId){
+  if(planId==='free'){closePricing();return;}
+  const key = planId+'_'+(prYearly?'yearly':'monthly');
+  const productId = POLAR_CONFIG.products[key];
+  if(!productId || productId.startsWith('YOUR_')){
+    showToast('Payment setup pending — admin ko contact karein','err');
+    return;
+  }
+  const url = 'https://polar.sh/'+POLAR_CONFIG.organization+'/checkout?product='+productId;
+  window.open(url,'_blank');
+}
+
 (async()=>{await initAuth();})();
 </script>
-
-<!-- ACCOUNT MANAGEMENT MODAL -->
-<div class="modal-bg" id="accModal">
-  <div class="modal-box">
-    <div class="modal-hd">
-      <span class="modal-title">Account Management</span>
-      <button class="px" onclick="closeAccModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="modal-body" id="accBody">
-      <div class="adload">Loading...</div>
-    </div>
-  </div>
-</div>
-
-<!-- LANGUAGE MODAL -->
-<div class="modal-bg" id="langModal">
-  <div class="modal-box">
-    <div class="modal-hd">
-      <span class="modal-title">Language</span>
-      <button class="px" onclick="closeLangModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div style="font-size:12px;color:var(--mu2);margin-bottom:2px">Select your preferred language for the interface.</div>
-      <div class="lang-grid" id="langGrid"></div>
-    </div>
-    <div class="modal-foot">
-      <button class="modal-cancel" onclick="closeLangModal()">Close</button>
-      <button class="modal-save" onclick="saveLang()">Save Language</button>
-    </div>
-  </div>
-</div>
-
-</body>
-</html>
