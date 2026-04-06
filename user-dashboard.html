@@ -405,6 +405,112 @@ input,textarea,select{font-family:inherit;outline:none;color:inherit}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{border-color:rgba(239,68,68,.2);color:var(--rd)}
 .toast.ok{border-color:rgba(34,197,94,.2);color:#4ade80}
+
+/* ── SECTION VIEWS (account, language, subscription) ── */
+.section-view{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;
+  display:none;overflow-y:auto;background:var(--bg);z-index:1}
+.section-view.show{display:block}
+.sv-page{max-width:560px;margin:0 auto;padding:36px 18px 80px}
+.sv-back{display:flex;align-items:center;gap:7px;padding:8px 0;font-size:12px;
+  color:var(--mu2);cursor:pointer;border:none;background:none;margin-bottom:20px;transition:.13s}
+.sv-back:hover{color:#fff}
+.sv-back svg{width:14px;height:14px}
+.sv-title{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:4px}
+.sv-sub{font-size:13px;color:var(--mu2);margin-bottom:28px}
+.sv-card{background:var(--bg2);border:1px solid var(--b2);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.sv-card-item{display:flex;align-items:center;gap:12px;padding:14px 16px;transition:background .12s;cursor:pointer}
+.sv-card-item:hover{background:rgba(255,255,255,.025)}
+.sv-card-item:not(:last-child){border-bottom:1px solid rgba(255,255,255,.04)}
+.sv-item-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sv-item-info{flex:1;min-width:0}
+.sv-item-label{font-size:13px;font-weight:500;color:#dde}
+.sv-item-val{font-size:11px;color:var(--mu2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sv-item-arrow{color:var(--mu);flex-shrink:0}
+.sv-item-arrow svg{width:14px;height:14px}
+.sv-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--mu);padding:0 2px;margin:20px 0 8px}
+.sv-section-label:first-child{margin-top:0}
+.sv-input-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.sv-label{font-size:11px;font-weight:600;color:var(--mu2)}
+.sv-input{background:var(--bg2);border:1px solid var(--b2);border-radius:10px;color:var(--tx);
+  font-size:13px;padding:10px 13px;width:100%;transition:border-color .12s}
+.sv-input:focus{border-color:var(--b3);outline:none}
+.sv-input:disabled{color:var(--mu);cursor:not-allowed}
+.sv-input::placeholder{color:var(--mu)}
+.sv-btn{width:100%;padding:12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;
+  border:none;transition:.13s}
+.sv-btn.primary{background:linear-gradient(135deg,rgba(91,106,240,.85),rgba(123,138,248,.8));color:#fff}
+.sv-btn.primary:hover{filter:brightness(1.08)}
+.sv-btn.secondary{background:var(--bg2);border:1px solid var(--b2);color:var(--mu2)}
+.sv-btn.secondary:hover{color:#fff;border-color:var(--b3)}
+.sv-btn.danger{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.14);color:var(--rd)}
+.sv-btn.danger:hover{background:rgba(239,68,68,.12)}
+.sv-avatar-row{display:flex;flex-direction:column;align-items:center;gap:5px;padding:24px 0 8px}
+.sv-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#1a3354,#0d6fa8);
+  display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff}
+.sv-avatar-name{font-size:16px;font-weight:700;color:#fff;margin-top:4px}
+.sv-avatar-email{font-size:12px;color:var(--mu2)}
+.sv-plan-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;background:var(--bg2);border:1px solid var(--b2);border-radius:12px;margin-bottom:10px}
+.sv-cr-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;background:var(--bg2);border:1px solid var(--b2);border-radius:12px;margin-bottom:20px}
+.sv-cr-bar{width:120px;height:4px;background:var(--b2);border-radius:2px;overflow:hidden;margin-top:4px}
+.sv-cr-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--pu));border-radius:2px}
+
+/* ── LANGUAGE PAGE ── */
+.lang-page-grid{display:flex;flex-direction:column;gap:4px}
+.lang-pg-item{display:flex;align-items:center;gap:12px;padding:13px 16px;
+  background:var(--bg2);border:1px solid var(--b2);border-radius:12px;cursor:pointer;transition:.13s}
+.lang-pg-item:hover{border-color:var(--b3)}
+.lang-pg-item.on{background:rgba(91,106,240,.08);border-color:rgba(91,106,240,.3)}
+.lang-pg-flag{font-size:13px;font-family:monospace;font-weight:700;color:var(--mu2);width:24px}
+.lang-pg-info{flex:1}
+.lang-pg-name{font-size:13px;font-weight:600;color:#dde}
+.lang-pg-native{font-size:11px;color:var(--mu)}
+.lang-pg-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--b3);
+  display:flex;align-items:center;justify-content:center;transition:.13s}
+.lang-pg-check.on{background:var(--ac);border-color:var(--ac)}
+.lang-pg-check.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff;display:block}
+
+/* ── SUBSCRIPTION PAGE ── */
+.sub-plan-card{background:var(--bg2);border:1px solid var(--b2);border-radius:14px;padding:18px;margin-bottom:12px}
+.sub-plan-card.active{border-color:rgba(91,106,240,.4);background:rgba(91,106,240,.04)}
+.sub-plan-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sub-plan-name{font-size:14px;font-weight:700;color:#fff}
+.sub-plan-price{font-size:20px;font-weight:700;color:#fff}
+.sub-plan-price span{font-size:11px;font-weight:400;color:var(--mu2)}
+.sub-plan-feats{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.sub-plan-feat{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mu2)}
+.sub-feat-dot{width:4px;height:4px;border-radius:50%;background:var(--gr);flex-shrink:0}
+
+/* ── UI POLISH (Claude.ai style) ── */
+.greet{padding:clamp(32px,8vh,72px) 0 26px}
+.greet-icon{width:40px;height:40px;margin-bottom:14px}
+.greet-icon svg{width:40px;height:40px}
+.greet-h{font-size:clamp(24px,6vw,38px);font-weight:600;color:#fff;letter-spacing:-.4px;line-height:1.1;margin-bottom:6px}
+.greet-sub{font-size:13px;color:var(--mu2)}
+/* suggestion chips */
+.suggest-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.suggest-chip{padding:7px 14px;background:var(--bg2);border:1px solid var(--b2);border-radius:20px;
+  font-size:12px;font-weight:500;color:var(--mu2);cursor:pointer;transition:.13s;display:flex;align-items:center;gap:5px}
+.suggest-chip:hover{background:var(--bg3);border-color:var(--b3);color:#dde}
+.suggest-chip svg{width:13px;height:13px;flex-shrink:0}
+/* upload btn */
+.upload-btn{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;color:var(--mu);cursor:pointer;transition:.12s;flex-shrink:0;background:none;border:none}
+.upload-btn:hover{background:var(--b1);color:#ccc}
+#fileInput{display:none}
+.file-preview{display:flex;align-items:center;gap:7px;padding:7px 12px;
+  background:var(--bg3);border:1px solid var(--b2);border-radius:9px;margin-bottom:5px;font-size:11px;color:#ccc}
+.file-preview-x{margin-left:auto;color:var(--mu);cursor:pointer;background:none;border:none;font-size:14px;line-height:1}
+/* prompt-top spacing */
+.prompt-top{padding:13px 13px 5px}
+/* nav plan badge */
+.nav-plan{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:var(--mu2);
+  cursor:pointer;transition:.13s;white-space:nowrap}
+.nav-plan:hover{color:#fff;border-color:var(--b3)}
+
 </style>
 </head>
 <body>
@@ -477,26 +583,28 @@ input,textarea,select{font-family:inherit;outline:none;color:inherit}
   <div class="sb-body">
     <div class="sb-section">
       <div class="sb-sec-label">Navigation</div>
-      <button class="sb-item" onclick="showView('chat');closeSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</button>
-      <button class="sb-item" onclick="showView('pricing');closeSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Pricing</button>
+      <button class="sb-item" onclick="showView('chat');closeSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span data-i18n="menu_chat">Chat</span></button>
+      <button class="sb-item" onclick="showView('pricing');closeSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span data-i18n="menu_pricing">Pricing</span></button>
     </div>
     <div class="sb-section">
       <div class="sb-sec-label">Account</div>
-      <button class="sb-item" onclick="closeSB();openAccModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account Management</button>
-      <button class="sb-item" onclick="closeSB();openLangModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Language</button>
+      <button class="sb-item" onclick="showView('account');closeSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n="menu_account">Account</span></button>
+      <button class="sb-item" onclick="showView('language');closeSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="menu_language">Language</span></button>
+      <button class="sb-item" onclick="showView('subscription');closeSB()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span data-i18n="menu_subscription">Subscription</span></button>
     </div>
   </div>
   <div class="sb-foot">
-    <button class="sb-upg" onclick="showView('pricing');closeSB()">Upgrade Plan</button>
+    <button class="sb-upg" onclick="showView('pricing');closeSB()"><span data-i18n="btn_upgrade">Upgrade Plan</span></button>
     <div class="sb-user" onclick="togUM()">
       <div class="av" id="uav">FX</div>
       <div class="sui"><div class="sun" id="uname">Loading...</div><div class="sus" id="uplan">Free Plan</div></div>
       <span class="ubadge" id="ubadge">FREE</span>
       <div class="umenu" id="umenu" onclick="event.stopPropagation()">
         <div class="umhd" id="uemail">Account</div>
-        <button class="umit" onclick="closeSB();openAccModal()">Account Management</button>
-        <button class="umit" onclick="closeSB();openLangModal()">Language</button>
-        <button class="umit" onclick="showView('pricing');closeSB()">Pricing</button>
+        <button class="umit" onclick="showView('account');closeSB()"><span data-i18n="menu_account">Account</span></button>
+        <button class="umit" onclick="showView('language');closeSB()"><span data-i18n="menu_language">Language</span></button>
+        <button class="umit" onclick="showView('subscription');closeSB()"><span data-i18n="menu_subscription">Subscription</span></button>
+        <button class="umit" onclick="showView('pricing');closeSB()"><span data-i18n="menu_pricing">Pricing</span></button>
         <div class="umsep"></div>
         <button class="umit" onclick="logout()" style="color:var(--rd)">Sign Out</button>
       </div>
@@ -510,6 +618,7 @@ input,textarea,select{font-family:inherit;outline:none;color:inherit}
   <span class="nav-tagline" id="navTagline">What will you make today?</span>
   <div class="nav-r">
     <div class="nav-cr" id="crChip"><div class="nav-crbar"><div class="nav-crfill" id="crFill" style="width:100%"></div></div><span class="nav-crn" id="crNum">2000</span></div>
+    <button class="nav-plan" id="navPlanBadge" onclick="showView('subscription')">Free plan</button>
     <button class="nav-hbg" onclick="openSB()"><span></span><span></span><span></span></button>
   </div>
 </nav>
@@ -518,18 +627,47 @@ input,textarea,select{font-family:inherit;outline:none;color:inherit}
 <div id="chat-view" style="display:none">
   <div class="chat-scroll" id="chatScroll">
     <div class="chat-inner">
-      <div class="greet" id="greet"><div class="greet-h" id="grtxt">Good evening</div><div class="greet-sub" id="grsub">Let's make something amazing together</div></div>
+      <div class="greet" id="greet">
+        <div class="greet-icon">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 4C24 4 26 18 38 24C26 30 24 44 24 44C24 44 22 30 10 24C22 18 24 4 24 4Z" fill="#d97757" opacity=".9"/></svg>
+        </div>
+        <div class="greet-h" id="grtxt">Good evening</div>
+        <div class="greet-sub" id="grsub">Let's make something amazing together</div>
+        <div class="suggest-chips" id="suggestChips">
+          <button class="suggest-chip" onclick="setSuggest('code')" id="sug-code">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span data-i18n="sug_code">Code</span>
+          </button>
+          <button class="suggest-chip" onclick="setSuggest('write')" id="sug-write">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span data-i18n="sug_write">Write</span>
+          </button>
+          <button class="suggest-chip" onclick="setSuggest('website')" id="sug-website">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span data-i18n="sug_website">Website</span>
+          </button>
+          <button class="suggest-chip" onclick="setSuggest('search')" id="sug-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span data-i18n="sug_search">Search</span>
+          </button>
+        </div>
+      </div>
       <div class="chat-msgs" id="chatMsgs"></div>
     </div>
   </div>
   <div class="chat-input-area">
     <div class="tags-row" id="tagsRow"></div>
+    <div id="filePreviewArea"></div>
     <div class="prompt-card">
       <div class="prompt-top">
         <textarea id="chatPrompt" placeholder="Ask AI anything..."></textarea>
         <button class="send-btn act" id="sendBtn" onclick="chatSend()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
       <div class="prompt-bottom">
+        <button class="upload-btn" title="Upload file or image" onclick="document.getElementById('fileInput').click()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <input type="file" id="fileInput" accept="image/*,.pdf,.txt,.md,.js,.html,.css,.json" onchange="handleFileUpload(this)"/>
         <button class="plus-btn" id="plusBtn" onclick="openModePopup()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
         <button class="model-chip" onclick="openModelPop()"><span class="model-dot"></span><span id="chatMN">Claude Sonnet 4.5</span><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
       </div>
@@ -611,7 +749,7 @@ async function loadProfile(u){
   }catch(e){console.error('Profile:',e.message);}
   const pm=PLAN_MODEL[userPlan]||PLAN_MODEL.free;chatModel=pm.id;chatMN=pm.name;
   const mn=document.getElementById('chatMN');if(mn)mn.textContent=chatMN;
-  updPlanUI();updCrBar();hideSplash();
+  updPlanUI();updCrBar();hideSplash();updNavPlanBadge();
   const sl=localStorage.getItem('fx_lang')||'en';if(sl!=='en')applyLang(sl);
 }
 function hideSplash(){setTimeout(()=>{const s=document.getElementById('splash');s.classList.add('hide');setTimeout(()=>s.style.display='none',500);},3000);}
@@ -626,7 +764,26 @@ function closeSB(){document.getElementById('sidebar').classList.remove('open');d
 function showUpg(){document.getElementById('upgBg').classList.add('show');}
 function hideUpg(){document.getElementById('upgBg').classList.remove('show');}
 let _tt;function showToast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className='toast show'+(type?' '+type:'');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2800);}
-function showView(v){document.getElementById('chat-view').style.display=v==='chat'?'flex':'none';document.getElementById('pricing-view').style.display=v==='pricing'?'block':'none';if(v==='pricing'){prRenderPlans();prRenderFaq();}}
+function showView(v){
+  const views=['chat-view','pricing-view','account-view','language-view','subscription-view'];
+  views.forEach(id=>document.getElementById(id).style.display='none');
+  document.querySelectorAll('.section-view').forEach(el=>el.classList.remove('show'));
+  if(v==='chat'){
+    document.getElementById('chat-view').style.display='flex';
+  } else if(v==='pricing'){
+    document.getElementById('pricing-view').style.display='block';
+    prRenderPlans();prRenderFaq();
+  } else if(v==='account'){
+    document.getElementById('account-view').classList.add('show');
+    loadAccountView();
+  } else if(v==='language'){
+    document.getElementById('language-view').classList.add('show');
+    renderLangPage();
+  } else if(v==='subscription'){
+    document.getElementById('subscription-view').classList.add('show');
+    loadSubscriptionView();
+  }
+}
 const TAG_META={website:{label:'Website',color:'website',line:'Tell me what kind of website to build'},search:{label:'Search',color:'search',line:'What would you like me to search for?'}};
 function addTag(mode){closeModePopup();activeTags=[mode];renderTags();updateNavTagline();const ta=document.getElementById('chatPrompt');if(ta){ta.placeholder=mode==='website'?'Describe the website you want to build...':'What do you want to search for?';ta.focus();}}
 function removeTag(mode){activeTags=activeTags.filter(t=>t!==mode);renderTags();updateNavTagline();const ta=document.getElementById('chatPrompt');if(ta)ta.placeholder='Ask AI anything...';}
@@ -647,7 +804,16 @@ document.getElementById('chatPrompt')?.addEventListener('input',function(){this.
 function addMsg(role,content,type='text'){const wrap=document.getElementById('chatMsgs');const greet=document.getElementById('greet');if(greet&&wrap.children.length===0)greet.style.display='none';const el=document.createElement('div');if(type==='loading'){el.className='msg-a';el.id='chat-ld';el.innerHTML='<div class="cdots"><span></span><span></span><span></span></div>';}else if(type==='status'){el.className='msg-status';el.id='st-'+Date.now();el.innerHTML='<div class="st-dot"></div><span>'+content+'</span>';}else if(type==='error'){el.className='msg-err';el.textContent=content;}else if(role==='user'){el.className='msg-u fadein';el.textContent=content;}else{el.className='msg-a fadein';el.innerHTML=fmtMsg(content);}wrap.appendChild(el);requestAnimationFrame(()=>{const s=document.getElementById('chatScroll');if(s)s.scrollTop=s.scrollHeight;});return el;}
 function setStatus(el,txt){if(el&&el.querySelector('span'))el.querySelector('span').textContent=txt;}
 function fmtMsg(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre style="background:var(--bg3);border:1px solid var(--b2);border-radius:8px;padding:10px 12px;overflow-x:auto;font-size:12px;line-height:1.5;margin:6px 0;font-family:monospace;color:#c8d3f5">${c.trim()}</pre>`).replace(/`([^`]+)`/g,'<code style="background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:12px;font-family:monospace;color:#c8d3f5">$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong style="color:#e8e8f0;font-weight:700">$1</strong>').replace(/^### (.+)$/gm,'<div style="font-size:13px;font-weight:700;color:#dde;margin:10px 0 4px">$1</div>').replace(/^## (.+)$/gm,'<div style="font-size:14px;font-weight:700;color:#eee;margin:12px 0 5px">$1</div>').replace(/^# (.+)$/gm,'<div style="font-size:15px;font-weight:700;color:#fff;margin:14px 0 6px">$1</div>').replace(/^- (.+)$/gm,'<div style="padding:2px 0 2px 14px;position:relative"><span style="position:absolute;left:4px;color:var(--ac2)">-</span>$1</div>').replace(/\n/g,'<br>');}
-async function chatSend(){if(chatGen)return;const ta=document.getElementById('chatPrompt');const msg=ta.value.trim();if(!msg)return;const mode=activeTags[0]||'chat';const cost=mode==='website'?CR_COST.website:CR_COST.text;if(!hasCr(cost)){showUpg();return;}ta.value='';ta.style.height='auto';chatGen=true;const btn=document.getElementById('sendBtn');if(btn){btn.disabled=true;btn.innerHTML='<svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';btn.classList.remove('act');}addMsg('user',msg);try{if(mode==='website'){await buildWebsite(msg);}else if(mode==='search'){await doSearch(msg);}else{const ld=addMsg('','','loading');const msgs=[...chatHistory,{role:'user',content:msg}].slice(-12);const resp=await callAI(msgs,chatModel);ld.remove();addMsg('assistant',resp);await deductCr(CR_COST.text,'text');chatHistory.push({role:'user',content:msg});chatHistory.push({role:'assistant',content:resp});if(chatHistory.length>24)chatHistory=chatHistory.slice(-24);}}catch(e){document.getElementById('chat-ld')?.remove();if(e.message==='CREDITS_EMPTY')showUpg();else addMsg('assistant','Error: '+(e.message||'Generation failed'),'error');}finally{chatGen=false;if(btn){btn.disabled=false;btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';btn.classList.add('act');}}}
+async function chatSend(){if(chatGen)return;const ta=document.getElementById('chatPrompt');const msg=ta.value.trim();if(!msg)return;const mode=activeTags[0]||'chat';const cost=mode==='website'?CR_COST.website:CR_COST.text;if(!hasCr(cost)){showUpg();return;}ta.value='';ta.style.height='auto';chatGen=true;const btn=document.getElementById('sendBtn');if(btn){btn.disabled=true;btn.innerHTML='<svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';btn.classList.remove('act');}addMsg('user',msg);
+  // Show file in chat if uploaded
+  if(uploadedFiles.length){
+    const f=uploadedFiles[0];
+    if(f.type.startsWith('image/')){
+      const imgEl=document.createElement('div');imgEl.className='msg-u fadein';
+      const img=document.createElement('img');img.src=URL.createObjectURL(f);img.style.cssText='max-width:200px;border-radius:8px;display:block;margin-top:4px';
+      imgEl.appendChild(img);document.getElementById('chatMsgs').appendChild(imgEl);
+    }
+  }try{if(mode==='website'){await buildWebsite(msg);}else if(mode==='search'){await doSearch(msg);}else{const ld=addMsg('','','loading');const msgs=[...chatHistory,{role:'user',content:msg}].slice(-12);const resp=await callAI(msgs,chatModel);ld.remove();addMsg('assistant',resp);await deductCr(CR_COST.text,'text');chatHistory.push({role:'user',content:msg});chatHistory.push({role:'assistant',content:resp});if(chatHistory.length>24)chatHistory=chatHistory.slice(-24);}}catch(e){document.getElementById('chat-ld')?.remove();if(e.message==='CREDITS_EMPTY')showUpg();else addMsg('assistant','Error: '+(e.message||'Generation failed'),'error');}finally{chatGen=false;if(btn){btn.disabled=false;btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>';btn.classList.add('act');}}}
 function guessStyle(p){const l=p.toLowerCase();if(l.includes('portfolio')||l.includes('personal'))return'Portfolio';if(l.includes('restaurant')||l.includes('cafe')||l.includes('food'))return'Restaurant';if(l.includes('shop')||l.includes('store')||l.includes('ecommerce'))return'E-commerce';if(l.includes('blog')||l.includes('news'))return'Blog';if(l.includes('agency')||l.includes('studio'))return'Agency';if(l.includes('app')||l.includes('mobile'))return'App Landing';return'SaaS Landing';}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 async function buildWebsite(prompt){const stEl=addMsg('','Analyzing your request...','status');try{await deductCr(CR_COST.website,'website');const style=guessStyle(prompt);setStatus(stEl,'Planning '+style+' website layout...');await sleep(350);setStatus(stEl,'Writing HTML and CSS...');await sleep(300);setStatus(stEl,'Adding animations and responsiveness...');const sys='You are an expert frontend developer. Generate a COMPLETE PRODUCTION-READY single-file HTML website. Style: '+style+'. Requirements: fully responsive mobile-first, all CSS inline in style tag, smooth animations fade-in hover transitions, professional quality looks like $5000+ custom design, write real compelling copy no Lorem Ipsum, include ALL standard sections for this site type, return ONLY complete HTML starting with <!DOCTYPE html> ending with </html>, make it beautiful and modern.';const resp=await callAI([{role:'user',content:'Build a complete '+style+' website: '+prompt}],'anthropic/claude-sonnet-4-5',sys);let wbHtml=resp;const m=resp.match(/<!DOCTYPE html[\s\S]*<\/html>/i);if(m)wbHtml=m[0];lastWbHtml=wbHtml;setStatus(stEl,'Website ready!');await sleep(200);stEl.remove();const wrap=document.getElementById('chatMsgs');const greet=document.getElementById('greet');if(greet)greet.style.display='none';const card=document.createElement('div');card.className='msg-wb-card fadein';const iid='wb'+Date.now();card.innerHTML=`<div class="wb-preview-bar"><div class="wb-pdots"><div class="wb-dot" style="background:#ef4444"></div><div class="wb-dot" style="background:#fbbf24"></div><div class="wb-dot" style="background:#22c55e"></div></div><span class="wb-url">fluxwith AI Generated Website</span></div><iframe id="${iid}" class="wb-iframe" sandbox="allow-scripts allow-same-origin"></iframe><div class="wb-actions"><button class="wb-act preview" onclick="wbPreview('${iid}')">Live Preview</button><button class="wb-act download" onclick="wbDownload('${iid}')">Download ZIP</button><button class="wb-act deploy" onclick="wbDeploy()">Deploy</button><button class="wb-act regen" onclick="wbRegen('${iid}',this)">Regenerate</button></div>`;wrap.appendChild(card);const iframe=document.getElementById(iid);if(iframe){const doc=iframe.contentDocument||iframe.contentWindow.document;doc.open();doc.write(wbHtml);doc.close();}requestAnimationFrame(()=>{const s=document.getElementById('chatScroll');if(s)s.scrollTop=s.scrollHeight;});showToast('Website generated','ok');chatHistory.push({role:'user',content:'[Website: '+prompt+']'});chatHistory.push({role:'assistant',content:'[Website generated successfully]'});}catch(e){stEl.remove();throw e;}}
@@ -809,16 +975,216 @@ const LANGS=[
   {code:'ru',name:'Russian',native:'Русский',flag:'RU'},
 ];
 const LANG_STR={
-  en:{ph:'Ask AI anything...',sub:"Let's make something amazing together"},
-  ur:{ph:'AI se kuch bhi pucho...',sub:'Milke kuch shandar banate hain'},
-  hi:{ph:'AI se kuch bhi pucho...',sub:'Milkar kuch amazing banate hain'},
-  ar:{ph:'اسأل الذكاء الاصطناعي...',sub:'لنصنع شيئا مذهلا معا'},
-  fr:{ph:"Demandez n'importe quoi...",sub:'Créons quelque chose ensemble'},
-  de:{ph:'Frag AI irgendetwas...',sub:'Lass uns etwas Tolles erstellen'},
-  es:{ph:'Pregunta a la IA...',sub:'Creemos algo increíble juntos'},
-  zh:{ph:'向AI提问任何内容...',sub:'让我们一起创造精彩'},
-  tr:{ph:'AI ile herhangi bir sey sor...',sub:'Birlikte harika bir sey yapalim'},
-  ru:{ph:'Спроси ИИ о чём угодно...',sub:'Давай создадим что-то вместе'},
+  en:{
+    ph:'Ask AI anything...',
+    sub:"Let's make something amazing together",
+    greet:'Good evening',
+    menu_chat:'Chat',menu_pricing:'Pricing',menu_account:'Account',
+    menu_language:'Language',menu_subscription:'Subscription',
+    btn_upgrade:'Upgrade Plan',btn_save:'Save Changes',
+    btn_signout_all:'Sign Out All Devices',
+    back:'Back',
+    acc_title:'Account',acc_sub:'Manage your profile and settings',
+    acc_plan:'Current Plan',acc_credits:'Credits',
+    acc_profile:'Profile',acc_name:'Full Name',acc_email:'Email',
+    acc_notes:'Notes',acc_danger:'Danger Zone',
+    lang_title:'Language',lang_sub:'Choose your preferred language. The entire interface will update.',
+    sub_title:'Subscription',sub_sub:'Manage your plan and billing',
+    sub_current:'Current Plan',sub_upgrade:'Upgrade Plan',
+    sub_billing:'Billing',sub_view_plans:'View All Plans',
+    sub_compare:'Compare features and pricing',
+    sub_cancel:'Cancel Subscription',sub_cancel_note:'Contact support to cancel',
+    sug_code:'Code',sug_write:'Write',sug_website:'Website',sug_search:'Search',
+  },
+  ur:{
+    ph:'AI se kuch bhi pucho...',
+    sub:'Milke kuch shandar banate hain',
+    greet:'Shaam bakhair',
+    menu_chat:'Chat',menu_pricing:'Qeemat',menu_account:'Account',
+    menu_language:'Zaban',menu_subscription:'Subscription',
+    btn_upgrade:'Plan Upgrade Karo',btn_save:'Tabdeeliyan Save Karo',
+    btn_signout_all:'Sab Devices Se Log Out',
+    back:'Wapas',
+    acc_title:'Account',acc_sub:'Apna profile manage karo',
+    acc_plan:'Mौjuda Plan',acc_credits:'Credits',
+    acc_profile:'Profile',acc_name:'Pura Naam',acc_email:'Email',
+    acc_notes:'Notes',acc_danger:'Khatarnak Zone',
+    lang_title:'Zaban',lang_sub:'Apni pasandida zaban chunein. Pura interface badal jayega.',
+    sub_title:'Subscription',sub_sub:'Apna plan aur billing manage karo',
+    sub_current:'Mौjuda Plan',sub_upgrade:'Plan Upgrade Karo',
+    sub_billing:'Billing',sub_view_plans:'Sab Plans Dekhein',
+    sub_compare:'Features aur qeemat compare karo',
+    sub_cancel:'Subscription Band Karo',sub_cancel_note:'Band karne ke liye support se rabta karein',
+    sug_code:'Code',sug_write:'Likhna',sug_website:'Website',sug_search:'Talaash',
+  },
+  hi:{
+    ph:'AI se kuch bhi pucho...',
+    sub:'Milkar kuch amazing banate hain',
+    greet:'Shubh sandhya',
+    menu_chat:'Chat',menu_pricing:'Mulya',menu_account:'Account',
+    menu_language:'Bhasha',menu_subscription:'Subscription',
+    btn_upgrade:'Plan Upgrade Karein',btn_save:'Badlav Saave Karein',
+    btn_signout_all:'Sabhi Devices Se Log Out',
+    back:'Wapas',
+    acc_title:'Account',acc_sub:'Apna profile manage karein',
+    acc_plan:'Vartaman Plan',acc_credits:'Credits',
+    acc_profile:'Profile',acc_name:'Pura Naam',acc_email:'Email',
+    acc_notes:'Notes',acc_danger:'Khatarnak Zone',
+    lang_title:'Bhasha',lang_sub:'Apni pasandida bhasha chunein. Poora interface badal jayega.',
+    sub_title:'Subscription',sub_sub:'Apna plan aur billing manage karein',
+    sub_current:'Vartaman Plan',sub_upgrade:'Plan Upgrade Karein',
+    sub_billing:'Billing',sub_view_plans:'Sabhi Plans Dekhein',
+    sub_compare:'Features aur mulya compare karein',
+    sub_cancel:'Subscription Band Karein',sub_cancel_note:'Band karne ke liye support se sampark karein',
+    sug_code:'Code',sug_write:'Likhna',sug_website:'Website',sug_search:'Khoj',
+  },
+  ar:{
+    ph:'اسأل الذكاء الاصطناعي...',
+    sub:'لنصنع شيئا مذهلا معا',
+    greet:'مساء الخير',
+    menu_chat:'محادثة',menu_pricing:'الأسعار',menu_account:'الحساب',
+    menu_language:'اللغة',menu_subscription:'الاشتراك',
+    btn_upgrade:'ترقية الخطة',btn_save:'حفظ التغييرات',
+    btn_signout_all:'تسجيل الخروج من جميع الأجهزة',
+    back:'رجوع',
+    acc_title:'الحساب',acc_sub:'إدارة ملفك الشخصي',
+    acc_plan:'الخطة الحالية',acc_credits:'الرصيد',
+    acc_profile:'الملف الشخصي',acc_name:'الاسم الكامل',acc_email:'البريد الإلكتروني',
+    acc_notes:'ملاحظات',acc_danger:'منطقة الخطر',
+    lang_title:'اللغة',lang_sub:'اختر لغتك المفضلة. ستتغير الواجهة بالكامل.',
+    sub_title:'الاشتراك',sub_sub:'إدارة خطتك وفوترتك',
+    sub_current:'الخطة الحالية',sub_upgrade:'ترقية الخطة',
+    sub_billing:'الفوترة',sub_view_plans:'عرض جميع الخطط',
+    sub_compare:'مقارنة الميزات والأسعار',
+    sub_cancel:'إلغاء الاشتراك',sub_cancel_note:'تواصل مع الدعم للإلغاء',
+    sug_code:'كود',sug_write:'كتابة',sug_website:'موقع',sug_search:'بحث',
+  },
+  fr:{
+    ph:"Demandez n'importe quoi...",
+    sub:'Créons quelque chose ensemble',
+    greet:'Bonsoir',
+    menu_chat:'Chat',menu_pricing:'Tarifs',menu_account:'Compte',
+    menu_language:'Langue',menu_subscription:'Abonnement',
+    btn_upgrade:'Mettre à niveau',btn_save:'Enregistrer',
+    btn_signout_all:'Déconnecter tous les appareils',
+    back:'Retour',
+    acc_title:'Compte',acc_sub:'Gérez votre profil',
+    acc_plan:'Plan actuel',acc_credits:'Crédits',
+    acc_profile:'Profil',acc_name:'Nom complet',acc_email:'Email',
+    acc_notes:'Notes',acc_danger:'Zone de danger',
+    lang_title:'Langue',lang_sub:"Choisissez votre langue préférée. L'interface changera entièrement.",
+    sub_title:'Abonnement',sub_sub:'Gérez votre plan et facturation',
+    sub_current:'Plan actuel',sub_upgrade:'Mettre à niveau',
+    sub_billing:'Facturation',sub_view_plans:'Voir tous les plans',
+    sub_compare:'Comparer les fonctionnalités et les prix',
+    sub_cancel:"Annuler l'abonnement",sub_cancel_note:'Contactez le support pour annuler',
+    sug_code:'Code',sug_write:'Écrire',sug_website:'Site web',sug_search:'Chercher',
+  },
+  de:{
+    ph:'Frag AI irgendetwas...',
+    sub:'Lass uns etwas Tolles erstellen',
+    greet:'Guten Abend',
+    menu_chat:'Chat',menu_pricing:'Preise',menu_account:'Konto',
+    menu_language:'Sprache',menu_subscription:'Abonnement',
+    btn_upgrade:'Plan upgraden',btn_save:'Änderungen speichern',
+    btn_signout_all:'Von allen Geräten abmelden',
+    back:'Zurück',
+    acc_title:'Konto',acc_sub:'Profil verwalten',
+    acc_plan:'Aktueller Plan',acc_credits:'Credits',
+    acc_profile:'Profil',acc_name:'Vollständiger Name',acc_email:'E-Mail',
+    acc_notes:'Notizen',acc_danger:'Gefahrenzone',
+    lang_title:'Sprache',lang_sub:'Wähle deine bevorzugte Sprache. Die gesamte Oberfläche wird aktualisiert.',
+    sub_title:'Abonnement',sub_sub:'Plan und Abrechnung verwalten',
+    sub_current:'Aktueller Plan',sub_upgrade:'Upgrade',
+    sub_billing:'Abrechnung',sub_view_plans:'Alle Pläne ansehen',
+    sub_compare:'Funktionen und Preise vergleichen',
+    sub_cancel:'Abonnement kündigen',sub_cancel_note:'Support kontaktieren zum Kündigen',
+    sug_code:'Code',sug_write:'Schreiben',sug_website:'Website',sug_search:'Suchen',
+  },
+  es:{
+    ph:'Pregunta a la IA...',
+    sub:'Creemos algo increíble juntos',
+    greet:'Buenas tardes',
+    menu_chat:'Chat',menu_pricing:'Precios',menu_account:'Cuenta',
+    menu_language:'Idioma',menu_subscription:'Suscripción',
+    btn_upgrade:'Actualizar plan',btn_save:'Guardar cambios',
+    btn_signout_all:'Cerrar sesión en todos los dispositivos',
+    back:'Atrás',
+    acc_title:'Cuenta',acc_sub:'Gestiona tu perfil',
+    acc_plan:'Plan actual',acc_credits:'Créditos',
+    acc_profile:'Perfil',acc_name:'Nombre completo',acc_email:'Correo electrónico',
+    acc_notes:'Notas',acc_danger:'Zona de peligro',
+    lang_title:'Idioma',lang_sub:'Elige tu idioma preferido. Toda la interfaz se actualizará.',
+    sub_title:'Suscripción',sub_sub:'Gestiona tu plan y facturación',
+    sub_current:'Plan actual',sub_upgrade:'Actualizar plan',
+    sub_billing:'Facturación',sub_view_plans:'Ver todos los planes',
+    sub_compare:'Comparar características y precios',
+    sub_cancel:'Cancelar suscripción',sub_cancel_note:'Contacta soporte para cancelar',
+    sug_code:'Código',sug_write:'Escribir',sug_website:'Sitio web',sug_search:'Buscar',
+  },
+  zh:{
+    ph:'向AI提问任何内容...',
+    sub:'让我们一起创造精彩',
+    greet:'晚上好',
+    menu_chat:'聊天',menu_pricing:'定价',menu_account:'账户',
+    menu_language:'语言',menu_subscription:'订阅',
+    btn_upgrade:'升级计划',btn_save:'保存更改',
+    btn_signout_all:'从所有设备退出',
+    back:'返回',
+    acc_title:'账户',acc_sub:'管理您的个人资料',
+    acc_plan:'当前计划',acc_credits:'积分',
+    acc_profile:'个人资料',acc_name:'全名',acc_email:'电子邮件',
+    acc_notes:'备注',acc_danger:'危险区域',
+    lang_title:'语言',lang_sub:'选择您的首选语言。整个界面将更新。',
+    sub_title:'订阅',sub_sub:'管理您的计划和账单',
+    sub_current:'当前计划',sub_upgrade:'升级计划',
+    sub_billing:'账单',sub_view_plans:'查看所有计划',
+    sub_compare:'比较功能和价格',
+    sub_cancel:'取消订阅',sub_cancel_note:'联系支持取消',
+    sug_code:'代码',sug_write:'写作',sug_website:'网站',sug_search:'搜索',
+  },
+  tr:{
+    ph:'AI ile herhangi bir sey sor...',
+    sub:'Birlikte harika bir sey yapalim',
+    greet:'Iyi aksamlar',
+    menu_chat:'Sohbet',menu_pricing:'Fiyatlar',menu_account:'Hesap',
+    menu_language:'Dil',menu_subscription:'Abonelik',
+    btn_upgrade:'Plani Yukseltin',btn_save:'Degisiklikleri Kaydet',
+    btn_signout_all:'Tum Cihazlardan Cikis',
+    back:'Geri',
+    acc_title:'Hesap',acc_sub:'Profilinizi yonetin',
+    acc_plan:'Mevcut Plan',acc_credits:'Krediler',
+    acc_profile:'Profil',acc_name:'Ad Soyad',acc_email:'E-posta',
+    acc_notes:'Notlar',acc_danger:'Tehlike Bolgesi',
+    lang_title:'Dil',lang_sub:'Tercih ettiginiz dili secin. Tum arayuz guncellenecek.',
+    sub_title:'Abonelik',sub_sub:'Plan ve faturanizi yonetin',
+    sub_current:'Mevcut Plan',sub_upgrade:'Plani Yukseltin',
+    sub_billing:'Fatura',sub_view_plans:'Tum Planlari Gor',
+    sub_compare:'Ozellik ve fiyatlari karsilastir',
+    sub_cancel:'Aboneligi Iptal Et',sub_cancel_note:'Iptal icin destek ile iletisime gecin',
+    sug_code:'Kod',sug_write:'Yaz',sug_website:'Website',sug_search:'Ara',
+  },
+  ru:{
+    ph:'Спроси ИИ о чём угодно...',
+    sub:'Давай создадим что-то вместе',
+    greet:'Добрый вечер',
+    menu_chat:'Чат',menu_pricing:'Цены',menu_account:'Аккаунт',
+    menu_language:'Язык',menu_subscription:'Подписка',
+    btn_upgrade:'Улучшить план',btn_save:'Сохранить изменения',
+    btn_signout_all:'Выйти со всех устройств',
+    back:'Назад',
+    acc_title:'Аккаунт',acc_sub:'Управляйте своим профилем',
+    acc_plan:'Текущий план',acc_credits:'Кредиты',
+    acc_profile:'Профиль',acc_name:'Полное имя',acc_email:'Email',
+    acc_notes:'Заметки',acc_danger:'Опасная зона',
+    lang_title:'Язык',lang_sub:'Выберите предпочтительный язык. Весь интерфейс обновится.',
+    sub_title:'Подписка',sub_sub:'Управляйте планом и оплатой',
+    sub_current:'Текущий план',sub_upgrade:'Улучшить план',
+    sub_billing:'Оплата',sub_view_plans:'Все планы',
+    sub_compare:'Сравнить функции и цены',
+    sub_cancel:'Отменить подписку',sub_cancel_note:'Свяжитесь с поддержкой для отмены',
+    sug_code:'Код',sug_write:'Писать',sug_website:'Сайт',sug_search:'Поиск',
+  },
 };
 function openLangModal(){document.getElementById('langModal').classList.add('show');renderLangGrid();}
 function closeLangModal(){document.getElementById('langModal').classList.remove('show');}
@@ -839,9 +1205,42 @@ async function saveLang(){
 }
 function applyLang(code){
   const s=LANG_STR[code]||LANG_STR.en;
+  // Placeholder
   const ta=document.getElementById('chatPrompt');if(ta&&!activeTags.length)ta.placeholder=s.ph;
+  // Subtitle
   const sub=document.getElementById('grsub');if(sub)sub.textContent=s.sub;
+  // RTL
   document.body.style.direction=(code==='ar'||code==='ur')?'rtl':'ltr';
+  // All data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    if(s[key]!==undefined)el.textContent=s[key];
+  });
+  // Greet update (time-based)
+  const h=new Date().getHours();
+  const gMap={
+    en:{0:'Good morning',12:'Good afternoon',17:'Good evening'},
+    ur:{0:'Subah Bakhair',12:'Dopahar Bakhair',17:'Shaam Bakhair'},
+    hi:{0:'Suprabhat',12:'Namaste',17:'Shubh Sandhya'},
+    ar:{0:'صباح الخير',12:'مساء الخير',17:'مساء الخير'},
+    fr:{0:'Bonjour',12:'Bon après-midi',17:'Bonsoir'},
+    de:{0:'Guten Morgen',12:'Guten Mittag',17:'Guten Abend'},
+    es:{0:'Buenos días',12:'Buenas tardes',17:'Buenas noches'},
+    zh:{0:'早上好',12:'下午好',17:'晚上好'},
+    tr:{0:'Günaydın',12:'İyi günler',17:'İyi akşamlar'},
+    ru:{0:'Доброе утро',12:'Добрый день',17:'Добрый вечер'},
+  };
+  const gTimes=gMap[code]||gMap.en;
+  const gKey=h<12?0:h<17?12:17;
+  const gt=gTimes[gKey];
+  const uname=document.getElementById('uname')?.textContent?.split(' ')[0]||'';
+  const gEl=document.getElementById('grtxt');
+  if(gEl)gEl.textContent=gt+(uname?', '+uname:'');
+  // Suggest chips
+  if(s.sug_code)document.querySelectorAll('[data-i18n="sug_code"]').forEach(e=>e.textContent=s.sug_code);
+  if(s.sug_write)document.querySelectorAll('[data-i18n="sug_write"]').forEach(e=>e.textContent=s.sug_write);
+  if(s.sug_website)document.querySelectorAll('[data-i18n="sug_website"]').forEach(e=>e.textContent=s.sug_website);
+  if(s.sug_search)document.querySelectorAll('[data-i18n="sug_search"]').forEach(e=>e.textContent=s.sug_search);
 }
 
 // PRICING
@@ -901,7 +1300,245 @@ document.addEventListener('keydown',e=>{
 document.getElementById('mpopBg')?.addEventListener('click',closeMpop);
 document.getElementById('mpopX')?.addEventListener('click',closeMpop);
 
+
+// ── ACCOUNT VIEW ──
+async function loadAccountView(){
+  if(!sess)return;
+  const u=sess.user,email=u.email||'';
+  const nm=u.user_metadata?.full_name||email.split('@')[0]||'User';
+  document.getElementById('svAvatar').textContent=nm.slice(0,2).toUpperCase();
+  document.getElementById('svName').textContent=nm;
+  document.getElementById('svEmail').textContent=email;
+  document.getElementById('svNameInput').value=nm;
+  document.getElementById('svEmailInput').value=email;
+  const rem=Math.max(0,totalCr-usedCr);
+  document.getElementById('svCrNum').textContent=rem.toLocaleString();
+  document.getElementById('svCrFill').style.width=(totalCr>0?rem/totalCr*100:0)+'%';
+  const planBadge=document.getElementById('svPlanBadge');
+  const planColors={free:'background:rgba(34,197,94,.15);color:#22c55e',pro:'background:#1d3461;color:#60a5fa',ultimate:'background:#2d1454;color:#c084fc',infinite:'background:#2d1f00;color:#fbbf24'};
+  planBadge.style.cssText=planColors[userPlan]||planColors.free;
+  planBadge.textContent=userPlan.toUpperCase();
+  try{
+    const{data:p}=await sb.from('profiles').select('notes').eq('id',u.id).single();
+    if(p?.notes)document.getElementById('svNotesInput').value=p.notes;
+  }catch(e){}
+}
+async function saveAccountSV(){
+  if(!sess)return;
+  const name=(document.getElementById('svNameInput')?.value||'').trim();
+  const notes=(document.getElementById('svNotesInput')?.value||'').trim();
+  if(!name){showToast('Name required','err');return;}
+  const btn=document.querySelector('#account-view .sv-btn.primary');
+  if(btn){btn.disabled=true;}
+  try{
+    const{error}=await sb.from('profiles').update({full_name:name,notes:notes||null,updated_at:new Date().toISOString()}).eq('id',sess.user.id);
+    if(error)throw error;
+    document.getElementById('uname').textContent=name;
+    document.getElementById('uav').textContent=name.slice(0,2).toUpperCase();
+    document.getElementById('svAvatar').textContent=name.slice(0,2).toUpperCase();
+    document.getElementById('svName').textContent=name;
+    showToast('Saved','ok');
+  }catch(e){showToast('Error: '+e.message,'err');}
+  finally{if(btn)btn.disabled=false;}
+}
+
+// ── LANGUAGE PAGE ──
+function renderLangPage(){
+  const g=document.getElementById('langPageGrid');if(!g)return;
+  g.innerHTML=LANGS.map(l=>`<div class="lang-pg-item${currentLang===l.code?' on':''}" onclick="selectLangPage('${l.code}')">
+    <span class="lang-pg-flag">${l.flag}</span>
+    <div class="lang-pg-info"><div class="lang-pg-name">${l.name}</div><div class="lang-pg-native">${l.native}</div></div>
+    <div class="lang-pg-check${currentLang===l.code?' on':''}"></div>
+  </div>`).join('');
+}
+function selectLangPage(code){
+  currentLang=code;renderLangPage();
+}
+async function saveLangPage(){
+  localStorage.setItem('fx_lang',currentLang);
+  if(sess){try{await sb.from('profiles').update({notes:(userProfile?.notes||'')+'|lang:'+currentLang}).eq('id',sess.user.id);}catch(e){}}
+  applyLang(currentLang);showToast('Language saved','ok');showView('chat');
+}
+
+// ── SUBSCRIPTION VIEW ──
+function loadSubscriptionView(){
+  const planNames={free:'Free Plan',pro:'Pro Plan',ultimate:'Ultimate Plan',infinite:'Infinite Plan'};
+  const crMap={free:'2,000',pro:'22,000',ultimate:'55,000',infinite:'550,000'};
+  document.getElementById('subPlanName').textContent=planNames[userPlan]||'Free Plan';
+  document.getElementById('subCrInfo').textContent=(crMap[userPlan]||'2,000')+' credits / month';
+  const pb=document.getElementById('subPlanBadge');
+  const planColors={free:'background:rgba(34,197,94,.15);color:#22c55e',pro:'background:#1d3461;color:#60a5fa',ultimate:'background:#2d1454;color:#c084fc',infinite:'background:#2d1f00;color:#fbbf24'};
+  pb.style.cssText=planColors[userPlan]||planColors.free;pb.textContent='ACTIVE';
+  // Show upgrade options
+  const upgradePlans=[
+    {id:'pro',name:'Pro',price:'$19/mo',color:'var(--ac2)',feats:['22,000 credits','Claude Sonnet 4.6','Priority support']},
+    {id:'ultimate',name:'Ultimate',price:'$49/mo',color:'#c084fc',feats:['55,000 credits','Web Search','API access']},
+    {id:'infinite',name:'Infinite',price:'$499/mo',color:'var(--yl)',feats:['550,000 credits','Claude Opus','Dedicated support']},
+  ].filter(p=>p.id!==userPlan);
+  const el=document.getElementById('subPlansList');
+  if(el)el.innerHTML=upgradePlans.map(p=>`
+    <div class="sub-plan-card" style="margin-bottom:10px">
+      <div class="sub-plan-header">
+        <span class="sub-plan-name" style="color:${p.color}">${p.name}</span>
+        <span class="sub-plan-price">${p.price}</span>
+      </div>
+      <div class="sub-plan-feats">${p.feats.map(f=>`<div class="sub-plan-feat"><div class="sub-feat-dot"></div>${f}</div>`).join('')}</div>
+      <button class="sv-btn primary" onclick="prCheckout('${p.id}')">Upgrade to ${p.name}</button>
+    </div>`).join('');
+}
+
+// ── FILE UPLOAD ──
+let uploadedFiles=[];
+function handleFileUpload(input){
+  const file=input.files[0];if(!file)return;
+  uploadedFiles=[file];
+  const area=document.getElementById('filePreviewArea');
+  if(area){
+    const ext=file.name.split('.').pop().toUpperCase();
+    const isImg=file.type.startsWith('image/');
+    area.innerHTML=`<div class="file-preview">
+      ${isImg?`<img src="${URL.createObjectURL(file)}" style="width:32px;height:32px;border-radius:5px;object-fit:cover"/>`:`<span style="font-size:10px;font-weight:700;color:var(--ac2);background:rgba(91,106,240,.1);padding:4px 7px;border-radius:5px">${ext}</span>`}
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">${file.name}</span>
+      <button class="file-preview-x" onclick="clearFile()">x</button>
+    </div>`;
+  }
+  input.value='';
+}
+function clearFile(){
+  uploadedFiles=[];
+  const area=document.getElementById('filePreviewArea');
+  if(area)area.innerHTML='';
+}
+
+// ── SUGGEST CHIPS ──
+function setSuggest(mode){
+  if(mode==='website'){addTag('website');}
+  else if(mode==='search'){addTag('search');}
+  else{
+    const prompts={code:'Write a ',write:'Write a professional '};
+    const ta=document.getElementById('chatPrompt');
+    if(ta){ta.value=prompts[mode]||'';ta.focus();}
+  }
+}
+
+// ── NAV PLAN BADGE ──
+function updNavPlanBadge(){
+  const el=document.getElementById('navPlanBadge');if(!el)return;
+  const s=LANG_STR[currentLang]||LANG_STR.en;
+  const names={free:'Free plan',pro:'Pro plan',ultimate:'Ultimate',infinite:'Infinite'};
+  el.textContent=names[userPlan]||'Free plan';
+}
+
 (async()=>{await initAuth();})();
 </script>
+
+<!-- ACCOUNT VIEW -->
+<div class="section-view" id="account-view">
+  <div class="sv-page">
+    <button class="sv-back" onclick="showView('chat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-i18n="back">Back</span>
+    </button>
+    <div class="sv-title" data-i18n="acc_title">Account</div>
+    <div class="sv-sub" data-i18n="acc_sub">Manage your profile and settings</div>
+    <div class="sv-avatar-row">
+      <div class="sv-avatar" id="svAvatar">FX</div>
+      <div class="sv-avatar-name" id="svName">Loading...</div>
+      <div class="sv-avatar-email" id="svEmail"></div>
+    </div>
+    <div class="sv-plan-row">
+      <div><div style="font-size:12px;font-weight:600;color:#dde" data-i18n="acc_plan">Current Plan</div></div>
+      <span id="svPlanBadge" style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;background:rgba(34,197,94,.15);color:#22c55e">FREE</span>
+    </div>
+    <div class="sv-cr-row">
+      <div><div style="font-size:12px;color:var(--mu2)" data-i18n="acc_credits">Credits</div>
+        <div class="sv-cr-bar"><div class="sv-cr-fill" id="svCrFill" style="width:100%"></div></div>
+      </div>
+      <span id="svCrNum" style="font-size:14px;font-weight:700;color:#fff">2000</span>
+    </div>
+    <div class="sv-section-label" data-i18n="acc_profile">Profile</div>
+    <div class="sv-card">
+      <div class="sv-card-item" style="cursor:default;flex-direction:column;align-items:stretch;gap:5px">
+        <div class="sv-label" data-i18n="acc_name">Full Name</div>
+        <input class="sv-input" id="svNameInput" placeholder="Your name"/>
+      </div>
+      <div class="sv-card-item" style="cursor:default;flex-direction:column;align-items:stretch;gap:5px">
+        <div class="sv-label" data-i18n="acc_email">Email</div>
+        <input class="sv-input" id="svEmailInput" disabled/>
+      </div>
+      <div class="sv-card-item" style="cursor:default;flex-direction:column;align-items:stretch;gap:5px">
+        <div class="sv-label" data-i18n="acc_notes">Notes</div>
+        <input class="sv-input" id="svNotesInput" placeholder="Private notes..."/>
+      </div>
+    </div>
+    <button class="sv-btn primary" onclick="saveAccountSV()" style="margin-bottom:10px" data-i18n="btn_save">Save Changes</button>
+    <div class="sv-section-label" data-i18n="acc_danger">Danger Zone</div>
+    <button class="sv-btn danger" onclick="if(confirm('Sign out all devices?'))signOutAll()" data-i18n="btn_signout_all">Sign Out All Devices</button>
+  </div>
+</div>
+
+<!-- LANGUAGE VIEW -->
+<div class="section-view" id="language-view">
+  <div class="sv-page">
+    <button class="sv-back" onclick="showView('chat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-i18n="back">Back</span>
+    </button>
+    <div class="sv-title" data-i18n="lang_title">Language</div>
+    <div class="sv-sub" data-i18n="lang_sub">Choose your preferred language. The entire interface will update.</div>
+    <div class="lang-page-grid" id="langPageGrid"></div>
+    <button class="sv-btn primary" onclick="saveLangPage()" style="margin-top:16px" data-i18n="btn_save">Save Language</button>
+  </div>
+</div>
+
+<!-- SUBSCRIPTION VIEW -->
+<div class="section-view" id="subscription-view">
+  <div class="sv-page">
+    <button class="sv-back" onclick="showView('chat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-i18n="back">Back</span>
+    </button>
+    <div class="sv-title" data-i18n="sub_title">Subscription</div>
+    <div class="sv-sub" data-i18n="sub_sub">Manage your plan and billing</div>
+    <div class="sv-section-label" data-i18n="sub_current">Current Plan</div>
+    <div class="sv-card" style="margin-bottom:20px">
+      <div class="sv-card-item" style="cursor:default">
+        <div class="sv-item-ic" style="background:rgba(91,106,240,.1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--ac2)" stroke-width="2" width="18" height="18"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="sv-item-info">
+          <div class="sv-item-label" id="subPlanName">Free Plan</div>
+          <div class="sv-item-val" id="subCrInfo">2,000 credits / month</div>
+        </div>
+        <span id="subPlanBadge" style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(34,197,94,.15);color:#22c55e">ACTIVE</span>
+      </div>
+    </div>
+    <div class="sv-section-label" data-i18n="sub_upgrade">Upgrade Plan</div>
+    <div id="subPlansList"></div>
+    <div class="sv-section-label" data-i18n="sub_billing">Billing</div>
+    <div class="sv-card">
+      <div class="sv-card-item" onclick="showView('pricing')">
+        <div class="sv-item-ic" style="background:rgba(255,255,255,.04)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--mu2)" stroke-width="2" width="16" height="16"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <div class="sv-item-info">
+          <div class="sv-item-label" data-i18n="sub_view_plans">View All Plans</div>
+          <div class="sv-item-val" data-i18n="sub_compare">Compare features and pricing</div>
+        </div>
+        <div class="sv-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="sv-card-item" onclick="showToast('Contact support@fluxwith.io to cancel','ok')">
+        <div class="sv-item-ic" style="background:rgba(239,68,68,.06)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--rd)" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="sv-item-info">
+          <div class="sv-item-label" style="color:var(--rd)" data-i18n="sub_cancel">Cancel Subscription</div>
+          <div class="sv-item-val" data-i18n="sub_cancel_note">Contact support to cancel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
